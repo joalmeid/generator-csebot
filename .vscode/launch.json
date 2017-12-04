@@ -1,0 +1,70 @@
+{
+   // Use IntelliSense to learn about possible Node.js debug attributes.
+   // Hover to view descriptions of existing attributes.
+   // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+   "version": "0.2.0",
+   "configurations": [
+      {
+         "type": "node2",
+         "request": "launch",
+         "name": "Yeoman bot",
+         "protocol": "inspector",
+         "program": "${workspaceRoot}/node_modules/yo/lib/cli.js",
+         "args": [
+            "csebot"
+         ],
+         "console": "integratedTerminal",
+         "internalConsoleOptions":"openOnSessionStart"
+      },
+      {
+         "type": "node2",
+         "request": "attach",
+         "name": "Attach by Process ID",
+         "processId": "${command:PickProcess}"
+      },
+      {
+         "type": "node2",
+         "request": "attach",
+         "name": "Attach",
+         "port": 5858
+      },
+      {
+         "type": "node2",
+         "request": "launch",
+         "name": "Launch Program",
+         "program": "${file}"
+      },
+      {
+         "type": "node2",
+         "request": "launch",
+         "name": "Mocha Integration Tests",
+         "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+         "args": [
+            "-u",
+            "tdd",
+            "--timeout",
+            "999999",
+            "--colors",
+            "${workspaceRoot}/integration/test"
+         ],
+         "cwd": "${workspaceRoot}/integration/",
+         "internalConsoleOptions": "openOnSessionStart"
+      },
+      {
+         "type": "node2",
+         "request": "launch",
+         "name": "Mocha Unit Tests",
+         "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+         "args": [
+            "-u",
+            "tdd",
+            "--timeout",
+            "999999",
+            "--colors",
+            "${workspaceRoot}/unit/test"
+         ],
+         "internalConsoleOptions": "openOnSessionStart"
+      }
+   ],
+   "compounds": []
+}

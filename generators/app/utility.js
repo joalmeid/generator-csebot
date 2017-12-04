@@ -47,7 +47,7 @@ function addUserAgent(options) {
 }
 
 function getUserAgent() {
-   return `Yo bot/${package.version} (${process.platform}: ${process.arch}) Node.js/${process.version}`;
+   return `Yo csebot/${package.version} (${process.platform}: ${process.arch}) Node.js/${process.version}`;
 }
 
 function reconcileValue(first, second, fallback) {

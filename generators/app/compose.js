@@ -13,7 +13,7 @@ function addRelease(obj) {
       obj.log(`* Hosted Linux will be used for build and Hosted VS2017 for release. *`);
    }
 
-   obj.composeWith(`bot:release`, {
+   obj.composeWith(`csebot:release`, {
       args: [obj.type, obj.botName, obj.tfs,
          queue, obj.target,
          obj.azureSub,
@@ -23,7 +23,7 @@ function addRelease(obj) {
 }
 
 function addBuild(obj) {
-   obj.composeWith(`bot:build`, {
+   obj.composeWith(`csebot:build`, {
       args: [obj.type, obj.botName, obj.tfs,
          obj.queue, obj.target,
          obj.pat
@@ -33,7 +33,7 @@ function addBuild(obj) {
 
 function addAzure(obj) {
    if (util.isPaaS(obj)) {
-      obj.composeWith(`bot:azure`, {
+      obj.composeWith(`csebot:azure`, {
          args: [obj.botName, obj.tfs,
             obj.azureSub, obj.azureSubId, obj.tenantId, obj.servicePrincipalId, obj.servicePrincipalKey,
             obj.pat
@@ -43,7 +43,7 @@ function addAzure(obj) {
 }
 
 function addProject(obj) {
-   obj.composeWith(`bot:project`, {
+   obj.composeWith(`csebot:project`, {
       args: [obj.botName, obj.tfs,
          obj.pat
       ]
@@ -52,7 +52,7 @@ function addProject(obj) {
 
 function addRegistry(obj) {
    if (util.needsRegistry(obj)) {
-      obj.composeWith(`bot:registry`, {
+      obj.composeWith(`csebot:registry`, {
          args: [obj.botName, obj.tfs,
             obj.pat
          ]
@@ -62,15 +62,15 @@ function addRegistry(obj) {
 
 function addLanguage(obj) {
    if (obj.type === `csharp`) {
-      obj.composeWith(`bot:bbv3-csharp`, {
+      obj.composeWith(`csebot:bbv3-csharp`, {
          args: [obj.botName, obj.installDep]
       });
    } else if (obj.type === `node`) {
-      obj.composeWith(`bot:bbv3-node`, {
+      obj.composeWith(`csebot:bbv3-node`, {
          args: [obj.botName, obj.installDep]
       });
    } else {
-      obj.composeWith(`bot:bbv3-typescript`, {
+      obj.composeWith(`csebot:bbv3-typescript`, {
          args: [obj.botName, obj.installDep]
       });
    }
@@ -78,7 +78,7 @@ function addLanguage(obj) {
 }
 
 function addGit(obj) {
-   obj.composeWith(`bot:git`, {
+   obj.composeWith(`csebot:git`, {
       args: [obj.botName, obj.tfs,
          `all`,
          obj.pat
