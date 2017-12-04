@@ -1,0 +1,74 @@
+{
+   "name": "generator-csebot",
+   "version": "0.0.1",
+   "description": "Generates a bot (Microsoft Bot Framework) with CI/CD in Team Services",
+   "main": "./generators/app/index.js",
+   "scripts": {
+      "test": "istanbul cover --report cobertura --report lcov node_modules/mocha/bin/_mocha -- -R xunit-file unit/test",
+      "unittest": "istanbul cover --report cobertura --report lcov node_modules/mocha/bin/_mocha -- -R xunit-file unit/test",
+      "inttest": "istanbul cover --report cobertura --report lcov node_modules/mocha/bin/_mocha -- -R xunit-file integration/test"
+   },
+   "files": [
+      "generators/app",
+      "generators/bbv3-csharp",
+      "generators/bbv3-node",
+      "generators/bbv3-typescript",
+      "generators/bbv4-csharp",
+      "generators/bbv4-node",
+      "generators/bbv4-typescript",
+      "generators/azure",
+      "generators/build",
+      "generators/git",
+      "generators/pipeline",
+      "generators/project",
+      "generators/release"
+   ],
+   "keywords": [
+      "yeoman-generator",
+      "tfs",
+      "vsts",
+      "Team Foundation Server",
+      "Team Services",
+      "Visual Studio",
+      "DevOps",
+      "CSE",
+      "botbuilder",
+      "Bot Framework"
+   ],
+   "author": "@jalmeida",
+   "repository": {
+      "type": "git",
+      "url": "https://github.com/joalmeid/generator-csebot"
+   },
+   "license": "ISC",
+   "dependencies": {
+      "async": "^2.5.0",
+      "node-env-file": "^0.1.8",
+      "request": "^2.81.0",
+      "uuid": "^3.1.0",
+      "yeoman-generator": "^0.24.1",
+      "yosay": "^2.0.1"
+   },
+   "devDependencies": {
+      "azure-arm-resource": "^1.4.4-preview",
+      "cheerio": "^1.0.0-rc.2",
+      "fs-extra": "^3.0.1",
+      "gulp": "^3.9.1",
+      "gulp-jshint": "^2.0.4",
+      "gulp-mocha": "^4.3.1",
+      "gulp-spawn-mocha": "^3.3.1",
+      "istanbul": "*",
+      "jshint": "^2.9.4",
+      "mocha": "^3.5.3",
+      "mocha-parallel-tests": "^1.2.9",
+      "mocha.parallel": "^0.15.3",
+      "ms-rest-azure": "^1.14.3",
+      "proxyquire": "*",
+      "sinon": "^2.4.1",
+      "sinon-test": "^1.0.1",
+      "supertest": "^3.0.0",
+      "xunit-file": "^1.0.0",
+      "yeoman-test": "^1.7.0",
+      "yo": "^2.0.0"
+   }
+}

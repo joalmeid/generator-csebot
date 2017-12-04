@@ -1,2 +1,2 @@
 # generator-csebot
-Yoeman Generator with CI/CD for BotBuilder 
+Yoeman Generator with CI/CD for BotBuilder
