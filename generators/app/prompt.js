@@ -84,6 +84,19 @@ function botName(obj) {
    };
 }
 
+function botLocation(obj) {
+   return {
+      name: `botLocation`,
+      type: `input`,
+      store: true,
+      message: `What is the azure Location of your Bot?`,
+      validate: util.validateBotLocation,
+      when: () => {
+         return obj.botLocation === undefined;
+      }
+   };
+}
+
 function target(obj) {
    return {
       name: `target`,
@@ -336,6 +349,7 @@ module.exports = {
    // dockerCertPath: dockerCertPath,
    botType: botType,
    botName: botName,
+   botLocation: botLocation,
    servicePrincipalId: servicePrincipalId,
    servicePrincipalKey: servicePrincipalKey,
    // dockerRegistryPassword: dockerRegistryPassword,

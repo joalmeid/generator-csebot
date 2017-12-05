@@ -20,6 +20,7 @@ function construct() {
    args.botName(this);
    args.tfs(this);
    args.azureSub(this);
+   args.botLocation(this);
    args.azureSubId(this);
    args.tenantId(this);
    args.servicePrincipalId(this);
@@ -35,6 +36,7 @@ function construct() {
    // args.dockerRegistryPassword(this);
    args.servicePrincipalKey(this);
    args.pat(this);
+   
 }
 
 function init() {
@@ -60,6 +62,7 @@ function input() {
       prompts.target(this),
       prompts.azureSubInput(this),
       prompts.azureSubList(this),
+      prompts.botLocation(this),
       prompts.azureSubId(this),
       prompts.tenantId(this),
       prompts.servicePrincipalId(this),
@@ -97,6 +100,7 @@ function input() {
       this.tenantId = util.reconcileValue(answers.tenantId, cmdLnInput.tenantId, ``);
       this.installDep = util.reconcileValue(answers.installDep, cmdLnInput.installDep);
       this.azureSubId = util.reconcileValue(answers.azureSubId, cmdLnInput.azureSubId, ``);
+      this.botLocation = util.reconcileValue(answers.botLocation, cmdLnInput.botLocation, ``);
       // this.dockerHost = util.reconcileValue(answers.dockerHost, cmdLnInput.dockerHost, ``);
       // this.dockerPorts = util.reconcileValue(answers.dockerPorts, cmdLnInput.dockerPorts, ``);
       // this.dockerRegistry = util.reconcileValue(answers.dockerRegistry, cmdLnInput.dockerRegistry, ``);

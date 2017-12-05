@@ -1,4 +1,4 @@
-﻿namespace botcsharp.Util
+﻿namespace <%= name %>.Util
 {
     using System.Collections.Generic;
     using Microsoft.ApplicationInsights.DataContracts;

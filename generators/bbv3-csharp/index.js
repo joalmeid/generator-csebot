@@ -12,6 +12,8 @@ function construct() {
 
    // Order is important 
    args.botName(this);
+   args.botLocation(this);
+   args.tfs(this);
 }
 
 function input() {
@@ -21,10 +23,14 @@ function input() {
    let cmdLnInput = this;
 
    return this.prompt([
-      prompts.botName(this)
+      prompts.botName(this),
+      prompts.botLocation(this),
+      prompts.tfs(this)
    ]).then(function (a) {
       // Transfer answers to local object for use in the rest of the generator
       this.botName = util.reconcileValue(a.botName, cmdLnInput.botName);
+      this.botLocation = util.reconcileValue(a.botLocation, cmdLnInput.botLocation);
+      this.tfs = util.reconcileValue(a.tfs, cmdLnInput.tfs);
    }.bind(this));
 }
 
@@ -35,7 +41,16 @@ function writeFiles() {
       uuid1: uuidV4(),
       uuid2: uuidV4(),
       uuid3: uuidV4(),
-      name_lowercase: this.botName.toLowerCase()
+      name_lowercase: this.botName.toLowerCase(),
+      location: this.botLocation,
+      location_lowercase: this.botLocation.toLowerCase().replace(/\s+/g, ''),
+      projectUrl: `${util.getFullURL(this.tfs)}/${this.botName}`,
+      BotId: this.botName,
+      MicrosoftAppId: "",
+      MicrosoftAppPassword: "",
+      ApplicationInsightsIntrumentationKey: "",
+      StorageConnectionString: ""
+
    };
 
    var src = this.sourceRoot();
@@ -44,63 +59,63 @@ function writeFiles() {
    // Root files
    this.copy(`${src}/gitignore`, `${root}/.gitignore`);
    this.copy(`${src}/gitattributes`, `${root}/.gitattributes`);
-   this.fs.copyTpl(`${src}/webapp.sln`, `${root}/${this.botName}.sln`, tokens);
+   this.fs.copyTpl(`${src}/botcsharp.sln`, `${root}/${this.botName}.sln`, tokens);
 
-   // Web App project
-   src = `${this.sourceRoot()}/webapp`;
+   // Bot App project
+   src = `${this.sourceRoot()}/botcsharp`;
    root = `${this.botName}/${this.botName}`;
 
-   // empty folders
-   mkdirp.sync(`${root}/App_Data/`);
-   mkdirp.sync(`${root}/Models/`);
+   // App_Start
+   // mkdirp.sync(`${root}/App_Start/`);
+   this.fs.copyTpl(`${src}/App_Start/WebApiConfig.cs`, `${root}/App_Start/WebApiConfig.cs`, tokens);
 
-   this.fs.copyTpl(`${src}/App_Start/BundleConfig.cs`, `${root}/App_Start/BundleConfig.cs`, tokens);
-   this.fs.copyTpl(`${src}/App_Start/FilterConfig.cs`, `${root}/App_Start/FilterConfig.cs`, tokens);
-   this.fs.copyTpl(`${src}/App_Start/RouteConfig.cs`, `${root}/App_Start/RouteConfig.cs`, tokens);
+   // mkdirp.sync(`${root}/Connected Services/`);
+   this.copy(`${src}/Connected Services/Application Insights/ConnectedService.json`, `${root}/Connected Services/Application Insights/ConnectedService.json`);
 
+   //Controllers
+   this.fs.copyTpl(`${src}/Controllers/MessagesController.cs`, `${root}/Controllers/MessagesController.cs`, tokens);
+
+   //Dialogs
+   this.fs.copyTpl(`${src}/Dialogs/RootDialog.cs`, `${root}/Dialogs/RootDialog.cs`, tokens);
+   
+   //Properties
    this.fs.copyTpl(`${src}/Properties/AssemblyInfo.cs`, `${root}/Properties/AssemblyInfo.cs`, tokens);
 
-   this.directory(`${src}/Content`, `${root}/Content`);
-   this.directory(`${src}/fonts`, `${root}/fonts`);
-   this.directory(`${src}/Scripts`, `${root}/Scripts`);
-   this.directory(`${src}/Views/Home`, `${root}/Views/Home`);
-   this.directory(`${src}/Views/Shared`, `${root}/Views/Shared`);
-   this.fs.copyTpl(`${src}/Views/Web.config`, `${root}/Views/Web.config`, tokens);
-
-   this.copy(`${src}/Views/_ViewStart.cshtml`, `${root}/Views/_ViewStart.cshtml`);
-   this.fs.copyTpl(`${src}/Controllers/HomeController.cs`, `${root}/Controllers/HomeController.cs`, tokens);
-
+   //Util
+   this.fs.copyTpl(`${src}/Util/TelemetryExtensions.cs`, `${root}/Util/TelemetryExtensions.cs`, tokens);
+     
+   //Root Folder
+   // this.fs.copyTpl(`${src}/ApplicationInsights.config`, `${root}/ApplicationInsights.config`, tokens);
    this.copy(`${src}/ApplicationInsights.config`, `${root}/ApplicationInsights.config`);
-   this.copy(`${src}/favicon.ico`, `${root}/favicon.ico`);
    this.fs.copyTpl(`${src}/Global.asax`, `${root}/Global.asax`, tokens);
    this.fs.copyTpl(`${src}/Global.asax.cs`, `${root}/Global.asax.cs`, tokens);
+   this.fs.copyTpl(`${src}/botcsharp.csproj`, `${root}/${this.botName}.csproj`, tokens);
+   this.fs.copyTpl(`${src}/default.htm`, `${root}/default.htm`, tokens);
    this.copy(`${src}/packages.config`, `${root}/packages.config`);
-   this.copy(`${src}/web.config`, `${root}/web.config`);
+   this.fs.copyTpl(`${src}/web.config`, `${root}/web.config`, tokens);
    this.copy(`${src}/web.Debug.config`, `${root}/web.Debug.config`);
    this.copy(`${src}/web.Release.config`, `${root}/web.Release.config`);
-
-   this.fs.copyTpl(`${src}/webapp.csproj`, `${root}/${this.botName}.csproj`, tokens);
-
-   // Now IaC project
-   src = `${this.sourceRoot()}/webapp.IaC`;
+   
+   // IaC project
+   src = `${this.sourceRoot()}/botcsharp.IaC`;
    root = `${this.botName}/${this.botName}.IaC`;
 
    this.fs.copyTpl(`${src}/Deploy-AzureResourceGroup.ps1`, `${root}/Deploy-AzureResourceGroup.ps1`, tokens);
-   this.fs.copyTpl(`${src}/webapp.IaC.deployproj`, `${root}/${this.botName}.IaC.deployproj`, tokens);
-   this.copy(`${src}/WebSite.json`, `${root}/WebSite.json`);
+   // this.fs.copyTpl(`${src}/botcsharp.IaC.deployproj`, `${root}/${this.botName}.IaC.deployproj`, tokens);
+   this.copy(`${src}/botcsharp.IaC.deployproj`, `${root}/${this.botName}.IaC.deployproj`);
+   this.copy(`${src}/botcsharp.json`, `${root}/botapp.json`);
+   this.copy(`${src}/botcsharp.parameters.json`, `${root}/botapp.parameters.json`);
    this.copy(`${src}/Deployment.targets`, `${root}/Deployment.targets`);
-   this.copy(`${src}/WebSite.parameters.json`, `${root}/WebSite.parameters.json`);
 
-   // Now test project
-   src = `${this.sourceRoot()}/webapp.Tests`;
+   // Test project
+   src = `${this.sourceRoot()}/botcsharp.Tests`;
    root = `${this.botName}/${this.botName}.Tests`;
 
-   this.copy(`${src}/App.config`, `${root}/App.config`);
    this.copy(`${src}/packages.config`, `${root}/packages.config`);
 
-   this.fs.copyTpl(`${src}/Controllers/HomeControllerTest.cs`, `${root}/Controllers/HomeControllerTest.cs`, tokens);
+   this.fs.copyTpl(`${src}/UnitTest1.cs`, `${root}/UnitTest1.cs`, tokens);
    this.fs.copyTpl(`${src}/Properties/AssemblyInfo.cs`, `${root}/Properties/AssemblyInfo.cs`, tokens);
-   this.fs.copyTpl(`${src}/webapp.Tests.csproj`, `${root}/${this.botName}.Tests.csproj`, tokens);
+   this.fs.copyTpl(`${src}/botcsharp.Tests.csproj`, `${root}/${this.botName}.Tests.csproj`, tokens);
 }
 
 module.exports = generators.Base.extend({

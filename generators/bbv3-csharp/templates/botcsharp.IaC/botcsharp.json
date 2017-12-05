@@ -10,15 +10,6 @@
          "type": "string",
          "minLength": 1
       },
-      "aiLocation": {
-         "type": "string",
-         "allowedValues": [
-            "East US",
-            "North Europe",
-            "South Central US",
-            "West Europe"
-         ]
-      },
       "botAiInstrumentationKey": {
          "type": "string",
          "minLength": 1
@@ -49,7 +40,7 @@
             "P4"
          ],
          "metadata": {
-            "description": "Describes plan's pricing tier and instance size. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
+            "description": "Describes plan's pricing tier and capacity. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
          }
       },
       "skuCapacity": {
@@ -78,6 +69,19 @@
          }
       },
       {
+         "name": "[toLower(parameters('webSiteName'))]",
+         "type": "Microsoft.Storage/storageAccounts",
+         "location": "[resourceGroup().location]",
+         "apiVersion": "2015-05-01-preview",
+         "dependsOn": [],
+         "tags": {
+            "displayName": "toLower(parameters('webSiteName'))]"
+         },
+         "properties": {
+            "accountType": "Standard_LRS"
+         }
+      },
+      {
          "apiVersion": "2015-08-01",
          "name": "[parameters('webSiteName')]",
          "type": "Microsoft.Web/sites",
@@ -87,7 +91,7 @@
             "displayName": "Website"
          },
          "dependsOn": [
-            "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
+            "[resourceId('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
          ],
          "properties": {
             "name": "[parameters('webSiteName')]",
@@ -102,12 +106,30 @@
             "[concat('Microsoft.Web/sites/', parameters('webSiteName'))]"
          ],
          "tags": {
-             "displayName": "WebAppSettings"
+            "displayName": "WebAppSettings"
          },
          "properties": {
             "APPINSIGHTS_INSTRUMENTATIONKEY": "[parameters('botAiInstrumentationKey')]",
             "MICROSOFT_APP_ID": "[parameters('botMSAppID')]",
             "MICROSOFT_APP_PASSWORD": "[parameters('botMSAppPasswd')]"
+         }
+      },
+      {
+         "name": "[concat(parameters('webSiteName'), '/', 'connectionstrings')]",
+         "type": "Microsoft.Web/sites/config",
+         "apiVersion": "2015-08-01",
+         "dependsOn": [
+            "[concat('Microsoft.Web/sites/', parameters('webSiteName'))]",
+            "[resourceId('Microsoft.Storage/storageAccounts', toLower(parameters('webSiteName')))]"
+         ],
+         "tags": {
+            "displayName": "WebAppConnectionStrings"
+         },
+         "properties": {
+            "StorageConnectionString": {
+               "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', toLower(parameters('webSiteName')), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', toLower(parameters('webSiteName'))), '2015-05-01-preview').key1)]",
+               "type": "Custom"
+            }
          }
       },
       {
@@ -120,7 +142,7 @@
             "displayName": "AutoScaleSettings"
          },
          "dependsOn": [
-            "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
+            "[resourceId('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
          ],
          "properties": {
             "profiles": [{
@@ -179,7 +201,7 @@
          "type": "Microsoft.Insights/alertrules",
          "location": "[resourceGroup().location]",
          "dependsOn": [
-            "[concat('Microsoft.Web/sites/', parameters('webSiteName'))]"
+            "[resourceId('Microsoft.Web/sites/', parameters('webSiteName'))]"
          ],
          "tags": {
             "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', parameters('webSiteName'))]": "Resource",
@@ -213,7 +235,7 @@
          "type": "Microsoft.Insights/alertrules",
          "location": "[resourceGroup().location]",
          "dependsOn": [
-            "[concat('Microsoft.Web/sites/', parameters('webSiteName'))]"
+            "[resourceId('Microsoft.Web/sites/', parameters('webSiteName'))]"
          ],
          "tags": {
             "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', parameters('webSiteName'))]": "Resource",
@@ -247,7 +269,7 @@
          "type": "Microsoft.Insights/alertrules",
          "location": "[resourceGroup().location]",
          "dependsOn": [
-            "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
+            "[resourceId('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
          ],
          "tags": {
             "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]": "Resource",
@@ -276,28 +298,12 @@
          }
       },
       {
-         "condition": "[equals(parameters('skuName'), 'S1')]",
-         "comments": "Staging slot",
-         "type": "Microsoft.Web/sites/slots",
-         "kind": "app",
-         "name": "[concat(parameters('webSiteName'), '/stage')]",
-         "apiVersion": "2016-08-01",
-         "location": "[resourceGroup().location]",
-         "properties": {
-            "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
-         },
-         "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', parameters('webSiteName'))]",
-            "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
-         ]
-      },
-      {
          "apiVersion": "2014-04-01",
          "name": "[concat('LongHttpQueue ', parameters('hostingPlanName'))]",
          "type": "Microsoft.Insights/alertrules",
          "location": "[resourceGroup().location]",
          "dependsOn": [
-            "[concat('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
+            "[resourceId('Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]"
          ],
          "tags": {
             "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/serverfarms/', parameters('hostingPlanName'))]": "Resource",
@@ -329,9 +335,9 @@
          "apiVersion": "2014-04-01",
          "name": "[parameters('webSiteName')]",
          "type": "Microsoft.Insights/components",
-         "location": "[parameters('aiLocation')]",
+         "location": "[resourceGroup().location]",
          "dependsOn": [
-            "[concat('Microsoft.Web/sites/', parameters('webSiteName'))]"
+            "[resourceId('Microsoft.Web/sites/', parameters('webSiteName'))]"
          ],
          "tags": {
             "[concat('hidden-link:', resourceGroup().id, '/providers/Microsoft.Web/sites/', parameters('webSiteName'))]": "Resource",

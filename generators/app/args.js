@@ -14,6 +14,13 @@ function botName(obj) {
    });
 }
 
+function botLocation(obj) {
+   obj.argument(`botLocation`, {
+      required: false,
+      desc: `location of the Bot`
+   });
+}
+
 function tfs(obj) {
    obj.argument(`tfs`, {
       required: false,
@@ -104,6 +111,7 @@ module.exports = {
    installDep: installDep,
    botType: botType,
    botName: botName,
+   botLocation: botLocation,
    servicePrincipalId: servicePrincipalId,
    servicePrincipalKey: servicePrincipalKey,
 };

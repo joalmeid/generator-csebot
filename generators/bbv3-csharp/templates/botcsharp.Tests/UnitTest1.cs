@@ -1,7 +1,7 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
-namespace botcsharp.Tests
+namespace <%= name %>.Tests
 {
     [TestClass]
     public class UnitTest1

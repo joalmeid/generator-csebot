@@ -128,7 +128,7 @@
          },
          "inputs": {
             "SourceFolder": "",
-            "Contents": "**/{{Project}}_$(Build.BuildId).zip\n**/templates/website.json\n**/templates/website.parameters.json",
+            "Contents": "**/{{Project}}_$(Build.BuildId).zip\n**/templates/botapp.json\n**/templates/botapp.parameters.json",
             "TargetFolder": "$(build.artifactstagingdirectory)",
             "CleanTargetFolder": "false",
             "OverWrite": "false",

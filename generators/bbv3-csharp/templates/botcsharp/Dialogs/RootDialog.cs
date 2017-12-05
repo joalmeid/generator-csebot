@@ -2,11 +2,11 @@
 using System.Threading.Tasks;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
-using botcsharp.Util;
+using <%= name %>.Util;
 using System.Collections.Generic;
 using Newtonsoft.Json;
 
-namespace botcsharp.Dialogs
+namespace <%= name %>.Dialogs
 {
     [Serializable]
     public class RootDialog : IDialog<object>

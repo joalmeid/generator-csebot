@@ -16,7 +16,7 @@ function addRelease(obj) {
    obj.composeWith(`csebot:release`, {
       args: [obj.type, obj.botName, obj.tfs,
          queue, obj.target,
-         obj.azureSub,
+         obj.azureSub, obj.botLocation,
          obj.pat
       ]
    });
@@ -63,7 +63,7 @@ function addRegistry(obj) {
 function addLanguage(obj) {
    if (obj.type === `csharp`) {
       obj.composeWith(`csebot:bbv3-csharp`, {
-         args: [obj.botName, obj.installDep]
+         args: [obj.botName, obj.botLocation, obj.tfs]
       });
    } else if (obj.type === `node`) {
       obj.composeWith(`csebot:bbv3-node`, {

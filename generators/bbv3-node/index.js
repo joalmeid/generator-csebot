@@ -84,8 +84,8 @@ function writeFiles() {
    src = `${this.sourceRoot()}/templates`;
    root = `${this.botName}/templates`;
 
-   this.copy(`${src}/node_arm.json`, `${root}/website.json`);
-   this.copy(`${src}/arm.parameters.json`, `${root}/website.parameters.json`);
+   this.copy(`${src}/botnode.json`, `${root}/botapp.json`);
+   this.copy(`${src}/botnode.parameters.json`, `${root}/botapp.parameters.json`);
 
    // this.copy(`${src}/acilinux_arm.json`, `${root}/acilinux.json`);
    // this.fs.copyTpl(`${src}/acilinux_arm.parameters.json`, `${root}/acilinux.parameters.json`, tokens);

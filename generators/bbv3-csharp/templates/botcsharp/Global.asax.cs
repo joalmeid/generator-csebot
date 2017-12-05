@@ -14,7 +14,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using Microsoft.Azure;
 
-namespace botcsharp
+namespace <%= name %>
 {
     public class WebApiApplication : System.Web.HttpApplication
     {

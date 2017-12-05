@@ -193,6 +193,10 @@ function validateBotName(input) {
    return validateRequired(input, `You must provide a name for your bot`);
 }
 
+function validateBotLocation(input) {
+   return validateRequired(input, `You must provide a location for your bot`);
+}
+
 function validatePersonalAccessToken(input) {
    return validateRequired(input, `You must provide a Personal Access Token`);
 }
@@ -977,6 +981,7 @@ module.exports = {
    validateAzureTenantID: validateAzureTenantID,
    // validateDockerRegistry: validateDockerRegistry,
    validateBotName: validateBotName,
+   validateBotLocation: validateBotLocation,
    findAzureServiceEndpoint: findAzureServiceEndpoint,
    // getDockerRegistryServer: getDockerRegistryServer,
    // findDockerServiceEndpoint: findDockerServiceEndpoint,

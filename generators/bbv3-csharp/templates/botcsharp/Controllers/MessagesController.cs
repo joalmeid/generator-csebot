@@ -6,7 +6,7 @@ using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 using System.Collections.Generic;
 
-namespace botcsharp
+namespace <%= name %>
 {
     [BotAuthentication]
     public class MessagesController : ApiController

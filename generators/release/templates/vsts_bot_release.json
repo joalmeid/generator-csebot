@@ -18,9 +18,6 @@
             "hostingPlanName": {
                "value": "{{WebAppName}}Dev"
             },
-            "aiLocation": {
-               "value": "South Central US"
-            },
             "botAiInstrumentationKey": {
                "value": "xxDEVxx"
             },
@@ -74,10 +71,10 @@
                      "actionClassic": "Select Resource Group",
                      "resourceGroupName": "$(ResourceGroupName)",
                      "cloudService": "",
-                     "location": "Central US",
-                     "csmFile": "**/website.json",
-                     "csmParametersFile": "**/website.parameters.json",
-                     "overrideParameters": "-hostingPlanName $(hostingPlanName) -webSiteName $(webSiteName) -aiLocation \"$(aiLocation)\" -botAiInstrumentationKey \"$(botAiInstrumentationKey)\" -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\"",
+                     "location": "{{azLocation}}",
+                     "csmFile": "**/botapp.json",
+                     "csmParametersFile": "**/botapp.parameters.json",
+                     "overrideParameters": "-hostingPlanName $(hostingPlanName) -webSiteName $(webSiteName) -botAiInstrumentationKey \"$(botAiInstrumentationKey)\" -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\"",
                      "enableDeploymentPrerequisitesForCreate": "false",
                      "enableDeploymentPrerequisitesForSelect": "false",
                      "outputVariable": ""
@@ -148,9 +145,6 @@
             "hostingPlanName": {
                "value": "{{WebAppName}}QA"
             },
-            "aiLocation": {
-               "value": "South Central US"
-            },
             "botAiInstrumentationKey": {
                "value": "xxQAxx"
             },
@@ -213,10 +207,10 @@
                      "actionClassic": "Select Resource Group",
                      "resourceGroupName": "$(ResourceGroupName)",
                      "cloudService": "",
-                     "location": "Central US",
-                     "csmFile": "**/website.json",
-                     "csmParametersFile": "**/website.parameters.json",
-                     "overrideParameters": "-hostingPlanName $(hostingPlanName) -webSiteName $(webSiteName) -aiLocation \"$(aiLocation)\" -botAiInstrumentationKey \"$(botAiInstrumentationKey)\" -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\"",
+                     "location": "{{azLocation}}",
+                     "csmFile": "**/botapp.json",
+                     "csmParametersFile": "**/botapp.parameters.json",
+                     "overrideParameters": "-hostingPlanName $(hostingPlanName) -webSiteName $(webSiteName) -botAiInstrumentationKey \"$(botAiInstrumentationKey)\" -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\"",
                      "enableDeploymentPrerequisitesForCreate": "false",
                      "enableDeploymentPrerequisitesForSelect": "false",
                      "outputVariable": ""
@@ -287,9 +281,6 @@
             "hostingPlanName": {
                "value": "{{WebAppName}}Prod"
             },
-            "aiLocation": {
-               "value": "South Central US"
-            },
             "botAiInstrumentationKey": {
                "value": "xxPRODxx"
             },
@@ -352,10 +343,10 @@
                      "actionClassic": "Select Resource Group",
                      "resourceGroupName": "$(ResourceGroupName)",
                      "cloudService": "",
-                     "location": "Central US",
-                     "csmFile": "**/website.json",
-                     "csmParametersFile": "**/website.parameters.json",
-                     "overrideParameters": "-hostingPlanName $(hostingPlanName) -webSiteName $(webSiteName) -aiLocation \"$(aiLocation)\" -botAiInstrumentationKey \"$(botAiInstrumentationKey)\" -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\"",
+                     "location": "{{azLocation}}",
+                     "csmFile": "**/botapp.json",
+                     "csmParametersFile": "**/botapp.parameters.json",
+                     "overrideParameters": "-hostingPlanName $(hostingPlanName) -webSiteName $(webSiteName) -botAiInstrumentationKey \"$(botAiInstrumentationKey)\" -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\"",
                      "enableDeploymentPrerequisitesForCreate": "false",
                      "enableDeploymentPrerequisitesForSelect": "false",
                      "outputVariable": ""

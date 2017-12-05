@@ -22,6 +22,7 @@ function construct() {
    // args.dockerRegistryId(this);
    // args.dockerPorts(this);
    // args.dockerRegistryPassword(this);
+   args.botLocation(this);
    args.pat(this);
 }
 
@@ -33,6 +34,7 @@ function input() {
 
    return this.prompt([
       prompts.tfs(this),
+      prompts.botLocation(this),
       prompts.pat(this),
       prompts.queue(this),
       prompts.botType(this),
@@ -54,6 +56,7 @@ function input() {
       this.queue = util.reconcileValue(answers.queue, cmdLnInput.queue);
       this.target = util.reconcileValue(answers.target, cmdLnInput.target);
       this.azureSub = util.reconcileValue(answers.azureSub, cmdLnInput.azureSub, ``);
+      this.botLocation = util.reconcileValue(answers.botLocation, cmdLnInput.botLocation, ``);
       // this.dockerHost = util.reconcileValue(answers.dockerHost, cmdLnInput.dockerHost, ``);
       // this.dockerPorts = util.reconcileValue(answers.dockerPorts, cmdLnInput.dockerPorts, ``);
       // this.dockerRegistry = util.reconcileValue(answers.dockerRegistry, cmdLnInput.dockerRegistry);
@@ -79,6 +82,7 @@ function configureRelease() {
          target: _this.target,
          releaseJson: release,
          azureSub: _this.azureSub,
+         location: _this.botLocation,
          appName: _this.botName,
          project: _this.botName
       };
