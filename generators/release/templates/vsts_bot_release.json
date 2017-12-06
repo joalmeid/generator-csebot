@@ -15,12 +15,6 @@
             "webSiteName": {
                "value": "{{WebAppName}}Dev{{uuid}}"
             },
-            "hostingPlanName": {
-               "value": "{{WebAppName}}Dev"
-            },
-            "botAiInstrumentationKey": {
-               "value": "xxDEVxx"
-            },
             "botMSAppID": {
                "value": "xxDEVxx"
             },
@@ -74,7 +68,7 @@
                      "location": "{{azLocation}}",
                      "csmFile": "**/botapp.json",
                      "csmParametersFile": "**/botapp.parameters.json",
-                     "overrideParameters": "-hostingPlanName $(hostingPlanName) -webSiteName $(webSiteName) -botAiInstrumentationKey \"$(botAiInstrumentationKey)\" -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\"",
+                     "overrideParameters": "-webSiteName $(webSiteName) -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\"",
                      "enableDeploymentPrerequisitesForCreate": "false",
                      "enableDeploymentPrerequisitesForSelect": "false",
                      "outputVariable": ""
@@ -142,12 +136,6 @@
             "webSiteName": {
                "value": "{{WebAppName}}QA{{uuid}}"
             },
-            "hostingPlanName": {
-               "value": "{{WebAppName}}QA"
-            },
-            "botAiInstrumentationKey": {
-               "value": "xxQAxx"
-            },
             "botMSAppID": {
                "value": "xxQAxx"
             },
@@ -210,7 +198,7 @@
                      "location": "{{azLocation}}",
                      "csmFile": "**/botapp.json",
                      "csmParametersFile": "**/botapp.parameters.json",
-                     "overrideParameters": "-hostingPlanName $(hostingPlanName) -webSiteName $(webSiteName) -botAiInstrumentationKey \"$(botAiInstrumentationKey)\" -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\"",
+                     "overrideParameters": "-webSiteName $(webSiteName) -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\"",
                      "enableDeploymentPrerequisitesForCreate": "false",
                      "enableDeploymentPrerequisitesForSelect": "false",
                      "outputVariable": ""
@@ -278,12 +266,6 @@
             "webSiteName": {
                "value": "{{WebAppName}}Prod{{uuid}}"
             },
-            "hostingPlanName": {
-               "value": "{{WebAppName}}Prod"
-            },
-            "botAiInstrumentationKey": {
-               "value": "xxPRODxx"
-            },
             "botMSAppID": {
                "value": "xxPRODxx"
             },
@@ -346,7 +328,7 @@
                      "location": "{{azLocation}}",
                      "csmFile": "**/botapp.json",
                      "csmParametersFile": "**/botapp.parameters.json",
-                     "overrideParameters": "-hostingPlanName $(hostingPlanName) -webSiteName $(webSiteName) -botAiInstrumentationKey \"$(botAiInstrumentationKey)\" -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\"",
+                     "overrideParameters": "-webSiteName $(webSiteName) -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\"",
                      "enableDeploymentPrerequisitesForCreate": "false",
                      "enableDeploymentPrerequisitesForSelect": "false",
                      "outputVariable": ""
