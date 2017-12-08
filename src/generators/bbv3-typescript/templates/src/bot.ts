@@ -7,12 +7,16 @@ import * as botConsts from './models/Consts';
 
 telemetryModule.Initialize();
 
-export function create(connector : builder.IConnector) {
+export function create(connector : builder.IConnector): builder.UniversalBot {
 
     const azureTableClient = new botAzure.AzureTableClient(botConsts.tableName, process.env.STATE_STORAGE_CONNECTION_STRING);
     const tableStorage = new botAzure.AzureBotStorage({ gzipData: false }, azureTableClient);
 
-    const bot = new builder.UniversalBot(connector).set(botConsts.storage, tableStorage);
+    // Disbale storage state for test execution (ConsoleConnector)
+    const bot = new builder.UniversalBot(connector);
+    if ( ! (connector instanceof builder.ConsoleConnector)) {
+        bot.set(botConsts.storage, tableStorage);
+    }
 
     bot.dialog('/', rootDialog.waterfall);
     bot.dialog('reset', resetDialog.waterfall)
