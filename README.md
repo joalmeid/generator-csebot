@@ -10,6 +10,8 @@ I'm sharing this with the community - feel free to colaboration, raise [issues](
 > With this generator, you can **pick your language**, and it will **create Bot boilerplates projects** with **complete CI and CD** on **VSTS** or **TFS**.
 >
 
+![Demo](images/cse-generator-demo.gif)
+
 ## Capabilities
 ***generator-csebot*** is a [Yeoman](http://yeoman.io/) generator that creates a complete CI/CD pipeline in [Team Foundation Server](https://www.visualstudio.com/tfs/) or [Visual Studio Team Services](https://www.visualstudio.com/team-services/) for your [Microsoft Bot Framework](http://botframework.com) bot in the following languages:
 - Csharp (C#) 
