@@ -119,7 +119,7 @@ function getBotTypes(answers) {
    }, {
       name: `Node.js`,
       value: `node`
-   }, , {
+   }, {
       name: `Typescript`,
       value: `tsc`
    }];
