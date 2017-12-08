@@ -45,7 +45,8 @@
       }
    },
    "variables": {
-		"hostingPlanName": "[concat(parameters('webSiteName'), '-hostingplan')]"
+      "hostingPlanName": "[concat(parameters('webSiteName'), '-hostingplan')]",
+      "botHandle": "[substring(parameters('webSiteName'), 0, sub(length(parameters('webSiteName')), 11))]"
 	},
    "resources": [{
          "apiVersion": "2015-08-01",
@@ -92,7 +93,7 @@
                   "displayName": "WebAppSettings"
                },
                "properties": {
-                  "BotId": "[parameters('webSiteName')]",
+                  "BotId": "[variables('botHandle')]",
                   "MicrosoftAppId": "[parameters('botMSAppID')]",
                   "MicrosoftAppPassword": "[parameters('botMSAppPasswd')]",
                   "ApplicationInsightsIntrumentationKey": "[reference(resourceId('Microsoft.Insights/components', parameters('webSiteName')), '2014-04-01').InstrumentationKey]"
