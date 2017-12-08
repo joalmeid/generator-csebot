@@ -67,11 +67,11 @@ function addLanguage(obj) {
       });
    } else if (obj.type === `node`) {
       obj.composeWith(`csebot:bbv3-node`, {
-         args: [obj.botName, obj.installDep]
+         args: [obj.botName, obj.installDep, obj.tfs]
       });
    } else {
       obj.composeWith(`csebot:bbv3-typescript`, {
-         args: [obj.botName, obj.installDep]
+         args: [obj.botName, obj.installDep, obj.tfs]
       });
    }
    

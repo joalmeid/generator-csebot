@@ -40,6 +40,7 @@ function writeFiles() {
       name: this.botName,
       //port: this.dockerPorts.split(':')[0],
       name_lowercase: this.botName.toLowerCase(),
+      projectUrl: `${util.getFullURL(this.tfs)}/${this.botName}`
    };
 
    var src = this.sourceRoot();
