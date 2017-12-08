@@ -7,7 +7,7 @@ const waterfall: IDialogWaterfallStep[] = [
         const telemetry = telemetryModule.createTelemetry(session, { setDefault: false });
 
         //Welcome Message
-        const welcomeMessage = `Hi! I'm a Typescript Bot Framework created with cse-bot Yoeman Generator.`;
+        const welcomeMessage = `Hi! I'm a Typescript Bot Framework created with cse-bot Yeoman Generator.`;
         session.send(welcomeMessage);
 
         telemetryModule.getClient().trackEvent('start');

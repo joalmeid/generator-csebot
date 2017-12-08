@@ -6,7 +6,7 @@ module.exports = [
         var telemetry = telemetryModule.createTelemetry(session, { setDefault: false });
 
         //Welcome Message
-        var welcomeMessage = "Hi! I'm a Node.js Bot Framework created with cse-bot Yoeman Generator.";
+        var welcomeMessage = "Hi! I'm a Node.js Bot Framework created with cse-bot Yeoman Generator.";
         session.send(welcomeMessage);
 
         telemetryModule.getClient().trackTrace('start', telemetry);

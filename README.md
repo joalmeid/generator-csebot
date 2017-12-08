@@ -1,9 +1,9 @@
 # generator-csebot
 [TODO](http://github.com/joalmeid/generator-csebot)
 
-This project is Yoeman Generator with CI/CD for [Microsoft Bot Framework](http://botframework.com) a.k.a BotBuilder.
-It started with a fork from [DarqueWarrior/generator-team](https://github.com/DarqueWarrior/generator-team) where [Donovan Brown](https://twitter.com/DonovanBrown) created a great yoeman generator for several languages and DevOps targeting different platforms.
-Based on this [yo team](http://donovanbrown.com/post/yo-Team) yoeman generator, I had the need to be able to speed up project kickoffs with botbuilder.
+This project is Yeoman Generator with CI/CD for [Microsoft Bot Framework](http://botframework.com) a.k.a BotBuilder.
+It started with a fork from [DarqueWarrior/generator-team](https://github.com/DarqueWarrior/generator-team) where [Donovan Brown](https://twitter.com/DonovanBrown) created a great yeoman generator for several languages and DevOps targeting different platforms.
+Based on this [yo team](http://donovanbrown.com/post/yo-Team) yeoman generator, I had the need to be able to speed up project kickoffs with botbuilder.
 I'm sharing this with the community - feel free to colaboration, raise [issues](https://github.com/joalmeid/generator-csebot/issues), and ask for features!
 
 >
@@ -25,7 +25,7 @@ Bot comes with:
 - [Team Foundation Server 2017+](https://www.visualstudio.com/downloads/) or [Visual Studio Team Services Account](https://app.vsaex.visualstudio.com/profile/account)
    - [Personal Access Token](https://www.visualstudio.com/en-us/docs/setup-admin/team-services/use-personal-access-tokens-to-authenticate)
 - [Azure Subscription](https://azure.microsoft.com/en-us/free/)
-- [Node.js 8.5.0](http://nodejs.org/)
+- [Node.js](http://nodejs.org/)
 - [NPM](https://www.npmjs.com/)
 - [Git](http://git-scm.org/)
 - [.NET Framework 4.6](https://www.microsoft.com/en-us/download/details.aspx?id=21)

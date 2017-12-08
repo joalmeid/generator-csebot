@@ -1,5 +1,5 @@
 # Bot Builder for Csharp (C#)
-[Bot Builder for Node.js](https://docs.microsoft.com/en-us/bot-framework/dotnet/bot-builder-dotnet-quickstart) is a powerful framework for constructing bots that can handle both freeform interactions and more guided ones where the possibilities are explicitly shown to the user. It is easy to use and models frameworks like ASP.NET WebAPI to provide developers with a familiar way to write Bots.
+[Bot Builder for .NET](https://docs.microsoft.com/en-us/bot-framework/dotnet/bot-builder-dotnet-quickstart) is a powerful framework for constructing bots that can handle both freeform interactions and more guided ones where the possibilities are explicitly shown to the user. It is easy to use and models frameworks like ASP.NET WebAPI to provide developers with a familiar way to write Bots.
 
 High Level Features:
 
@@ -40,4 +40,4 @@ NOTE: When you register your bot with the Bot Framework you'll want to update so
 Learn how to build great bots.
 
 * [Core Concepts Guide](http://docs.botframework.com/builder/node/guides/core-concepts/)
-* [Bot Builder for Node.js Reference](https://docs.botframework.com/en-us/node/builder/chat-reference/modules/_botbuilder_d_.html)
+* [Bot Builder for .NET Reference](https://docs.botframework.com/en-us/node/builder/chat-reference/modules/_botbuilder_d_.html)

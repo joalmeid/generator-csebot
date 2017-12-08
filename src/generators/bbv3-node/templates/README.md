@@ -1,5 +1,5 @@
 # Bot Builder for Node.js
-[Bot Builder for Node.js](http://docs.botframework.com/builder/node/overview/) is a powerful framework for constructing bots that can handle both freeform interactions and more guided ones where the possibilities are explicitly shown to the user. It is easy to use and models frameworks like Express & Restify to provide developers with a familiar way to write Bots.
+[Bot Builder for Node.js](https://docs.microsoft.com/en-us/bot-framework/nodejs/bot-builder-nodejs-quickstart) is a powerful framework for constructing bots that can handle both freeform interactions and more guided ones where the possibilities are explicitly shown to the user. It is easy to use and models frameworks like Express & Restify to provide developers with a familiar way to write Bots.
 
 High Level Features:
 
@@ -42,4 +42,4 @@ NOTE: When you register your bot with the Bot Framework you'll want to update so
 Learn how to build great bots.
 
 * [Core Concepts Guide](http://docs.botframework.com/builder/node/guides/core-concepts/)
-* [Bot Builder for Node.js Reference](https://docs.botframework.com/en-us/node/builder/chat-reference/modules/_botbuilder_d_.html)
+* [Bot Builder for Node.js Reference](https://docs.microsoft.com/en-us/dotnet/api/)
