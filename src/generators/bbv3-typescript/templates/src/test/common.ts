@@ -1,16 +1,16 @@
-var assert = require('assert');
+import * as assert from 'assert';
 
-function testBot(bot, messages, done) {
-  var step = 1;
-  var connector = bot.connector();
-  bot.on('send', function (message) {
-      
+function testBot(bot: any, messages: any, done: any) {
+  let step = 1;
+  const connector = bot.connector();
+  bot.on('send', function (message: any) {
+
     if (step <= messages.length && step++ >= 1) {
-      var check = messages[step - 2];
-      
+      const check = messages[step - 2];
+
       checkInMessage(message, check, assert, (err) => {
 
-        if (err) { 
+        if (err) {
           assert(false);
           done();
         }
@@ -22,10 +22,10 @@ function testBot(bot, messages, done) {
 
   if (messages.length && messages[0].out) {
     step = 2;
-    connector.processMessage(messages[0].out)
+    connector.processMessage(messages[0].out);
   }
 
-  function checkInMessage(message, check, assert, callback) {
+  function checkInMessage(message: any, check: any, assert: any, callback: any) {
 
     if (check.type) {
       assert(message.type === check.type);
@@ -46,17 +46,15 @@ function testBot(bot, messages, done) {
     }
   }
 
-  function proceedNextStep(check, done) {
+  function proceedNextStep(check: any, done: any) {
     if (check.out) {
       connector.processMessage(check.out);
     }
 
-    if (step - 1 == messages.length) {
+    if (step - 1 === messages.length) {
       setTimeout(done, 10); // Enable message from connector to appear in current test suite
     }
   }
 }
 
-module.exports = {
-  testBot
-};
+export { testBot };

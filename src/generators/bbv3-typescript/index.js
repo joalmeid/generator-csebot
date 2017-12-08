@@ -54,23 +54,26 @@ function writeFiles() {
    src = `${this.sourceRoot()}/src`;
    root = `${this.botName}/src`;
 
-   this.copy(`${src}/app.js`, `${root}/app.js`);
-   this.copy(`${src}/bot.js`, `${root}/bot.js`);
+   this.copy(`${src}/app.ts`, `${root}/app.ts`);
+   this.copy(`${src}/bot.ts`, `${root}/bot.ts`);
    this.copy(`${src}/web.config`, `${root}/web.config`);
    this.copy(`${src}/parameters.xml`, `${root}/parameters.xml`);
    this.fs.copyTpl(`${src}/package.json`, `${root}/package.json`, tokens);
+   this.copy(`${src}/tslint.json`, `${root}/tslint.json`);
+   this.copy(`${src}/tsconfig.json`, `${root}/tsconfig.json`);
    this.copy(`${src}/.env`, `${root}/.env`);
    
    this.directory(`${src}/dialogs`, `${root}/dialogs`);
-   this.directory(`${src}/util`, `${root}/util`);
+   this.directory(`${src}/models`, `${root}/models`);
    this.directory(`${src}/test`, `${root}/test`);
+   this.directory(`${src}/util`, `${root}/util`);
 
    // ARM Templates
    src = `${this.sourceRoot()}/templates`;
    root = `${this.botName}/templates`;
 
-   this.copy(`${src}/botnode.json`, `${root}/botapp.json`);
-   this.copy(`${src}/botnode.parameters.json`, `${root}/botapp.parameters.json`);
+   this.copy(`${src}/botts.json`, `${root}/botapp.json`);
+   this.copy(`${src}/botts.parameters.json`, `${root}/botapp.parameters.json`);
 }
 
 function install() {

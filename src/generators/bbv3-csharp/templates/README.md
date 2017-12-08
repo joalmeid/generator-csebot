@@ -40,4 +40,4 @@ NOTE: When you register your bot with the Bot Framework you'll want to update so
 Learn how to build great bots.
 
 * [Core Concepts Guide](http://docs.botframework.com/builder/node/guides/core-concepts/)
-* [Bot Builder for .NET Reference](https://docs.botframework.com/en-us/node/builder/chat-reference/modules/_botbuilder_d_.html)
+* [Bot Builder for .NET Reference](https://docs.microsoft.com/en-us/dotnet/api/)

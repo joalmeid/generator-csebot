@@ -1,17 +1,15 @@
 {
-    "compilerOptions": {
-        "target": "ES6",
-        "module": "commonjs",
-        "sourceMap": true,
-        "moduleResolution": "node"
-    },
-    "compileOnSave": true,
-    "include": [
-        "**/*",
-        "test/**/*"
-    ],
-    "exclude": [
-        "node_modules/**/*",
-        "_others/**/*"
-      ]
-  }
+   "compilerOptions": {
+       "target": "ES6",
+       "module": "commonjs",
+       "sourceMap": true,
+       "moduleResolution": "node"
+   },
+   "compileOnSave": true,
+   "include": [
+       "**/*"
+   ],
+   "exclude": [
+       "node_modules/**/*"
+     ]
+ }
