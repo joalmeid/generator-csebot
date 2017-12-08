@@ -4,12 +4,12 @@ myConfig.load();
 import * as builder from 'botbuilder';
 import * as common from './common';
 import * as testBot from '../bot';
-import * as greetingMessages from './dialog-flows/greeting';
+import { greetingMessages } from './dialog-flows/greeting';
 
 //Our parent block
 describe('Bot Tests', () => {
 
-    it('greeting', function (done: any) {
+    it('greeting', function (done: () => void) {
         const connector = new builder.ConsoleConnector();
 
         const bot = testBot.create(connector);

@@ -1,9 +1,11 @@
 import * as assert from 'assert';
+import * as builder from 'botbuilder';
+import * as dialogTest from '../models/IDialogTest';
 
-function testBot(bot: any, messages: any, done: any) {
+function testBot(bot: builder.UniversalBot, messages: dialogTest.IDialogTest[], done: () => void) {
   let step = 1;
-  const connector = bot.connector();
-  bot.on('send', function (message: any) {
+  const connector: builder.ConsoleConnector = bot.connector(null, null) as builder.ConsoleConnector;
+  bot.on('send', function (message: dialogTest.IDialogTest) {
 
     if (step <= messages.length && step++ >= 1) {
       const check = messages[step - 2];
@@ -25,7 +27,7 @@ function testBot(bot: any, messages: any, done: any) {
     connector.processMessage(messages[0].out);
   }
 
-  function checkInMessage(message: any, check: any, assert: any, callback: any) {
+  function checkInMessage(message: any, check: any, assert: any, callback: (err: any) => void) {
 
     if (check.type) {
       assert(message.type === check.type);
@@ -42,11 +44,11 @@ function testBot(bot: any, messages: any, done: any) {
           assert(false);
         }
       }
-      return callback();
+      return callback(null);
     }
   }
 
-  function proceedNextStep(check: any, done: any) {
+  function proceedNextStep(check: any, done: () => void) {
     if (check.out) {
       connector.processMessage(check.out);
     }
