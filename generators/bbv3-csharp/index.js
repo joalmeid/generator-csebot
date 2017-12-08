@@ -47,10 +47,7 @@ function writeFiles() {
       projectUrl: `${util.getFullURL(this.tfs)}/${this.botName}`,
       BotId: this.botName,
       MicrosoftAppId: "",
-      MicrosoftAppPassword: "",
-      ApplicationInsightsIntrumentationKey: "",
-      StorageConnectionString: ""
-
+      MicrosoftAppPassword: ""
    };
 
    var src = this.sourceRoot();
