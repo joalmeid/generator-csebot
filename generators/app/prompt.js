@@ -89,7 +89,7 @@ function botLocation(obj) {
       name: `botLocation`,
       type: `input`,
       store: true,
-      message: `What is the azure Location of your Bot?`,
+      message: `What is the azure location of your Bot?`,
       validate: util.validateBotLocation,
       when: () => {
          return obj.botLocation === undefined;
