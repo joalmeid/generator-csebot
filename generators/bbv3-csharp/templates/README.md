@@ -10,7 +10,7 @@ High Level Features:
 * Bots can run on almost any bot platform like the [Microsoft Bot Framework](http://botframework.com), [Skype](http://skype.com), and [Slack](http://slack.com).
 
 ## Build a bot
-Go to the directory created with the boilerplate code. Open the solution file (<%= name>.sln). Build and make sure you restore the Nuget packages.
+Go to the directory created with the boilerplate code. Open the solution file (<%= name %>.sln). Build and make sure you restore the Nuget packages.
 
 ## Test your bot
 Use the [Bot Framework Emulator](http://docs.botframework.com/connector/tools/bot-framework-emulator/) to test your bot on localhost. 
@@ -20,15 +20,15 @@ Install the emulator from [here](http://aka.ms/bf-bc-emulator) and then start(or
 Say "hello" to your bot.
 
 ## DevOps with your bot
-You now have full CI/CD pipelines, that will build and deploy your bot to the cloud. Take a look at your project [<%= name>](<%= project>).
+You now have full CI/CD pipelines, that will build and deploy your bot to the cloud. Take a look at your project [<%= name %>](<%= projectUrl %>).
 Start by pushing the starting code, and doing a first build (*will start automatically*):
 
     git push 
 
  > You can do it directly from within Visual Studio or Visual Studio Code)
 
-In the [builds](<%= project>/_build), you have the **<%= name>-CI** build definition that will do a nuget restore, build the solution, run tests and publish build artifacts.
-In the [Releases](<%= project>/_release), you have **<%= name>-CD** defining a pipeline with Dev, QA and Prod environments. For each environment the release process consists in Azure Resource Group deployment (check the ARM templates) and your bot app deployment.
+In the [builds](<%= projectUrl %>/_build), you have the **<%= name %>-CI** build definition that will do a nuget restore, build the solution, run tests and publish build artifacts.
+In the [Releases](<%= projectUrl %>/_release), you have **<%= name %>-CD** defining a pipeline with Dev, QA and Prod environments. For each environment the release process consists in Azure Resource Group deployment (check the ARM templates) and your bot app deployment.
 Fell free to change build/release definitions accordingly to your needs/preferences.
 
 ## Publish your bot

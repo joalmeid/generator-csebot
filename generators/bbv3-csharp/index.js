@@ -66,10 +66,9 @@ function writeFiles() {
    root = `${this.botName}/${this.botName}`;
 
    // App_Start
-   // mkdirp.sync(`${root}/App_Start/`);
    this.fs.copyTpl(`${src}/App_Start/WebApiConfig.cs`, `${root}/App_Start/WebApiConfig.cs`, tokens);
 
-   // mkdirp.sync(`${root}/Connected Services/`);
+   //Connected Services
    this.copy(`${src}/Connected Services/Application Insights/ConnectedService.json`, `${root}/Connected Services/Application Insights/ConnectedService.json`);
 
    //Controllers
@@ -85,7 +84,6 @@ function writeFiles() {
    this.fs.copyTpl(`${src}/Util/TelemetryExtensions.cs`, `${root}/Util/TelemetryExtensions.cs`, tokens);
      
    //Root Folder
-   // this.fs.copyTpl(`${src}/ApplicationInsights.config`, `${root}/ApplicationInsights.config`, tokens);
    this.copy(`${src}/ApplicationInsights.config`, `${root}/ApplicationInsights.config`);
    this.fs.copyTpl(`${src}/Global.asax`, `${root}/Global.asax`, tokens);
    this.fs.copyTpl(`${src}/Global.asax.cs`, `${root}/Global.asax.cs`, tokens);
@@ -101,7 +99,6 @@ function writeFiles() {
    root = `${this.botName}/${this.botName}.IaC`;
 
    this.fs.copyTpl(`${src}/Deploy-AzureResourceGroup.ps1`, `${root}/Deploy-AzureResourceGroup.ps1`, tokens);
-   // this.fs.copyTpl(`${src}/botcsharp.IaC.deployproj`, `${root}/${this.botName}.IaC.deployproj`, tokens);
    this.copy(`${src}/botcsharp.IaC.deployproj`, `${root}/${this.botName}.IaC.deployproj`);
    this.copy(`${src}/botcsharp.json`, `${root}/botapp.json`);
    this.copy(`${src}/botcsharp.parameters.json`, `${root}/botapp.parameters.json`);

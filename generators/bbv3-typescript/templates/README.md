@@ -24,13 +24,13 @@ Install the emulator from [here](http://aka.ms/bf-bc-emulator) and then start yo
 Start the emulator and say "hello" to your bot.
 
 ## DevOps with your bot
-You now have full CI/CD pipelines, that will build and deploy your bot to the cloud. Take a look at your project [<%= name>](<%= project>).
+You now have full CI/CD pipelines, that will build and deploy your bot to the cloud. Take a look at your project [<%= name %>](<%= projectUrl %>).
 Start by pushing the starting code, and doing a first build (*will start automatically*):
 
     git push
 
-In the [build](<%= project>/_build), you have the **<%= name>-CI** build definition that will install all npm modules, run tsc, run tests and publish build artifacts.
-In the [Release](<%= project>/_release), you have **<%= name>-CD** defining a pipeline with Dev, QA and Prod environments. For each environment the release process consists in Azure Resource Group deployment (check the ARM templates) and your bot app deployment.
+In the [build](<%= projectUrl %>/_build), you have the **<%= name %>-CI** build definition that will install all npm modules, run tsc, run tests and publish build artifacts.
+In the [Release](<%= projectUrl %>/_release), you have **<%= name %>-CD** defining a pipeline with Dev, QA and Prod environments. For each environment the release process consists in Azure Resource Group deployment (check the ARM templates) and your bot app deployment.
 Fell free to change build/release definitions accordingly to your needs/preferences.
 
 ## Publish your bot

@@ -37,15 +37,15 @@ You can read how to use it at ***[Getting Started](https://github.com/joalmeid/g
 - Add docker support
 - Investigate on how to register bot automatically into Dev Portal
 - Add similar *templates* to Bot Dev Portal in all supported languages
- - **Basic bot**: A bot with the basic building blocks needed for any conversation: a welcome message, greeting, and a fallback response when what the user says is not understood by your bot.
- - **Echo bot**: A simple bot that can echo back a user's message.
- - **QnA bot**: A bot that demonstrates how to use qnamaker.ai to power a single-turn question and answer experience.
- - **Simple Conversation bot**: A bot that demonstrates the use of bot memory to have a simple, contextual conversation with the user.
- - **Bot memory**: A bot that remembers user’s communication preference and later recalls that in a conversation.
- - **Multi-turn conversation bot**: A bot that helps a user book a table at Contoso Cafe - a fictitious coffee shop, based out of Seattle, WA.
- - **Context carry over bot**: A bot that helps a user find cafe locations by carrying over context from prior conversations.
- - **Prompt for user input bot**: A bot that demonstrates different ways to prompt a user for input while interacting with Contoso Cafe - a fictitious coffee shop based out of Seattle, WA.
- - **Complete Contoso Cafe bot**: A complete bot for Contoso Cafe - a fictitious coffee shop based out of Seattle, WA. This bot can do all tasks that are otherwise covered in the individual samples.
+  - **Basic bot**: A bot with the basic building blocks needed for any conversation: a welcome message, greeting, and a fallback response when what the user says is not understood by your bot.
+  - **Echo bot**: A simple bot that can echo back a user's message.
+  - **QnA bot**: A bot that demonstrates how to use qnamaker.ai to power a single-turn question and answer experience.
+  - **Simple Conversation bot**: A bot that demonstrates the use of bot memory to have a simple, contextual conversation with the user.
+  - **Bot memory**: A bot that remembers user’s communication preference and later recalls that in a conversation.
+  - **Multi-turn conversation bot**: A bot that helps a user book a table at Contoso Cafe - a fictitious coffee shop, based out of Seattle, WA.
+  - **Context carry over bot**: A bot that helps a user find cafe locations by carrying over context from prior conversations.
+  - **Prompt for user input bot**: A bot that demonstrates different ways to prompt a user for input while interacting with Contoso Cafe - a fictitious coffee shop based out of Seattle, WA.
+  - **Complete Contoso Cafe bot**: A complete bot for Contoso Cafe - a fictitious coffee shop based out of Seattle, WA. This bot can do all tasks that are otherwise covered in the individual samples.
 
 ## Debug
 You can debug the generator using [VS Code](http://code.visualstudio.com/). You need to update the launch.json. Replace any value in [] with your information.  Use [npm link](https://docs.npmjs.com/cli/link) from the root folder to load your local version.

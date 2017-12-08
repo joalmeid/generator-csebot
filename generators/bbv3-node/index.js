@@ -12,6 +12,7 @@ function construct() {
    args.botName(this);
    args.installDep(this);
    //args.dockerPorts(this);
+   args.tfs(this);
 }
 
 function input() {
@@ -22,13 +23,15 @@ function input() {
 
    return this.prompt([
       prompts.botName(this),
-      prompts.installDep(this)
+      prompts.installDep(this),
+      prompts.tfs(this)
       // prompts.dockerPorts(this)
    ]).then(function (a) {
       // Transfer answers to local object for use in the rest of the generator
       this.installDep = util.reconcileValue(a.installDep, cmdLnInput.installDep);
       //this.dockerPorts = util.reconcileValue(a.dockerPorts, cmdLnInput.dockerPorts, ``);
       this.botName = util.reconcileValue(a.botName, cmdLnInput.botName);
+      this.tfs = util.reconcileValue(a.tfs, cmdLnInput.tfs);
    }.bind(this));
 }
 
@@ -43,11 +46,8 @@ function writeFiles() {
    var root = this.botName;
 
    // Root files
-   // this.copy(`${src}/.bowerrc`, `${root}/.bowerrc`);
-   this.copy(`${src}/README.md`, `${root}/README.md`);
+   this.fs.copyTpl(`${src}/README.md`, `${root}/README.md`, tokens);
    this.copy(`${src}/gitignore`, `${root}/.gitignore`);
-   // this.fs.copyTpl(`${src}/bower.json`, `${root}/bower.json`, tokens);
-   // this.fs.copyTpl(`${src}/package.json`, `${root}/package.json`, tokens);
 
    // Bot Web App project
    src = `${this.sourceRoot()}/src`;
@@ -63,22 +63,6 @@ function writeFiles() {
    this.directory(`${src}/dialogs`, `${root}/dialogs`);
    this.directory(`${src}/util`, `${root}/util`);
    this.directory(`${src}/test`, `${root}/test`);
-   
-   // this.copy(`${src}/app.js`, `${root}/app.js`);
-   // this.copy(`${src}/web.config`, `${root}/web.config`);
-   // this.copy(`${src}/Dockerfile`, `${root}/Dockerfile`);
-   // this.copy(`${src}/parameters.xml`, `${root}/parameters.xml`);
-   // this.fs.copyTpl(`${src}/package.json`, `${root}/package.json`, tokens);
-
-   // this.directory(`${src}/public`, `${root}/public`);
-   // this.directory(`${src}/routes`, `${root}/routes`);
-   // this.fs.copyTpl(`${src}/server.js`, `${root}/server.js`, tokens);
-
-   // this.copy(`${src}/views/about.pug`, `${root}/views/about.pug`);
-   // this.copy(`${src}/views/error.pug`, `${root}/views/error.pug`);
-   // this.copy(`${src}/views/index.pug`, `${root}/views/index.pug`);
-   // this.copy(`${src}/views/contact.pug`, `${root}/views/contact.pug`);
-   // this.fs.copyTpl(`${src}/views/layout.pug`, `${root}/views/layout.pug`, tokens);
 
    // ARM Templates
    src = `${this.sourceRoot()}/templates`;
@@ -86,12 +70,6 @@ function writeFiles() {
 
    this.copy(`${src}/botnode.json`, `${root}/botapp.json`);
    this.copy(`${src}/botnode.parameters.json`, `${root}/botapp.parameters.json`);
-
-   // this.copy(`${src}/acilinux_arm.json`, `${root}/acilinux.json`);
-   // this.fs.copyTpl(`${src}/acilinux_arm.parameters.json`, `${root}/acilinux.parameters.json`, tokens);
-
-   // this.copy(`${src}/docker_arm.json`, `${root}/docker.json`);
-   // this.copy(`${src}/docker_arm.parameters.json`, `${root}/docker.parameters.json`);
 }
 
 function install() {
