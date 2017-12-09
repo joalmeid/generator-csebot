@@ -40,6 +40,9 @@ coverage/
 *.VisualState.xml
 TestResult.xml
 
+# dotenv-extended
+.env
+
 # Build Results of an ATL Project
 [Dd]ebugPS/
 [Rr]eleasePS/
