@@ -109,7 +109,7 @@
                   "displayName": "WebAppConnectionStrings"
                },
                "properties": {
-                  "StorageConnectionString": {
+                  "STATE_STORAGE_CONNECTION_STRING": {
                      "value": "[concat('DefaultEndpointsProtocol=https;AccountName=', toLower(parameters('webSiteName')), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', toLower(parameters('webSiteName'))), '2015-05-01-preview').key1)]",
                      "type": "Custom"
                   }

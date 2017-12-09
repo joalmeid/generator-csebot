@@ -5,8 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "test": "istanbul cover --report cobertura --report lcov node_modules/mocha/bin/_mocha -- -R mocha-junit-reporter"
-  },
+    "test": "istanbul cover --report cobertura --report lcov node_modules/mocha/bin/_mocha -- -R mocha-junit-reporter",
+    "build": "tsc -p ."
+   },
   "dependencies": {
     "applicationinsights": "^0.19.0",
     "botbuilder": "^3.9.1",
