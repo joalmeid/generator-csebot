@@ -6,7 +6,8 @@ telemetryModule.Initialize();
 
 function create(connector) {
 
-   var azureTableClient = new botAzure.AzureTableClient('storage', process.env.STATE_STORAGE_CONNECTION_STRING);
+   var azureTableClient = new botAzure.AzureTableClient('storage', process.env.CUSTOMCONNSTR_STATE_STORAGE_CONNECTION_STRING);
+
    var tableStorage = new botAzure.AzureBotStorage({ gzipData: false }, azureTableClient);
 
     var bot = new builder.UniversalBot(connector).set('storage', tableStorage);;

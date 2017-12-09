@@ -9,7 +9,7 @@ telemetryModule.Initialize();
 
 export function create(connector : builder.IConnector): builder.UniversalBot {
 
-    const azureTableClient = new botAzure.AzureTableClient(botConsts.tableName, process.env.STATE_STORAGE_CONNECTION_STRING);
+    const azureTableClient = new botAzure.AzureTableClient(botConsts.tableName, process.env.CUSTOMCONNSTR_STATE_STORAGE_CONNECTION_STRING);
     const tableStorage = new botAzure.AzureBotStorage({ gzipData: false }, azureTableClient);
 
     // Disbale storage state for test execution (ConsoleConnector)
