@@ -22,7 +22,7 @@ function testBot(bot, messages, done) {
 
   if (messages.length && messages[0].out) {
     step = 2;
-    connector.processMessage(messages[0].out)
+    connector.processMessage(messages[0].out);
   }
 
   function checkInMessage(message, check, assert, callback) {

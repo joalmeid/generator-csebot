@@ -10,7 +10,7 @@ function create(connector) {
 
    var tableStorage = new botAzure.AzureBotStorage({ gzipData: false }, azureTableClient);
 
-    var bot = new builder.UniversalBot(connector).set('storage', tableStorage);;
+    var bot = new builder.UniversalBot(connector).set('storage', tableStorage);
 
     bot.dialog('/', require('./dialogs/root'));
     //location.create(bot);
@@ -29,7 +29,7 @@ function create(connector) {
     return bot;
 }
 
-module.exports = { create }
+module.exports = { create };
 
 
 

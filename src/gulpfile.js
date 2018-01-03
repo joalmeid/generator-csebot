@@ -13,7 +13,11 @@ gulp.task('test', function () {
 
 gulp.task('lint',['test'], function () {
    return gulp
-      .src('{generators,test}/**/*.js')
+      .src([
+         '!**/node_modules/**', 
+         '!**/packages/**', 
+         '{generators,test}/**/*.js'
+      ])
       .pipe(jshint())
       .pipe(jshint.reporter('default'));
 })

@@ -21,11 +21,11 @@ module.exports = {
         };
 
         if (properties) {
-            for (property in properties) {
+            for (var property in properties) {
                 data[property] = properties[property];
             }
         }
 
         return data;
     }
-}
+};

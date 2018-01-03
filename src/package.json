@@ -1,6 +1,6 @@
 {
    "name": "generator-csebot",
-   "version": "0.1.0",
+   "version": "0.1.2",
    "description": "Generates a bot (Microsoft Bot Framework) with CI/CD in Team Services",
    "main": "./generators/app/index.js",
    "scripts": {
@@ -45,6 +45,7 @@
       "async": "^2.5.0",
       "node-env-file": "^0.1.8",
       "request": "^2.81.0",
+      "user": "0.0.0",
       "uuid": "^3.1.0",
       "yeoman-generator": "^0.24.1",
       "yosay": "^2.0.1"
