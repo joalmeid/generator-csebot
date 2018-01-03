@@ -1,6 +1,6 @@
 {
    "name": "generator-csebot",
-   "version": "0.2.4",
+   "version": "0.2.5",
    "description": "Generates a bot (Microsoft Bot Framework) with CI/CD in Team Services",
    "main": "./generators/app/index.js",
    "scripts": {
