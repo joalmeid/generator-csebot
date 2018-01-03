@@ -1,12 +1,14 @@
 {
    "name": "generator-csebot",
-   "version": "0.1.4",
+   "version": "0.2.3",
    "description": "Generates a bot (Microsoft Bot Framework) with CI/CD in Team Services",
    "main": "./generators/app/index.js",
    "scripts": {
       "test": "istanbul cover --report cobertura --report lcov node_modules/mocha/bin/_mocha -- -R xunit-file unit/test",
       "unittest": "istanbul cover --report cobertura --report lcov node_modules/mocha/bin/_mocha -- -R xunit-file unit/test",
-      "inttest": "istanbul cover --report cobertura --report lcov node_modules/mocha/bin/_mocha -- -R xunit-file integration/test"
+      "inttest": "istanbul cover --report cobertura --report lcov node_modules/mocha/bin/_mocha -- -R xunit-file integration/test",
+      "version": "",
+      "postversion": "git push && git push --tags"
    },
    "files": [
       "generators/app",
