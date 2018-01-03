@@ -1,5 +1,5 @@
 # generator-csebot
-[TODO](http://github.com/joalmeid/generator-csebot)
+[![Build Status](https://joalmeid.visualstudio.com/_apis/public/build/definitions/8b82ddcf-c765-463a-8325-394badc0294a/65/badge)](https://joalmeid.visualstudio.com/generator-csebot/_build)
 
 This project is Yeoman Generator with CI/CD for [Microsoft Bot Framework](http://botframework.com) a.k.a BotBuilder.
 It started with a fork from [DarqueWarrior/generator-team](https://github.com/DarqueWarrior/generator-team) where [Donovan Brown](https://twitter.com/DonovanBrown) created a great yeoman generator for several languages and DevOps targeting different platforms.
