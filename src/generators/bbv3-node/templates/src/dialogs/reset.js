@@ -1,10 +1,9 @@
-var telemetryModule = require('../util/telemetry-module.js');
+const instrumentation = require('../util/instrumentation');
 
 module.exports = 
      function (session) {
 
-        var telemetry = telemetryModule.createTelemetry(session);
-        telemetryModule.getClient().trackEvent('Reset', telemetry);
+        instrumentation.logger.getInstance().trackCustomEvent("Reset on current dialog", { }, session);
 
         // reset data
         session.conversationData = {}; 

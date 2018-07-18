@@ -1,5 +1,5 @@
 // This loads the environment variables from the .env file
-var myConfig = require('dotenv-extended').load();
+var botConfig = require('dotenv-extended').load();
 var builder = require('botbuilder');
 var common = require('./common');
 var testBot = require('../bot');
@@ -11,7 +11,7 @@ describe('Bot Tests', () => {
     it('greeting', function (done) {
         var connector = new builder.ConsoleConnector();
 
-        var bot = testBot.create(connector);
+        var bot = testBot.create(connector, botConfig);
         common.testBot(bot, greetingMessages, done);
     });
 });

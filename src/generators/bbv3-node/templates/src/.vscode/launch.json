@@ -7,8 +7,9 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
-            "program": "${file}"
+            "name": "Launch Bot",
+            "cwd": "${workspaceFolder}/src",
+            "program": "${workspaceFolder}/src/app.js"
         },
         {
             "name": "Run Mocha Tests",
