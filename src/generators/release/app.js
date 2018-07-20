@@ -143,12 +143,8 @@ function getRelease(args, callback) {
                } else {
                   release = `vsts_bot_release.json`;
                }
-            } else {
-               release = `tfs_2018_release.json`;
-            }
-         } else {
-            release = `tfs_release.json`;
-         }
+            } 
+         } 
 
          callback(e, release);
       });

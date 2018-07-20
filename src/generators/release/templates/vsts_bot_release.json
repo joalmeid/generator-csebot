@@ -1,426 +1,704 @@
 {
-   "name": "{{ReleaseDefName}}",
-   "variables": {
-      "system.debug": {
-         "value": "false"
-      }
-   },
-   "environments": [{
-         "name": "Dev",
-         "rank": 1,
-         "variables": {
-            "ResourceGroupName": {
-               "value": "{{WebAppName}}Dev"
-            },
-            "webSiteName": {
-               "value": "{{WebAppName}}Dev{{uuid}}"
-            },
-            "botMSAppID": {
-               "value": "xxDEVxx"
-            },
-            "botMSAppPasswd": {
-               "value": "xxDEVxx"
-            }
-         },
-         "preDeployApprovals": {
-            "approvals": [{
-               "rank": 1,
-               "isAutomated": true,
-               "isNotificationOn": false
-            }]
-         },
-         "deployStep": {},
-         "postDeployApprovals": {
-            "approvals": [{
-               "rank": 1,
-               "isAutomated": true,
-               "isNotificationOn": false
-            }]
-         },
-         "deployPhases": [{
-            "deploymentInput": {
-               "skipArtifactsDownload": false,
-               "timeoutInMinutes": 0,
-               "queueId": "{{QueueId}}",
-               "demands": [],
-               "enableAccessToken": false
-            },
+  "name": "{{ReleaseDefName}}",
+  "variables": {
+    "system.debug": {
+      "value": "false"
+    }
+  },
+  "environments": [
+    {
+      "name": "Dev",
+      "rank": 1,
+      "variables": {
+        "ResourceGroupName": { "value": "{{WebAppName}}Dev"},
+        "webSiteName": { "value": "{{WebAppName}}Dev{{uuid}}" },
+        "botMSAppID": { "value": "xxDEVxx" },
+        "botMSAppPasswd": { "value": "xxDEVxx" }
+      },
+      "preDeployApprovals": {
+        "approvals": [
+          {
             "rank": 1,
-            "phaseType": 1,
-            "name": "Run on agent",
-            "workflowTasks": [{
-                  "taskId": "94a74903-f93f-4075-884f-dc11f34058b4",
-                  "version": "2.*",
-                  "name": "Azure Deployment:Create Or Update Resource Group action on {{WebAppName}}",
-                  "enabled": true,
-                  "alwaysRun": false,
-                  "continueOnError": false,
-                  "timeoutInMinutes": 0,
-                  "definitionType": "task",
-                  "inputs": {
-                     "ConnectedServiceNameSelector": "ConnectedServiceName",
-                     "ConnectedServiceName": "{{ConnectedServiceID}}",
-                     "ConnectedServiceNameClassic": "",
-                     "action": "Create Or Update Resource Group",
-                     "actionClassic": "Select Resource Group",
-                     "resourceGroupName": "$(ResourceGroupName)",
-                     "cloudService": "",
-                     "location": "{{azLocation}}",
-                     "csmFile": "**/botapp.json",
-                     "csmParametersFile": "**/botapp.parameters.json",
-                     "overrideParameters": "-webSiteName $(webSiteName) -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\"",
-                     "enableDeploymentPrerequisitesForCreate": "false",
-                     "enableDeploymentPrerequisitesForSelect": "false",
-                     "outputVariable": ""
-                  }
-               },
-               {
-                  "taskId": "497d490f-eea7-4f2b-ab94-48d9c1acdcb1",
-                  "version": "2.*",
-                  "name": "Deploy AzureRM Web App: {{WebAppName}}Dev",
-                  "enabled": true,
-                  "alwaysRun": false,
-                  "continueOnError": false,
-                  "timeoutInMinutes": 0,
-                  "definitionType": "task",
-                  "inputs": {
-                     "ConnectedServiceName": "{{ConnectedServiceID}}",
-                     "WebAppName": "$(webSiteName)",
-                     "DeployToSlotFlag": "false",
-                     "ResourceGroupName": "",
-                     "SlotName": "",
-                     "Package": "**/{{ProjectName}}*.zip",
-                     "UseWebDeploy": "true",
-                     "SetParametersFile": "",
-                     "RemoveAdditionalFilesFlag": "true",
-                     "ExcludeFilesFromAppDataFlag": "false",
-                     "TakeAppOfflineFlag": "false",
-                     "VirtualApplication": "",
-                     "AdditionalArguments": "",
-                     "WebAppUri": ""
-                  }
-               }
-            ]
-         }],
-         "environmentOptions": {
-            "emailNotificationType": "OnlyOnFailure",
-            "emailRecipients": "release.environment.owner;release.creator",
+            "isAutomated": true,
+            "isNotificationOn": false
+          }
+        ]
+      },
+      "deployStep": {},
+      "postDeployApprovals": {
+        "approvals": [
+          {
+            "rank": 1,
+            "isAutomated": true,
+            "isNotificationOn": false
+          }
+        ]
+      },
+      "deployPhases": [
+        {
+          "deploymentInput": {
             "skipArtifactsDownload": false,
             "timeoutInMinutes": 0,
+            "queueId": "{{QueueId}}",
+            "demands": [],
             "enableAccessToken": false
-         },
-         "demands": [],
-         "conditions": [{
-            "name": "ReleaseStarted",
-            "conditionType": 1,
-            "value": ""
-         }],
-         "executionPolicy": {
-            "concurrencyCount": 0,
-            "queueDepthCount": 0
-         },
-         "schedules": [],
-         "retentionPolicy": {
-            "daysToKeep": 30,
-            "releasesToKeep": 3,
-            "retainBuild": true
-         }
+          },
+          "rank": 1,
+          "phaseType": 1,
+          "name": "Run on agent",
+          "workflowTasks": [
+            {
+              "taskId": "94a74903-f93f-4075-884f-dc11f34058b4",
+              "version": "2.*",
+              "name": "Azure Deployment:Create Or Update Resource Group action on {{WebAppName}}",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "ConnectedServiceNameSelector": "ConnectedServiceName",
+                "ConnectedServiceName": "{{ConnectedServiceID}}",
+                "ConnectedServiceNameClassic": "",
+                "action": "Create Or Update Resource Group",
+                "actionClassic": "Select Resource Group",
+                "resourceGroupName": "$(ResourceGroupName)",
+                "cloudService": "",
+                "location": "{{azLocation}}",
+                "templateLocation": "Linked artifact",
+                "csmFileLink": "",
+                "csmParametersFileLink": "",
+                "csmFile": "**/botapp.json",
+                "csmParametersFile": "**/botapp.parameters.json",
+                "overrideParameters": "-webSiteName $(webSiteName) -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\"",
+                "deploymentMode": "Incremental",
+                "enableDeploymentPrerequisites": "None",
+                "deploymentGroupEndpoint": "",
+                "project": "",
+                "deploymentGroupName": "",
+                "copyAzureVMTags": "true",
+                "runAgentServiceAsUser": "false",
+                "userName": "",
+                "password": "",
+                "outputVariable": "",
+                "deploymentOutputs": "armDeploymentOutputs"
+              }
+            },
+            {
+              "taskId": "72a1931b-effb-4d2e-8fd8-f8472a07cb62",
+              "version": "2.*",
+              "name": "Create AppInsights API Access Key",
+              "refName": "appInsightskey",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "ConnectedServiceNameSelector": "ConnectedServiceNameARM",
+                "ConnectedServiceName": "",
+                "ConnectedServiceNameARM": "{{ConnectedServiceID}}",
+                "ScriptType": "FilePath",
+                "ScriptPath": "$(System.DefaultWorkingDirectory)/botregjda-CI/drop/templates/appInsigthsApiAccess.ps1",
+                "Inline": "# You can write your azure powershell scripts inline here. \n# You can also pass predefined and custom variables to this script using arguments",
+                "ScriptArguments": "-ResourceGroup '$(ResourceGroupName)' -ApplicationInsightsName '$(webSiteName)-insights' -ApplicationInsightsApiKeyName '$(webSiteName)-telemetry'",
+                "TargetAzurePs": "LatestVersion"
+              }
+            },
+            {
+              "taskId": "94a74903-f93f-4075-884f-dc11f34058b4",
+              "version": "2.*",
+              "name": "Azure Deployment: Bot Registration",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": true,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "ConnectedServiceNameSelector": "ConnectedServiceName",
+                "ConnectedServiceName": "{{ConnectedServiceID}}",
+                "action": "Create Or Update Resource Group",
+                "resourceGroupName": "$(ResourceGroupName)",
+                "location": "{{azLocation}}",
+                "templateLocation": "Linked artifact",
+                "csmFileLink": "",
+                "csmParametersFileLink": "",
+                "csmFile": "**/bot-registration.json",
+                "csmParametersFile": "**/bot-registration.parameters.json",
+                "overrideParameters": "-webSiteName $(webSiteName) -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\" -appInsightsAPIKey $(appInsightskey)",
+                "deploymentMode": "Incremental",
+                "enableDeploymentPrerequisitesForCreate": "false",
+                "enableDeploymentPrerequisitesForSelect": "false",
+                "deploymentGroupEndpoint": "",
+                "project": "",
+                "deploymentGroupName": "",
+                "copyAzureVMTags": "true",
+                "runAgentServiceAsUser": "false",
+                "userName": "",
+                "password": "",
+                "outputVariable": "",
+                "deploymentOutputs": ""
+              }
+            },
+            {
+              "taskId": "497d490f-eea7-4f2b-ab94-48d9c1acdcb1",
+              "version": "3.*",
+              "name": "Deploy AzureRM Web App: {{WebAppName}}Dev",
+              "enabled": true,
+              "alwaysRun": false,
+              "continueOnError": false,
+              "timeoutInMinutes": 0,
+              "definitionType": "task",
+              "overrideInputs": {},
+              "condition": "succeeded()",
+              "inputs": {
+                "ConnectedServiceName": "{{ConnectedServiceID}}",
+                "WebAppKind": "app",
+                "WebAppName": "$(webSiteName)",
+                "DeployToSlotFlag": "false",
+                "ResourceGroupName": "",
+                "SlotName": "",
+                "VirtualApplication": "",
+                "Package": "**/{{ProjectName}}*.zip",
+                "BuiltinLinuxPackage": "$(System.DefaultWorkingDirectory)/**/*.zip",
+                "RuntimeStack": "",
+                "StartupCommand": "",
+                "WebAppUri": "",
+                "ScriptType": "",
+                "InlineScript": ":: You can provide your deployment commands here. One command per line.",
+                "ScriptPath": "",
+                "GenerateWebConfig": "true",
+                "WebConfigParameters": "-Handler iisnode -NodeStartFile app.js -appType node",
+                "AppSettings": "",
+                "ConfigurationSettings": "",
+                "TakeAppOfflineFlag": "false",
+                "UseWebDeploy": "true",
+                "SetParametersFile": "",
+                "RemoveAdditionalFilesFlag": "true",
+                "ExcludeFilesFromAppDataFlag": "false",
+                "AdditionalArguments": "",
+                "RenameFilesFlag": "false",
+                "XmlTransformation": "false",
+                "XmlVariableSubstitution": "false",
+                "JSONFiles": ""
+              }
+            }
+          ]
+        }
+      ],
+      "environmentOptions": {
+        "emailNotificationType": "OnlyOnFailure",
+        "emailRecipients": "release.environment.owner;release.creator",
+        "skipArtifactsDownload": false,
+        "timeoutInMinutes": 0,
+        "enableAccessToken": false
       },
-      {
-         "name": "QA",
-         "rank": 2,
-         "variables": {
-            "ResourceGroupName": {
-               "value": "{{WebAppName}}QA"
-            },
-            "webSiteName": {
-               "value": "{{WebAppName}}QA{{uuid}}"
-            },
-            "botMSAppID": {
-               "value": "xxQAxx"
-            },
-            "botMSAppPasswd": {
-               "value": "xxQAxx"
-            }
-         },
-         "preDeployApprovals": {
-            "approvals": [{
-               "rank": 1,
-               "isAutomated": false,
-               "isNotificationOn": false,
-               "approver": {
-                  "id": "{{ApproverId}}",
-                  "displayName": "{{ApproverDisplayName}}",
-                  "uniqueName": "{{ApproverUniqueName}}"
-               }
-            }],
-            "approvalOptions": {
-               "requiredApproverCount": 0,
-               "releaseCreatorCanBeApprover": true
-            }
-         },
-         "deployStep": {},
-         "postDeployApprovals": {
-            "approvals": [{
-               "rank": 1,
-               "isAutomated": true,
-               "isNotificationOn": false
-            }]
-         },
-         "deployPhases": [{
-            "deploymentInput": {
-               "skipArtifactsDownload": false,
-               "timeoutInMinutes": 0,
-               "queueId": "{{QueueId}}",
-               "demands": [],
-               "enableAccessToken": false
-            },
+      "demands": [],
+      "conditions": [
+        {
+          "name": "ReleaseStarted",
+          "conditionType": 1,
+          "value": ""
+        }
+      ],
+      "executionPolicy": {
+        "concurrencyCount": 0,
+        "queueDepthCount": 0
+      },
+      "schedules": [],
+      "retentionPolicy": {
+        "daysToKeep": 30,
+        "releasesToKeep": 3,
+        "retainBuild": true
+      }
+    },
+    {
+      "name": "QA",
+      "rank": 2,
+      "variables": {
+            "ResourceGroupName": { "value": "{{WebAppName}}QA"},
+            "webSiteName": { "value": "{{WebAppName}}QA{{uuid}}" },
+            "botMSAppID": { "value": "xxQAxx" },
+            "botMSAppPasswd": { "value": "xxQAxx" }
+      },
+      "preDeployApprovals": {
+        "approvals": [
+          {
             "rank": 1,
-            "phaseType": 1,
-            "name": "Run on agent",
-            "workflowTasks": [{
+            "isAutomated": false,
+            "isNotificationOn": false,
+            "approver": {
+              "id": "{{ApproverId}}",
+              "displayName": "{{ApproverDisplayName}}",
+              "uniqueName": "{{ApproverUniqueName}}"
+            }
+          }
+        ],
+        "approvalOptions": {
+          "requiredApproverCount": 0,
+          "releaseCreatorCanBeApprover": true
+        }
+      },
+      "deployStep": {},
+      "postDeployApprovals": {
+        "approvals": [
+          {
+            "rank": 1,
+            "isAutomated": true,
+            "isNotificationOn": false
+          }
+        ]
+      },
+      "deployPhases": [
+        {
+          "deploymentInput": {
+            "skipArtifactsDownload": false,
+            "timeoutInMinutes": 0,
+            "queueId": "{{QueueId}}",
+            "demands": [],
+            "enableAccessToken": false
+          },
+          "rank": 1,
+          "phaseType": 1,
+          "name": "Run on agent",
+          "workflowTasks": [
+            {
                   "taskId": "94a74903-f93f-4075-884f-dc11f34058b4",
                   "version": "2.*",
-                  "name": "Azure Deployment:Create Or Update Resource Group action on {{WebAppName}}",
+                  "name": "Azure Deployment:Create Or Update Resource Group action on {{WebAppName}}QA",
                   "enabled": true,
                   "alwaysRun": false,
                   "continueOnError": false,
                   "timeoutInMinutes": 0,
                   "definitionType": "task",
+                  "overrideInputs": {},
+                  "condition": "succeeded()",
                   "inputs": {
-                     "ConnectedServiceNameSelector": "ConnectedServiceName",
-                     "ConnectedServiceName": "{{ConnectedServiceID}}",
-                     "ConnectedServiceNameClassic": "",
-                     "action": "Create Or Update Resource Group",
-                     "actionClassic": "Select Resource Group",
-                     "resourceGroupName": "$(ResourceGroupName)",
-                     "cloudService": "",
-                     "location": "{{azLocation}}",
-                     "csmFile": "**/botapp.json",
-                     "csmParametersFile": "**/botapp.parameters.json",
-                     "overrideParameters": "-webSiteName $(webSiteName) -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\"",
-                     "enableDeploymentPrerequisitesForCreate": "false",
-                     "enableDeploymentPrerequisitesForSelect": "false",
-                     "outputVariable": ""
+                    "ConnectedServiceNameSelector": "ConnectedServiceName",
+                    "ConnectedServiceName": "{{ConnectedServiceID}}",
+                    "ConnectedServiceNameClassic": "",
+                    "action": "Create Or Update Resource Group",
+                    "actionClassic": "Select Resource Group",
+                    "resourceGroupName": "$(ResourceGroupName)",
+                    "cloudService": "",
+                    "location": "{{azLocation}}",
+                    "templateLocation": "Linked artifact",
+                    "csmFileLink": "",
+                    "csmParametersFileLink": "",
+                    "csmFile": "**/botapp.json",
+                    "csmParametersFile": "**/botapp.parameters.json",
+                    "overrideParameters": "-webSiteName $(webSiteName) -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\"",
+                    "deploymentMode": "Incremental",
+                    "enableDeploymentPrerequisites": "None",
+                    "deploymentGroupEndpoint": "",
+                    "project": "",
+                    "deploymentGroupName": "",
+                    "copyAzureVMTags": "true",
+                    "runAgentServiceAsUser": "false",
+                    "userName": "",
+                    "password": "",
+                    "outputVariable": "",
+                    "deploymentOutputs": "armDeploymentOutputs"
                   }
-               },
-               {
-                  "taskId": "497d490f-eea7-4f2b-ab94-48d9c1acdcb1",
+                },
+                {
+                  "taskId": "72a1931b-effb-4d2e-8fd8-f8472a07cb62",
                   "version": "2.*",
+                  "name": "Create AppInsights API Access Key",
+                  "refName": "appInsightskey",
+                  "enabled": true,
+                  "alwaysRun": false,
+                  "continueOnError": false,
+                  "timeoutInMinutes": 0,
+                  "definitionType": "task",
+                  "overrideInputs": {},
+                  "condition": "succeeded()",
+                  "inputs": {
+                    "ConnectedServiceNameSelector": "ConnectedServiceNameARM",
+                    "ConnectedServiceName": "",
+                    "ConnectedServiceNameARM": "{{ConnectedServiceID}}",
+                    "ScriptType": "FilePath",
+                    "ScriptPath": "$(System.DefaultWorkingDirectory)/botregjda-CI/drop/templates/appInsigthsApiAccess.ps1",
+                    "Inline": "# You can write your azure powershell scripts inline here. \n# You can also pass predefined and custom variables to this script using arguments",
+                    "ScriptArguments": "-ResourceGroup '$(ResourceGroupName)' -ApplicationInsightsName '$(webSiteName)-insights' -ApplicationInsightsApiKeyName '$(webSiteName)-telemetry'",
+                    "TargetAzurePs": "LatestVersion"
+                  }
+                },
+                {
+                  "taskId": "94a74903-f93f-4075-884f-dc11f34058b4",
+                  "version": "2.*",
+                  "name": "Azure Deployment: Bot Registration {{WebAppName}}QA",
+                  "enabled": true,
+                  "alwaysRun": false,
+                  "continueOnError": true,
+                  "timeoutInMinutes": 0,
+                  "definitionType": "task",
+                  "overrideInputs": {},
+                  "condition": "succeeded()",
+                  "inputs": {
+                    "ConnectedServiceNameSelector": "ConnectedServiceName",
+                    "ConnectedServiceName": "{{ConnectedServiceID}}",
+                    "action": "Create Or Update Resource Group",
+                    "resourceGroupName": "$(ResourceGroupName)",
+                    "location": "{{azLocation}}",
+                    "templateLocation": "Linked artifact",
+                    "csmFileLink": "",
+                    "csmParametersFileLink": "",
+                    "csmFile": "**/bot-registration.json",
+                    "csmParametersFile": "**/bot-registration.parameters.json",
+                    "overrideParameters": "-webSiteName $(webSiteName) -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\" -appInsightsAPIKey $(appInsightskey)",
+                    "deploymentMode": "Incremental",
+                    "enableDeploymentPrerequisitesForCreate": "false",
+                    "enableDeploymentPrerequisitesForSelect": "false",
+                    "deploymentGroupEndpoint": "",
+                    "project": "",
+                    "deploymentGroupName": "",
+                    "copyAzureVMTags": "true",
+                    "runAgentServiceAsUser": "false",
+                    "userName": "",
+                    "password": "",
+                    "outputVariable": "",
+                    "deploymentOutputs": ""
+                  }
+                },
+                {
+                  "taskId": "497d490f-eea7-4f2b-ab94-48d9c1acdcb1",
+                  "version": "3.*",
                   "name": "Deploy AzureRM Web App: {{WebAppName}}QA",
                   "enabled": true,
                   "alwaysRun": false,
                   "continueOnError": false,
                   "timeoutInMinutes": 0,
                   "definitionType": "task",
+                  "overrideInputs": {},
+                  "condition": "succeeded()",
                   "inputs": {
-                     "ConnectedServiceName": "{{ConnectedServiceID}}",
-                     "WebAppName": "$(webSiteName)",
-                     "DeployToSlotFlag": "false",
-                     "ResourceGroupName": "",
-                     "SlotName": "",
-                     "Package": "**/{{ProjectName}}*.zip",
-                     "UseWebDeploy": "true",
-                     "SetParametersFile": "",
-                     "RemoveAdditionalFilesFlag": "true",
-                     "ExcludeFilesFromAppDataFlag": "false",
-                     "TakeAppOfflineFlag": "false",
-                     "VirtualApplication": "",
-                     "AdditionalArguments": "",
-                     "WebAppUri": "webSiteURL"
+                    "ConnectedServiceName": "{{ConnectedServiceID}}",
+                    "WebAppKind": "app",
+                    "WebAppName": "$(webSiteName)",
+                    "DeployToSlotFlag": "false",
+                    "ResourceGroupName": "",
+                    "SlotName": "",
+                    "VirtualApplication": "",
+                    "Package": "**/{{ProjectName}}*.zip",
+                    "BuiltinLinuxPackage": "$(System.DefaultWorkingDirectory)/**/*.zip",
+                    "RuntimeStack": "",
+                    "StartupCommand": "",
+                    "WebAppUri": "",
+                    "ScriptType": "",
+                    "InlineScript": ":: You can provide your deployment commands here. One command per line.",
+                    "ScriptPath": "",
+                    "GenerateWebConfig": "true",
+                    "WebConfigParameters": "-Handler iisnode -NodeStartFile app.js -appType node",
+                    "AppSettings": "",
+                    "ConfigurationSettings": "",
+                    "TakeAppOfflineFlag": "false",
+                    "UseWebDeploy": "true",
+                    "SetParametersFile": "",
+                    "RemoveAdditionalFilesFlag": "true",
+                    "ExcludeFilesFromAppDataFlag": "false",
+                    "AdditionalArguments": "",
+                    "RenameFilesFlag": "false",
+                    "XmlTransformation": "false",
+                    "XmlVariableSubstitution": "false",
+                    "JSONFiles": ""
                   }
-               }
-            ]
-         }],
-         "environmentOptions": {
-            "emailNotificationType": "OnlyOnFailure",
-            "emailRecipients": "release.environment.owner;release.creator",
+                }
+          ]
+        }
+      ],
+      "environmentOptions": {
+        "emailNotificationType": "OnlyOnFailure",
+        "emailRecipients": "release.environment.owner;release.creator",
+        "skipArtifactsDownload": false,
+        "timeoutInMinutes": 0,
+        "enableAccessToken": false
+      },
+      "demands": [],
+      "conditions": [
+        {
+          "name": "Dev",
+          "conditionType": 2,
+          "value": "4"
+        }
+      ],
+      "executionPolicy": {
+        "concurrencyCount": 0,
+        "queueDepthCount": 0
+      },
+      "schedules": [],
+      "retentionPolicy": {
+        "daysToKeep": 30,
+        "releasesToKeep": 3,
+        "retainBuild": true
+      }
+    },
+    {
+      "name": "Prod",
+      "rank": 3,
+      "variables": {
+        "ResourceGroupName": { "value": "{{WebAppName}}Prod"},
+        "webSiteName": { "value": "{{WebAppName}}Prod{{uuid}}" },
+        "botMSAppID": { "value": "xxProdxx" },
+        "botMSAppPasswd": { "value": "xxProdxx" }
+      },
+      "preDeployApprovals": {
+        "approvals": [
+          {
+            "rank": 1,
+            "isAutomated": false,
+            "isNotificationOn": false,
+            "approver": {
+              "id": "{{ApproverId}}",
+              "displayName": "{{ApproverDisplayName}}",
+              "uniqueName": "{{ApproverUniqueName}}"
+            }
+          }
+        ],
+        "approvalOptions": {
+          "requiredApproverCount": 0,
+          "releaseCreatorCanBeApprover": true
+        }
+      },
+      "deployStep": {},
+      "postDeployApprovals": {
+        "approvals": [
+          {
+            "rank": 1,
+            "isAutomated": true,
+            "isNotificationOn": false
+          }
+        ]
+      },
+      "deployPhases": [
+        {
+          "deploymentInput": {
             "skipArtifactsDownload": false,
             "timeoutInMinutes": 0,
+            "queueId": "{{QueueId}}",
+            "demands": [],
             "enableAccessToken": false
-         },
-         "demands": [],
-         "conditions": [{
-            "name": "Dev",
-            "conditionType": 2,
-            "value": "4"
-         }],
-         "executionPolicy": {
-            "concurrencyCount": 0,
-            "queueDepthCount": 0
-         },
-         "schedules": [],
-         "retentionPolicy": {
-            "daysToKeep": 30,
-            "releasesToKeep": 3,
-            "retainBuild": true
-         }
-      },
-      {
-         "name": "Prod",
-         "rank": 3,
-         "variables": {
-            "ResourceGroupName": {
-               "value": "{{WebAppName}}Prod"
-            },
-            "webSiteName": {
-               "value": "{{WebAppName}}Prod{{uuid}}"
-            },
-            "botMSAppID": {
-               "value": "xxPRODxx"
-            },
-            "botMSAppPasswd": {
-               "value": "xxPRODxx"
-            }
-         },
-         "preDeployApprovals": {
-            "approvals": [{
-               "rank": 1,
-               "isAutomated": false,
-               "isNotificationOn": false,
-               "approver": {
-                  "id": "{{ApproverId}}",
-                  "displayName": "{{ApproverDisplayName}}",
-                  "uniqueName": "{{ApproverUniqueName}}"
-               }
-            }],
-            "approvalOptions": {
-               "requiredApproverCount": 0,
-               "releaseCreatorCanBeApprover": true
-            }
-         },
-         "deployStep": {},
-         "postDeployApprovals": {
-            "approvals": [{
-               "rank": 1,
-               "isAutomated": true,
-               "isNotificationOn": false
-            }]
-         },
-         "deployPhases": [{
-            "deploymentInput": {
-               "skipArtifactsDownload": false,
-               "timeoutInMinutes": 0,
-               "queueId": "{{QueueId}}",
-               "demands": [],
-               "enableAccessToken": false
-            },
-            "rank": 1,
-            "phaseType": 1,
-            "name": "Run on agent",
-            "workflowTasks": [{
+          },
+          "rank": 1,
+          "phaseType": 1,
+          "name": "Run on agent",
+          "workflowTasks": [
+            {
                   "taskId": "94a74903-f93f-4075-884f-dc11f34058b4",
                   "version": "2.*",
-                  "name": "Azure Deployment:Create Or Update Resource Group action on {{WebAppName}}",
+                  "name": "Azure Deployment:Create Or Update Resource Group action on {{WebAppName}}Prod",
                   "enabled": true,
                   "alwaysRun": false,
                   "continueOnError": false,
                   "timeoutInMinutes": 0,
                   "definitionType": "task",
+                  "overrideInputs": {},
+                  "condition": "succeeded()",
                   "inputs": {
-                     "ConnectedServiceNameSelector": "ConnectedServiceName",
-                     "ConnectedServiceName": "{{ConnectedServiceID}}",
-                     "ConnectedServiceNameClassic": "",
-                     "action": "Create Or Update Resource Group",
-                     "actionClassic": "Select Resource Group",
-                     "resourceGroupName": "$(ResourceGroupName)",
-                     "cloudService": "",
-                     "location": "{{azLocation}}",
-                     "csmFile": "**/botapp.json",
-                     "csmParametersFile": "**/botapp.parameters.json",
-                     "overrideParameters": "-webSiteName $(webSiteName) -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\"",
-                     "enableDeploymentPrerequisitesForCreate": "false",
-                     "enableDeploymentPrerequisitesForSelect": "false",
-                     "outputVariable": ""
+                    "ConnectedServiceNameSelector": "ConnectedServiceName",
+                    "ConnectedServiceName": "{{ConnectedServiceID}}",
+                    "ConnectedServiceNameClassic": "",
+                    "action": "Create Or Update Resource Group",
+                    "actionClassic": "Select Resource Group",
+                    "resourceGroupName": "$(ResourceGroupName)",
+                    "cloudService": "",
+                    "location": "{{azLocation}}",
+                    "templateLocation": "Linked artifact",
+                    "csmFileLink": "",
+                    "csmParametersFileLink": "",
+                    "csmFile": "**/botapp.json",
+                    "csmParametersFile": "**/botapp.parameters.json",
+                    "overrideParameters": "-webSiteName $(webSiteName) -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\"",
+                    "deploymentMode": "Incremental",
+                    "enableDeploymentPrerequisites": "None",
+                    "deploymentGroupEndpoint": "",
+                    "project": "",
+                    "deploymentGroupName": "",
+                    "copyAzureVMTags": "true",
+                    "runAgentServiceAsUser": "false",
+                    "userName": "",
+                    "password": "",
+                    "outputVariable": "",
+                    "deploymentOutputs": "armDeploymentOutputs"
                   }
-               },
-               {
-                  "taskId": "497d490f-eea7-4f2b-ab94-48d9c1acdcb1",
+                },
+                {
+                  "taskId": "72a1931b-effb-4d2e-8fd8-f8472a07cb62",
                   "version": "2.*",
+                  "name": "Create AppInsights API Access Key",
+                  "refName": "appInsightskey",
+                  "enabled": true,
+                  "alwaysRun": false,
+                  "continueOnError": false,
+                  "timeoutInMinutes": 0,
+                  "definitionType": "task",
+                  "overrideInputs": {},
+                  "condition": "succeeded()",
+                  "inputs": {
+                    "ConnectedServiceNameSelector": "ConnectedServiceNameARM",
+                    "ConnectedServiceName": "",
+                    "ConnectedServiceNameARM": "{{ConnectedServiceID}}",
+                    "ScriptType": "FilePath",
+                    "ScriptPath": "$(System.DefaultWorkingDirectory)/botregjda-CI/drop/templates/appInsigthsApiAccess.ps1",
+                    "Inline": "# You can write your azure powershell scripts inline here. \n# You can also pass predefined and custom variables to this script using arguments",
+                    "ScriptArguments": "-ResourceGroup '$(ResourceGroupName)' -ApplicationInsightsName '$(webSiteName)-insights' -ApplicationInsightsApiKeyName '$(webSiteName)-telemetry'",
+                    "TargetAzurePs": "LatestVersion"
+                  }
+                },
+                {
+                  "taskId": "94a74903-f93f-4075-884f-dc11f34058b4",
+                  "version": "2.*",
+                  "name": "Azure Deployment: Bot Registration {{WebAppName}}Prod",
+                  "enabled": true,
+                  "alwaysRun": false,
+                  "continueOnError": true,
+                  "timeoutInMinutes": 0,
+                  "definitionType": "task",
+                  "overrideInputs": {},
+                  "condition": "succeeded()",
+                  "inputs": {
+                    "ConnectedServiceNameSelector": "ConnectedServiceName",
+                    "ConnectedServiceName": "{{ConnectedServiceID}}",
+                    "action": "Create Or Update Resource Group",
+                    "resourceGroupName": "$(ResourceGroupName)",
+                    "location": "{{azLocation}}",
+                    "templateLocation": "Linked artifact",
+                    "csmFileLink": "",
+                    "csmParametersFileLink": "",
+                    "csmFile": "**/bot-registration.json",
+                    "csmParametersFile": "**/bot-registration.parameters.json",
+                    "overrideParameters": "-webSiteName $(webSiteName) -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\" -appInsightsAPIKey $(appInsightskey)",
+                    "deploymentMode": "Incremental",
+                    "enableDeploymentPrerequisitesForCreate": "false",
+                    "enableDeploymentPrerequisitesForSelect": "false",
+                    "deploymentGroupEndpoint": "",
+                    "project": "",
+                    "deploymentGroupName": "",
+                    "copyAzureVMTags": "true",
+                    "runAgentServiceAsUser": "false",
+                    "userName": "",
+                    "password": "",
+                    "outputVariable": "",
+                    "deploymentOutputs": ""
+                  }
+                },
+                {
+                  "taskId": "497d490f-eea7-4f2b-ab94-48d9c1acdcb1",
+                  "version": "3.*",
                   "name": "Deploy AzureRM Web App: {{WebAppName}}Prod",
                   "enabled": true,
                   "alwaysRun": false,
                   "continueOnError": false,
                   "timeoutInMinutes": 0,
                   "definitionType": "task",
+                  "overrideInputs": {},
+                  "condition": "succeeded()",
                   "inputs": {
-                     "ConnectedServiceName": "{{ConnectedServiceID}}",
-                     "WebAppName": "$(webSiteName)",
-                     "DeployToSlotFlag": "false",
-                     "ResourceGroupName": "",
-                     "SlotName": "",
-                     "Package": "**/{{ProjectName}}*.zip",
-                     "UseWebDeploy": "true",
-                     "SetParametersFile": "",
-                     "RemoveAdditionalFilesFlag": "true",
-                     "ExcludeFilesFromAppDataFlag": "false",
-                     "TakeAppOfflineFlag": "false",
-                     "VirtualApplication": "",
-                     "AdditionalArguments": "",
-                     "WebAppUri": ""
+                    "ConnectedServiceName": "{{ConnectedServiceID}}",
+                    "WebAppKind": "app",
+                    "WebAppName": "$(webSiteName)",
+                    "DeployToSlotFlag": "false",
+                    "ResourceGroupName": "",
+                    "SlotName": "",
+                    "VirtualApplication": "",
+                    "Package": "**/{{ProjectName}}*.zip",
+                    "BuiltinLinuxPackage": "$(System.DefaultWorkingDirectory)/**/*.zip",
+                    "RuntimeStack": "",
+                    "StartupCommand": "",
+                    "WebAppUri": "",
+                    "ScriptType": "",
+                    "InlineScript": ":: You can provide your deployment commands here. One command per line.",
+                    "ScriptPath": "",
+                    "GenerateWebConfig": "true",
+                    "WebConfigParameters": "-Handler iisnode -NodeStartFile app.js -appType node",
+                    "AppSettings": "",
+                    "ConfigurationSettings": "",
+                    "TakeAppOfflineFlag": "false",
+                    "UseWebDeploy": "true",
+                    "SetParametersFile": "",
+                    "RemoveAdditionalFilesFlag": "true",
+                    "ExcludeFilesFromAppDataFlag": "false",
+                    "AdditionalArguments": "",
+                    "RenameFilesFlag": "false",
+                    "XmlTransformation": "false",
+                    "XmlVariableSubstitution": "false",
+                    "JSONFiles": ""
                   }
-               }
-            ]
-         }],
-         "environmentOptions": {
-            "emailNotificationType": "OnlyOnFailure",
-            "emailRecipients": "release.environment.owner;release.creator",
-            "skipArtifactsDownload": false,
-            "timeoutInMinutes": 0,
-            "enableAccessToken": false
-         },
-         "demands": [],
-         "conditions": [{
-            "name": "QA",
-            "conditionType": 2,
-            "value": "4"
-         }],
-         "executionPolicy": {
-            "concurrencyCount": 0,
-            "queueDepthCount": 0
-         },
-         "schedules": [],
-         "retentionPolicy": {
-            "daysToKeep": 30,
-            "releasesToKeep": 3,
-            "retainBuild": true
-         }
+                }
+          ]
+        }
+      ],
+      "environmentOptions": {
+        "emailNotificationType": "OnlyOnFailure",
+        "emailRecipients": "release.environment.owner;release.creator",
+        "skipArtifactsDownload": false,
+        "timeoutInMinutes": 0,
+        "enableAccessToken": false
+      },
+      "demands": [],
+      "conditions": [
+        {
+          "name": "QA",
+          "conditionType": 2,
+          "value": "4"
+        }
+      ],
+      "executionPolicy": {
+        "concurrencyCount": 0,
+        "queueDepthCount": 0
+      },
+      "schedules": [],
+      "retentionPolicy": {
+        "daysToKeep": 30,
+        "releasesToKeep": 3,
+        "retainBuild": true
       }
-   ],
-   "artifacts": [{
+    }
+  ],
+  "artifacts": [
+    {
       "sourceId": "{{ProjectId}}:{{BuildId}}",
       "type": "Build",
       "alias": "{{BuildName}}",
       "definitionReference": {
-         "defaultVersionBranch": {
-            "id": "",
-            "name": ""
-         },
-         "defaultVersionSpecific": {
-            "id": "",
-            "name": ""
-         },
-         "defaultVersionTags": {
-            "id": "",
-            "name": ""
-         },
-         "defaultVersionType": {
-            "id": "latestType",
-            "name": "Latest"
-         },
-         "definition": {
-            "id": "{{BuildId}}",
-            "name": "{{BuildName}}"
-         },
-         "project": {
-            "id": "{{ProjectId}}",
-            "name": "{{ProjectName}}"
-         }
+        "defaultVersionBranch": {
+          "id": "",
+          "name": ""
+        },
+        "defaultVersionSpecific": {
+          "id": "",
+          "name": ""
+        },
+        "defaultVersionTags": {
+          "id": "",
+          "name": ""
+        },
+        "defaultVersionType": {
+          "id": "latestType",
+          "name": "Latest"
+        },
+        "definition": {
+          "id": "{{BuildId}}",
+          "name": "{{BuildName}}"
+        },
+        "project": {
+          "id": "{{ProjectId}}",
+          "name": "{{ProjectName}}"
+        }
       },
       "isPrimary": true
-   }],
-   "triggers": [{
+    }
+  ],
+  "triggers": [
+    {
       "artifactAlias": "{{BuildName}}",
       "triggerType": 1
-   }]
+    }
+  ]
 }

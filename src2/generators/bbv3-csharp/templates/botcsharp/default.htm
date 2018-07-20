@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+   <title></title>
+   <meta charset="utf-8" />
+</head>
+
+<body style="font-family:'Segoe UI'">
+   <h1>
+      <%= name %>
+   </h1>
+   <p>Bot generated with Yeoman and
+      <a href="http://github.com/joalmeid/csebot">CSE bot generator</a>
+   </p>
+   <p>Your bot has a complete CI/CD set in your Team services project:
+      <a href="<%= projectUrl %>">
+         <%= name %>
+      </a>.</p>
+   <p>Visit
+      <a href="https://www.botframework.com/">Bot Framework</a> to register your bot. When you register it, remember to set your bot's endpoint to
+      <pre>https://<i>your_bots_hostname</i>/api/messages</pre>
+   </p>
+   <br />
+   <h3>Next Steps:</h3>
+   <p> Remember to go through <b>appSettings</b> and <b>connectionStrings</b> in <i>Web.config and on Azure (webapp)</i>. Review the following:</p>
+   <p>+ <b>BotId</b> : the bot handle: Used in the URL for your bot. Defined on bot registration in <a href="https://dev.botframework.com/">Bot Develeopment Portal</a>.</p>
+   <p>+ <b>MicrosoftAppId</b> : The Microsoft App ID associated with the bot.</p>
+   <p>+ <b>MicrosoftAppPassword</b> : The Microsoft App Password associated with the bot.</p>
+   <p>+ <b>ApplicationInsightsIntrumentationKey</b> : The InstrumentationKey from Application Insights, in order to enable analytics for your bot.</p>
+   <p>+ <b>StorageConnectionString</b> : This bot uses a custom State Client (Table Storage) with <a href="https://github.com/Microsoft/BotBuilder-Azure">Bot Azure Extensions</a>.</p>
+   <br />
+   <p>+ <b>Git push</b> and start coding!</p>
+</body>
+</html>

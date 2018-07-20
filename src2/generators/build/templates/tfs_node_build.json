@@ -1,0 +1,237 @@
+{
+   "name": "{{BuildDefName}}",
+   "type": "build",
+   "quality": "definition",
+   "buildNumberFormat": "$(BuildDefinitionName)-$(BuildID)",
+   "queue": {
+      "id": "{{QueueId}}"
+   },
+   "build": [{
+         "enabled": true,
+         "continueOnError": false,
+         "alwaysRun": false,
+         "displayName": "npm install bower",
+         "refName": "install_bower",
+         "timeoutInMinutes": 0,
+         "task": {
+            "id": "fe47e961-9fa8-4106-8639-368c022d43ad",
+            "versionSpec": "0.*",
+            "definitionType": "task"
+         },
+         "inputs": {
+            "cwd": "",
+            "command": "install",
+            "arguments": "bower --allow-root"
+         }
+      },
+      {
+         "enabled": true,
+         "continueOnError": false,
+         "alwaysRun": false,
+         "displayName": "Run bower",
+         "refName": "run_bower",
+         "timeoutInMinutes": 0,
+         "task": {
+            "id": "d9bafed4-0b18-4f58-968d-86655b4d2ce9",
+            "versionSpec": "1.*",
+            "definitionType": "task"
+         },
+         "inputs": {
+            "filename": "bower",
+            "arguments": "install",
+            "workingFolder": "",
+            "failOnStandardError": "false"
+         }
+      },
+      {
+         "enabled": true,
+         "continueOnError": false,
+         "alwaysRun": false,
+         "displayName": "npm install for test",
+         "refName": "npm_install_test",
+         "timeoutInMinutes": 0,
+         "task": {
+            "id": "fe47e961-9fa8-4106-8639-368c022d43ad",
+            "versionSpec": "0.*",
+            "definitionType": "task"
+         },
+         "inputs": {
+            "command": "install",
+            "arguments": "",
+            "cwd": ""
+         }
+      },
+      {
+         "enabled": true,
+         "continueOnError": false,
+         "alwaysRun": false,
+         "displayName": "npm test",
+         "refName": "npm_test",
+         "timeoutInMinutes": 0,
+         "task": {
+            "id": "fe47e961-9fa8-4106-8639-368c022d43ad",
+            "versionSpec": "0.*",
+            "definitionType": "task"
+         },
+         "inputs": {
+            "command": "test",
+            "arguments": "-- --grep unit*",
+            "cwd": ""
+         }
+      },
+      {
+         "enabled": true,
+         "continueOnError": false,
+         "alwaysRun": true,
+         "displayName": "Publish Test Results",
+         "refName": "publish_tests",
+         "timeoutInMinutes": 0,
+         "task": {
+            "id": "0b0f01ed-7dde-43ff-9cbb-e48954daf9b1",
+            "versionSpec": "1.*",
+            "definitionType": "task"
+         },
+         "inputs": {
+            "testRunner": "JUnit",
+            "testResultsFiles": "**/xunit.xml",
+            "mergeTestResults": "false",
+            "testRunTitle": "",
+            "platform": "",
+            "configuration": "",
+            "publishRunAttachments": "true"
+         }
+      },
+      {
+         "enabled": true,
+         "continueOnError": false,
+         "alwaysRun": true,
+         "displayName": "Publish Code Coverage Results",
+         "refName": "publish_codeCoverage",
+         "timeoutInMinutes": 0,
+         "task": {
+            "id": "2a7ebc54-c13e-490e-81a5-d7561ab7cd97",
+            "versionSpec": "1.*",
+            "definitionType": "task"
+         },
+         "inputs": {
+            "codeCoverageTool": "Cobertura",
+            "summaryFileLocation": "$(Build.SourcesDirectory)/coverage/cobertura-coverage.xml",
+            "reportDirectory": "$(Build.SourcesDirectory)/coverage/lcov-report",
+            "additionalCodeCoverageFiles": ""
+         }
+      },
+      {
+         "enabled": true,
+         "continueOnError": false,
+         "alwaysRun": false,
+         "displayName": "npm install",
+         "refName": "npm_install",
+         "timeoutInMinutes": 0,
+         "task": {
+            "id": "fe47e961-9fa8-4106-8639-368c022d43ad",
+            "versionSpec": "0.*",
+            "definitionType": "task"
+         },
+         "inputs": {
+            "command": "install",
+            "arguments": "",
+            "cwd": "src"
+         }
+      },
+      {
+         "enabled": true,
+         "continueOnError": false,
+         "alwaysRun": false,
+         "displayName": "Archive files",
+         "refName": "archive_files",
+         "timeoutInMinutes": 0,
+         "task": {
+            "id": "d8b84976-e99a-4b86-b885-4849694435b0",
+            "versionSpec": "1.*",
+            "definitionType": "task"
+         },
+         "inputs": {
+            "rootFolder": "src",
+            "includeRootFolder": "false",
+            "archiveType": "default",
+            "tarCompression": "gz",
+            "archiveFile": "website.zip",
+            "replaceExistingArchive": "true"
+         }
+      },
+      {
+         "enabled": true,
+         "continueOnError": false,
+         "alwaysRun": false,
+         "displayName": "Copy Files",
+         "refName": "copy_files",
+         "timeoutInMinutes": 0,
+         "task": {
+            "id": "5bfb729a-a7c8-4a78-a7c3-8d717bb7c13c",
+            "versionSpec": "*",
+            "definitionType": "task"
+         },
+         "inputs": {
+            "SourceFolder": "",
+            "Contents": "**/website.zip\ntemplates/website.json\ntemplates/WebSite.parameters.json",
+            "TargetFolder": "$(Build.StagingDirectory)/drop",
+            "CleanTargetFolder": "false",
+            "OverWrite": "false"
+         }
+      },
+      {
+         "enabled": true,
+         "continueOnError": false,
+         "alwaysRun": false,
+         "displayName": "Publish Artifact: drop",
+         "refName": "publish_artifacts",
+         "timeoutInMinutes": 0,
+         "task": {
+            "id": "2ff763a7-ce83-4e1f-bc89-0ae63477cebe",
+            "versionSpec": "*",
+            "definitionType": "task"
+         },
+         "inputs": {
+            "PathtoPublish": "$(Build.StagingDirectory)/drop",
+            "ArtifactName": "drop",
+            "ArtifactType": "Container",
+            "TargetPath": "\\\\my\\share\\$(Build.DefinitionName)\\$(Build.BuildNumber)"
+         }
+      }
+   ],
+   "triggers": [{
+      "branchFilters": [
+         "+refs/heads/master"
+      ],
+      "pathFilters": [],
+      "batchChanges": false,
+      "maxConcurrentBuildsPerBranch": 1,
+      "triggerType": "continuousIntegration"
+   }],
+   "variables": {
+      "system.debug": {
+         "value": "false",
+         "allowOverride": true
+      },
+      "BuildConfiguration": {
+         "value": "release",
+         "allowOverride": true
+      },
+      "BuildPlatform": {
+         "value": "any cpu",
+         "allowOverride": true
+      }
+   },
+   "repository": {
+      "properties": {
+         "labelSources": "0",
+         "reportBuildStatus": "true"
+      },
+      "type": "TfsGit",
+      "name": "{{Project}}",
+      "url": "{{TFS}}/_git/{{Project}}",
+      "defaultBranch": "refs/heads/master",
+      "clean": "false",
+      "checkoutSubmodules": false
+   }
+}

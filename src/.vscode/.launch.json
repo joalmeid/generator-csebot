@@ -10,14 +10,14 @@
             "csebot",
             "node",
             "nodeDemo",
-            "[your vsts account]",
+            "joalmeid.visualstudio.com",
             "this is not a real access token",
             "Free Trial",
             "Hosted",
             "paas",
             "false"
          ],
-         "cwd": "${workspaceRoot}",
+         "cwd": "${workspaceRoot}/src",
          "preLaunchTask": null,
          "runtimeExecutable": null,
          "runtimeArgs": [

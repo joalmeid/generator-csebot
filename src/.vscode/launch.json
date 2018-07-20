@@ -5,37 +5,34 @@
    "version": "0.2.0",
    "configurations": [
       {
-         "type": "node2",
+         "type": "node",
          "request": "launch",
          "name": "Yeoman bot",
-         "protocol": "inspector",
          "program": "${workspaceRoot}/node_modules/yo/lib/cli.js",
          "args": [
             "csebot"
          ],
-         "console": "integratedTerminal",
-         "internalConsoleOptions":"openOnSessionStart"
       },
       {
-         "type": "node2",
+         "type": "node",
          "request": "attach",
          "name": "Attach by Process ID",
          "processId": "${command:PickProcess}"
       },
       {
-         "type": "node2",
+         "type": "node",
          "request": "attach",
          "name": "Attach",
          "port": 5858
       },
       {
-         "type": "node2",
+         "type": "node",
          "request": "launch",
          "name": "Launch Program",
          "program": "${file}"
       },
       {
-         "type": "node2",
+         "type": "node",
          "request": "launch",
          "name": "Mocha Integration Tests",
          "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
@@ -51,7 +48,7 @@
          "internalConsoleOptions": "openOnSessionStart"
       },
       {
-         "type": "node2",
+         "type": "node",
          "request": "launch",
          "name": "Mocha Unit Tests",
          "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
