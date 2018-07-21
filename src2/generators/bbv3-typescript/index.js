@@ -27,14 +27,14 @@ module.exports = class extends Generator {
       return this.prompt([
          prompts.botName(this),
          prompts.installDep(this),
-         prompts.dockerPorts(this)
-         // prompts.tfs(this)
+         prompts.dockerPorts(this),
+         prompts.tfs(this)
       ]).then(function (answers) {
          // Transfer answers to local object for use in the rest of the generator
          this.installDep = util.reconcileValue(cmdLnInput.options.installDep, answers.installDep);
          this.dockerPorts = util.reconcileValue(cmdLnInput.options.dockerPorts, answers.dockerPorts, ``);
          this.botName = util.reconcileValue(cmdLnInput.options.botName, answers.botName);
-         // this.tfs = util.reconcileValue(a.tfs, cmdLnInput.tfs);
+         this.tfs = util.reconcileValue(cmdLnInput.options.tfs, answers.tfs);
       }.bind(this));
    }
 
@@ -65,10 +65,11 @@ module.exports = class extends Generator {
       this.fs.copy(`${src}/tsconfig.json`, `${root}/tsconfig.json`);
       this.fs.copy(`${src}/.env`, `${root}/.env`);
       
-      this.directory(`${src}/dialogs`, `${root}/dialogs`);
-      this.directory(`${src}/models`, `${root}/models`);
-      this.directory(`${src}/test`, `${root}/test`);
-      this.directory(`${src}/util`, `${root}/util`);
+      this.fs.copy(`${src}/dialogs/**`, `${root}/dialogs`);
+      this.fs.copy(`${src}/models/**`, `${root}/models`);
+      this.fs.copy(`${src}/util/**`, `${root}/util`);
+      this.fs.copy(`${src}/test/**`, `${root}/test`);
+      this.fs.copy(`${src}/.vscode/**`, `${root}/.vscode`);
 
       // ARM Templates
       src = `${this.sourceRoot()}/templates`;

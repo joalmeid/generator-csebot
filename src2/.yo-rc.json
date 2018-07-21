@@ -4,7 +4,15 @@
       "authorName": "@jalmeida",
       "authorEmail": "joalmeid@microsoft.com",
       "authorUrl": "http://joalmeid.github.io",
-      "tfs": "joalmeid"
+      "tfs": "joalmeid",
+      "queue": "Hosted Linux Preview",
+      "type": "node",
+      "botName": "testeeeeenode",
+      "target": "paas",
+      "azureSub": "JDADX Internal",
+      "botLocation": "West Europe",
+      "creationMode": "Automatic",
+      "installDep": "false"
     }
   }
 }
