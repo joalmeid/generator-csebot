@@ -40,12 +40,12 @@ function botLocation(obj) {
    });
 }
 
-function customFolder(obj) {
-   obj.argument(`customFolder`, {
-      required: false,
-      desc: `Path to folder of build & release templates`
-   });
-}
+// function customFolder(obj) {
+//    obj.argument(`customFolder`, {
+//       required: false,
+//       desc: `Path to folder of build & release templates`
+//    });
+// }
 
 function tfs(obj) {
    obj.argument(`tfs`, {
@@ -180,7 +180,7 @@ module.exports = {
    installDep: installDep,
    dockerHost: dockerHost,
    dockerPorts: dockerPorts,
-   customFolder: customFolder,
+   // customFolder: customFolder,
    dockerCertPath: dockerCertPath,
    dockerRegistry: dockerRegistry,
    botType: botType,

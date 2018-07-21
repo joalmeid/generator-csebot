@@ -145,18 +145,18 @@ function botType(obj) {
    };
 }
 
-function customFolder(obj) {
-   return {
-      name: `customFolder`,
-      type: `input`,
-      store: true,
-      message: `What is your custom template path?`,
-      validate: util.validateCustomFolder,
-      when: answers => {
-         return answers.type === `custom` && obj.options.customFolder === undefined;
-      }
-   };
-}
+// function customFolder(obj) {
+//    return {
+//       name: `customFolder`,
+//       type: `input`,
+//       store: true,
+//       message: `What is your custom template path?`,
+//       validate: util.validateCustomFolder,
+//       when: answers => {
+//          return answers.type === `custom` && obj.options.customFolder === undefined;
+//       }
+//    };
+// }
 
 function botName(obj) {
    return {
@@ -440,7 +440,7 @@ module.exports = {
    profileName: profileName,
    dockerPorts: dockerPorts,
    azureSubList: azureSubList,
-   customFolder: customFolder,
+   // customFolder: customFolder,
    creationMode: creationMode,
    azureSubInput: azureSubInput,
    dockerRegistry: dockerRegistry,

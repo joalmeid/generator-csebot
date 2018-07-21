@@ -27,7 +27,7 @@ describe(`build:index`, function () {
          .withPrompts({
             type: `custom`,
             botName: `aspDemo`,
-            customFolder: `myFolder`,
+            // customFolder: `myFolder`,
             target: `paas`,
             tfs: `http://localhost:8080/tfs/DefaultCollection`,
             queue: `Default`,

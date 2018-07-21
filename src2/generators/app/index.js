@@ -38,7 +38,7 @@ module.exports = class extends Generator {
       argUtils.dockerRegistryPassword(this);
       argUtils.servicePrincipalKey(this);
       argUtils.pat(this);
-      argUtils.customFolder(this);
+      // argUtils.customFolder(this);
    }
 
    // 1. Your initialization methods (checking current project state, getting configs, etc)
@@ -64,7 +64,7 @@ module.exports = class extends Generator {
          prompts.queue(this),
          prompts.botType(this),
          prompts.botName(this),
-         prompts.customFolder(this),
+         // prompts.customFolder(this),
          prompts.target(this),
          prompts.azureSubInput(this),
          prompts.azureSubList(this),
@@ -108,7 +108,7 @@ module.exports = class extends Generator {
          this.botLocation = util.reconcileValue(cmdLnInput.options.botLocation, answers.botLocation, ``);
          this.dockerHost = util.reconcileValue(cmdLnInput.options.dockerHost, answers.dockerHost, ``);
          this.dockerPorts = util.reconcileValue(cmdLnInput.options.dockerPorts, answers.dockerPorts, ``);
-         this.customFolder = util.reconcileValue(cmdLnInput.options.customFolder, answers.customFolder, ``);
+         // this.customFolder = util.reconcileValue(cmdLnInput.options.customFolder, answers.customFolder, ``);
          this.dockerRegistry = util.reconcileValue(cmdLnInput.options.dockerRegistry, answers.dockerRegistry, ``);
          this.dockerCertPath = util.reconcileValue(cmdLnInput.options.dockerCertPath, answers.dockerCertPath, ``);
          this.botName = util.reconcileValue(cmdLnInput.options.botName, answers.botName, ``);

@@ -22,7 +22,7 @@ module.exports = class extends Generator {
       argUtils.dockerRegistry(this);
       argUtils.dockerRegistryId(this);
       argUtils.pat(this);
-      argUtils.customFolder(this);
+      // argUtils.customFolder(this);
    }
 
    // 2. Where you prompt users for options (where you`d call this.prompt())
@@ -38,7 +38,7 @@ module.exports = class extends Generator {
          prompts.queue(this),
          prompts.botType(this),
          prompts.botName(this),
-         prompts.customFolder(this),
+         // prompts.customFolder(this),
          prompts.target(this),
          prompts.dockerHost(this),
          prompts.dockerRegistry(this),
@@ -55,7 +55,7 @@ module.exports = class extends Generator {
          this.queue = util.reconcileValue(cmdLnInput.options.queue, answers.queue);
          this.target = util.reconcileValue(cmdLnInput.options.target, answers.target);
          this.dockerHost = util.reconcileValue(cmdLnInput.options.dockerHost, answers.dockerHost, ``);
-         this.customFolder = util.reconcileValue(cmdLnInput.options.customFolder, answers.customFolder, ``);
+         // this.customFolder = util.reconcileValue(cmdLnInput.options.customFolder, answers.customFolder, ``);
          this.dockerRegistry = util.reconcileValue(cmdLnInput.options.dockerRegistry, answers.dockerRegistry, ``);
          this.botName = util.reconcileValue(cmdLnInput.options.botName, answers.botName, ``);
          this.dockerRegistryId = util.reconcileValue(cmdLnInput.options.dockerRegistryId, answers.dockerRegistryId, ``);
@@ -72,9 +72,9 @@ module.exports = class extends Generator {
       app.getBuild(this, function (e, result) {
          var build = _this.templatePath(result);
 
-         if (_this.type === `custom`) {
-            build = path.join(_this.customFolder, result);
-         }
+         // if (_this.type === `custom`) {
+         //    build = path.join(_this.customFolder, result);
+         // }
 
          var args = {
             pat: _this.pat,

@@ -85,7 +85,7 @@ function runTests(iteration) {
    var queue = iteration.queue;
    var target = iteration.target;
    var installDep = `false`;
-   var customFolder = iteration.customFolder || ` `;
+   // var customFolder = iteration.customFolder || ` `;
    var dockerHost = process.env.DOCKER_HOST || ` `;
    var dockerCertPath = process.env.DOCKER_CERT_PATH || ` `;
    var dockerRegistry = process.env.DOCKER_REGISTRY || ` `;
@@ -110,7 +110,7 @@ function runTests(iteration) {
          let cmd = `yo csebot ${botType} ${botName} ${tfs} ${azureSub} "${azureSubId}" ` +
             `"${tenantId}" "${servicePrincipalId}" "${queue}" ${target} ${installDep} ` +
             `"${dockerHost}" "${dockerCertPath}" "${dockerRegistry}" ` +
-            `"${dockerRegistryId}" "${dockerPorts}" "${dockerRegistryPassword}" "${servicePrincipalKey}" ${pat} "${customFolder}"`;
+            `"${dockerRegistryId}" "${dockerPorts}" "${dockerRegistryPassword}" "${servicePrincipalKey}" ${pat}"`; //"${customFolder}"`;
 
          util.log(`run command: ${cmd}`);
 

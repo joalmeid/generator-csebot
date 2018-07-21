@@ -26,7 +26,7 @@ module.exports = class extends Generator {
       argUtils.dockerRegistryPassword(this);
       argUtils.botLocation(this);
       argUtils.pat(this);
-      argUtils.customFolder(this);
+      // argUtils.customFolder(this);
    }
 
    // 2. Where you prompt users for options (where you`d call this.prompt())
@@ -43,7 +43,7 @@ module.exports = class extends Generator {
          prompts.queue(this),
          prompts.botType(this),
          prompts.botName(this),
-         prompts.customFolder(this),
+         // prompts.customFolder(this),
          prompts.target(this),
          prompts.azureSubInput(this),
          prompts.azureSubList(this),
@@ -64,7 +64,7 @@ module.exports = class extends Generator {
          this.botLocation = util.reconcileValue(answers.botLocation, cmdLnInput.botLocation, ``);
          this.dockerHost = util.reconcileValue(cmdLnInput.options.dockerHost, answers.dockerHost, ``);
          this.dockerPorts = util.reconcileValue(cmdLnInput.options.dockerPorts, answers.dockerPorts, ``);
-         this.customFolder = util.reconcileValue(cmdLnInput.options.customFolder, answers.customFolder, ``);
+         // this.customFolder = util.reconcileValue(cmdLnInput.options.customFolder, answers.customFolder, ``);
          this.dockerRegistry = util.reconcileValue(cmdLnInput.options.dockerRegistry, answers.dockerRegistry);
          this.botName = util.reconcileValue(cmdLnInput.options.botName, answers.botName, ``);
          this.dockerRegistryId = util.reconcileValue(cmdLnInput.options.dockerRegistryId, answers.dockerRegistryId, ``);
@@ -85,9 +85,9 @@ module.exports = class extends Generator {
          app.getRelease(_this, function (e, result) {
             var release = _this.templatePath(result);
 
-            if (_this.type === `custom`) {
-               release = path.join(_this.customFolder, result);
-            }
+            // if (_this.type === `custom`) {
+            //    release = path.join(_this.customFolder, result);
+            // }
 
             var args = {
                pat: _this.pat,

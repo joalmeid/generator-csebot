@@ -45,7 +45,7 @@ function runTests(iteration) {
    "use strict";
 
    iteration.originalDir = process.cwd();
-   var customFolder = iteration.customFolder || ` `;
+   // var customFolder = iteration.customFolder || ` `;
 
    // RM has issues if you try to create a release on
    // a project name that was just deleted and recreated
@@ -73,7 +73,7 @@ function runTests(iteration) {
             let cmd = `yo csebot ${iteration.botType} ${iteration.botName} ${tfs} ${azureSub} "${azureSubId}" ` +
                `"${tenantId}" "${servicePrincipalId}" "${iteration.queue}" ${iteration.target} ${installDep} ` +
                `"${dockerHost}" "${dockerCertPath}" "${dockerRegistry}" ` +
-               `"${dockerRegistryId}" "${dockerPorts}" "${dockerRegistryPassword}" "${servicePrincipalKey}" ${pat} "${customFolder}"`;
+               `"${dockerRegistryId}" "${dockerPorts}" "${dockerRegistryPassword}" "${servicePrincipalKey}" ${pat}"`; //"${customFolder}"`;
 
             util.log(`run command: ${cmd}`);
 

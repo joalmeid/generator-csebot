@@ -190,9 +190,9 @@ function validateProfileName(input) {
    return validateRequired(input, `You must provide a profile name`);
 }
 
-function validateCustomFolder(input) {
-   return validateRequired(input, `You must provide a custom template path`);
-}
+// function validateCustomFolder(input) {
+//    return validateRequired(input, `You must provide a custom template path`);
+// }
 
 function validateBotName(input) {
    return validateRequired(input, `You must provide a name for your application`);
@@ -1182,7 +1182,7 @@ module.exports = {
    validateDockerHubID: validateDockerHubID,
    isExtensionInstalled: isExtensionInstalled,
    isTFSGreaterThan2017: isTFSGreaterThan2017,
-   validateCustomFolder: validateCustomFolder,
+   // validateCustomFolder: validateCustomFolder,
    getDefaultPortMapping: getDefaultPortMapping,
    validateAzureTenantID: validateAzureTenantID,
    validateDockerRegistry: validateDockerRegistry,

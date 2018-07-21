@@ -37,7 +37,7 @@ describe(`release:index`, function () {
             queue: `Hosted Linux Preview`,
             type: `custom`,
             botName: `nodeDemo`,
-            customFolder: `myFolder`,
+            // customFolder: `myFolder`,
             target: `dockerpaas`,
             azureSub: `azureSub`,
             dockerHost: `dockerHost`,

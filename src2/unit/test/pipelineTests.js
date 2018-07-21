@@ -35,7 +35,7 @@ describe(`csebot:pipeline`, function () {
       let target = `paas`;
       let dockerHost = ``;
       let dockerPorts = ``;
-      let customFolder = ` `;
+      // let customFolder = ` `;
       let queue = `default`;
       let dockerCertPath = ``;
       let dockerRegistry = ``;
@@ -54,7 +54,7 @@ describe(`csebot:pipeline`, function () {
          .withArguments([type, botName, tfs,
             queue, target, azureSub, azureSubId, tenantId, servicePrincipalId,
             dockerHost, dockerCertPath, dockerRegistry, dockerRegistryId, dockerPorts,
-            dockerRegistryPassword, servicePrincipalKey, pat, customFolder
+            dockerRegistryPassword, servicePrincipalKey, pat //, customFolder
          ])
          .on(`error`, function (e) {
             cleanUp();

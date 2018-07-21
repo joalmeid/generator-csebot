@@ -26,8 +26,8 @@ function addRelease(obj) {
          obj.dockerRegistryId,
          obj.dockerPorts,
          obj.dockerRegistryPassword,
-         obj.pat,
-         obj.customFolder,
+         obj.pat
+         // obj.customFolder,
       ]
    });
 }
@@ -42,8 +42,8 @@ function addBuild(obj) {
          obj.dockerHost,
          obj.dockerRegistry,
          obj.dockerRegistryId,
-         obj.pat,
-         obj.customFolder
+         obj.pat
+         // obj.customFolder
       ]
    });
 }
@@ -117,6 +117,7 @@ function addLanguage(obj) {
          obj.composeWith(`csebot:bbv3-typescript`, {
             arguments: [obj.botName,
                obj.installDep,
+               obj.dockerPorts,
                obj.tfs
             ]
          });
@@ -127,6 +128,7 @@ function addLanguage(obj) {
          obj.composeWith(`csebot:bbv3-node`, {
             arguments: [obj.botName,
                obj.installDep,
+               obj.dockerPorts,
                obj.tfs
             ]
          });
