@@ -5,8 +5,8 @@ describe(`Default Core AS Docker`, function () {
       "use strict";
 
       appService.runTests({
-         appType: `asp`,
-         appName: `aspDockerPaaSTest`,
+         botType: `asp`,
+         botName: `aspDockerPaaSTest`,
          target: `dockerpaas`,
          context: `Azure App Service Docker (Linux)`,
          suffix: `-Docker`,

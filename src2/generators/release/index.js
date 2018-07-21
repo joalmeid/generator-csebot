@@ -13,8 +13,8 @@ module.exports = class extends Generator {
       super(args, opts);
 
       // Order is important 
-      argUtils.applicationType(this);
-      argUtils.applicationName(this);
+      argUtils.botType(this);
+      argUtils.botName(this);
       argUtils.tfs(this);
       argUtils.queue(this);
       argUtils.target(this);
@@ -24,6 +24,7 @@ module.exports = class extends Generator {
       argUtils.dockerRegistryId(this);
       argUtils.dockerPorts(this);
       argUtils.dockerRegistryPassword(this);
+      argUtils.botLocation(this);
       argUtils.pat(this);
       argUtils.customFolder(this);
    }
@@ -37,10 +38,11 @@ module.exports = class extends Generator {
 
       return this.prompt([
          prompts.tfs(this),
+         prompts.botLocation(this),
          prompts.pat(this),
          prompts.queue(this),
-         prompts.applicationType(this),
-         prompts.applicationName(this),
+         prompts.botType(this),
+         prompts.botName(this),
          prompts.customFolder(this),
          prompts.target(this),
          prompts.azureSubInput(this),
@@ -59,11 +61,12 @@ module.exports = class extends Generator {
          this.queue = util.reconcileValue(cmdLnInput.options.queue, answers.queue);
          this.target = util.reconcileValue(cmdLnInput.options.target, answers.target);
          this.azureSub = util.reconcileValue(cmdLnInput.options.azureSub, answers.azureSub, ``);
+         this.botLocation = util.reconcileValue(answers.botLocation, cmdLnInput.botLocation, ``);
          this.dockerHost = util.reconcileValue(cmdLnInput.options.dockerHost, answers.dockerHost, ``);
          this.dockerPorts = util.reconcileValue(cmdLnInput.options.dockerPorts, answers.dockerPorts, ``);
          this.customFolder = util.reconcileValue(cmdLnInput.options.customFolder, answers.customFolder, ``);
          this.dockerRegistry = util.reconcileValue(cmdLnInput.options.dockerRegistry, answers.dockerRegistry);
-         this.applicationName = util.reconcileValue(cmdLnInput.options.applicationName, answers.applicationName, ``);
+         this.botName = util.reconcileValue(cmdLnInput.options.botName, answers.botName, ``);
          this.dockerRegistryId = util.reconcileValue(cmdLnInput.options.dockerRegistryId, answers.dockerRegistryId, ``);
          this.dockerRegistryPassword = util.reconcileValue(cmdLnInput.options.dockerRegistryPassword, answers.dockerRegistryPassword, ``);
       }.bind(this));
@@ -94,8 +97,9 @@ module.exports = class extends Generator {
                target: _this.target,
                releaseJson: release,
                azureSub: _this.azureSub,
-               appName: _this.applicationName,
-               project: _this.applicationName
+               botName: _this.botName,
+               botLocation: _this.botLocation,
+               project: _this.botName
             };
 
             if (util.needsRegistry(_this)) {

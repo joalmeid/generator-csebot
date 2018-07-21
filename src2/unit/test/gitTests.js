@@ -13,7 +13,7 @@ describe(`git:index clone`, function () {
       return helpers.run(path.join(__dirname, `../../generators/git`))
          .withPrompts({
             action: `clone`,
-            applicationName: `aspDemo`,
+            botName: `aspDemo`,
             tfs: `http://localhost:8080/tfs/DefaultCollection`
          })
          .on(`error`, function (e) {
@@ -44,7 +44,7 @@ describe(`git:index commit`, function () {
       return helpers.run(path.join(__dirname, `../../generators/git`))
          .withPrompts({
             action: `commit`,
-            applicationName: `aspDemo`,
+            botName: `aspDemo`,
             tfs: `http://localhost:8080/tfs/DefaultCollection`
          })
          .on(`error`, function (e) {
@@ -71,13 +71,13 @@ describe(`git:index commit`, function () {
    });
 
    it(`git config email should be called`, function () {
-      assert.equal(1, spawnStub.withArgs(`git`, [`config`, `user.email`, `yo team`], {
+      assert.equal(1, spawnStub.withArgs(`git`, [`config`, `user.email`, `yo csebot`], {
          stdio: ['pipe', 'pipe', process.stderr]
       }).callCount, `git config email was not called`);
    });
 
    it(`git config name should be called`, function () {
-      assert.equal(1, spawnStub.withArgs(`git`, [`config`, `user.name`, `yo team`], {
+      assert.equal(1, spawnStub.withArgs(`git`, [`config`, `user.name`, `yo csebot`], {
          stdio: ['pipe', 'pipe', process.stderr]
       }).callCount, `git config name was not called`);
    });
@@ -100,7 +100,7 @@ describe(`git:index all`, function () {
       return helpers.run(path.join(__dirname, `../../generators/git`))
          .withPrompts({
             action: `all`,
-            applicationName: `aspDemo`,
+            botName: `aspDemo`,
             tfs: `http://localhost:8080/tfs/DefaultCollection`
          })
          .on(`error`, function (e) {
@@ -127,13 +127,13 @@ describe(`git:index all`, function () {
    });
 
    it(`git config email should be called`, function () {
-      assert.equal(1, spawnStub.withArgs(`git`, [`config`, `user.email`, `yo team`], {
+      assert.equal(1, spawnStub.withArgs(`git`, [`config`, `user.email`, `yo csebot`], {
          stdio: ['pipe', 'pipe', process.stderr]
       }).callCount, `git config email was not called`);
    });
 
    it(`git config name should be called`, function () {
-      assert.equal(1, spawnStub.withArgs(`git`, [`config`, `user.name`, `yo team`], {
+      assert.equal(1, spawnStub.withArgs(`git`, [`config`, `user.name`, `yo csebot`], {
          stdio: ['pipe', 'pipe', process.stderr]
       }).callCount, `git config name was not called`);
    });

@@ -28,35 +28,6 @@ function profileCmd(obj) {
    };
 }
 
-function tfsVersion(obj) {
-   return {
-      store: true,
-      type: `list`,
-      name: `tfsVersion`,
-      default: `TFS2018`,
-      choices: util.getTFSVersion,
-      message: `Select an API Version.`,
-      when: answers => {
-         // You don't need this if you are just listing or deleting a 
-         // profile
-         if (answers.profileCmd === `list` || answers.profileCmd === `delete`) {
-            return false;
-         }
-
-         // If the value was passed on the command line it will
-         // not be set in answers which other prompts expect.
-         // So, place it in answers now.
-         // If you are reading from prompts don't overwrite
-         // what the user entered.
-         if (obj.options.tfs !== undefined) {
-            answers.tfs = obj.options.tfs;
-         }
-
-         return util.isVSTS(answers.tfs) === false;
-      }
-   };
-}
-
 function profileName(obj) {
    return {
       name: `profileName`,
@@ -98,7 +69,7 @@ function tfs(obj) {
          }
 
          // You don't need this if you are just listing or deleting a 
-         // profile
+         // prof
          if (answers.profileCmd === `list` || answers.profileCmd === `delete`) {
             return false;
          }
@@ -151,14 +122,14 @@ function queue(obj) {
    };
 }
 
-function applicationType(obj) {
+function botType(obj) {
    return {
       name: `type`,
       type: `list`,
       store: true,
-      message: `What type of application do you want to create?`,
+      message: `What type of Bot do you want to create?`,
       default: obj.options.type,
-      choices: util.getAppTypes,
+      choices: util.getBotTypes,
       when: answers => {
          // If the value was passed on the command line it will
          // not be set in answers which other prompts expect.
@@ -187,15 +158,28 @@ function customFolder(obj) {
    };
 }
 
-function applicationName(obj) {
+function botName(obj) {
    return {
-      name: `applicationName`,
+      name: `botName`,
       type: `input`,
       store: true,
       message: `What is the name of your application?`,
-      validate: util.validateApplicationName,
+      validate: util.validateBotName,
       when: () => {
-         return obj.options.applicationName === undefined;
+         return obj.options.botName === undefined;
+      }
+   };
+}
+
+function botLocation(obj) {
+   return {
+      name: `botLocation`,
+      type: `input`,
+      store: true,
+      message: `What is the azure location of your Bot?`,
+      validate: util.validateBotLocation,
+      when: () => {
+         return obj.options.botLocation === undefined;
       }
    };
 }
@@ -379,20 +363,6 @@ function dockerPorts(obj) {
    };
 }
 
-// Java
-function groupId(obj) {
-   return {
-      name: `groupId`,
-      type: `input`,
-      store: true,
-      message: "What is your Group ID?",
-      validate: util.validateGroupID,
-      when: answers => {
-         return answers.type === `java` && obj.options.groupId === undefined;
-      }
-   };
-}
-
 function creationMode(obj) {
    return {
       name: `creationMode`,
@@ -432,7 +402,7 @@ function installDep(obj) {
          }
       ],
       when: answers => {
-         return answers.type !== `aspFull` && obj.options.installDep === undefined;
+         return answers.type !== `csharp` && obj.options.installDep === undefined;
       }
    };
 }
@@ -461,14 +431,12 @@ module.exports = {
    pat: pat,
    queue: queue,
    target: target,
-   groupId: groupId,
    tenantId: tenantId,
    gitAction: gitAction,
    installDep: installDep,
    azureSubId: azureSubId,
    profileCmd: profileCmd,
    dockerHost: dockerHost,
-   tfsVersion: tfsVersion,
    profileName: profileName,
    dockerPorts: dockerPorts,
    azureSubList: azureSubList,
@@ -477,8 +445,9 @@ module.exports = {
    azureSubInput: azureSubInput,
    dockerRegistry: dockerRegistry,
    dockerCertPath: dockerCertPath,
-   applicationType: applicationType,
-   applicationName: applicationName,
+   botType: botType,
+   botName: botName,
+   botLocation: botLocation,
    servicePrincipalId: servicePrincipalId,
    servicePrincipalKey: servicePrincipalKey,
    dockerRegistryPassword: dockerRegistryPassword,

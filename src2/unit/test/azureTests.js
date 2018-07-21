@@ -17,7 +17,7 @@ describe(`azure:index`, function () {
          .withPrompts({
             tfs: `vsts`,
             pat: `token`,
-            applicationName: `nodeDemo`,
+            botName: `nodeDemo`,
             azureSub: `azureSub`
          })
          .on(`error`, function (e) {

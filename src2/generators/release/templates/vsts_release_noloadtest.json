@@ -11,13 +11,13 @@
          "rank": 1,
          "variables": {
             "ResourceGroupName": {
-               "value": "{{WebAppName}}Dev"
+               "value": "{{WebbotName}}Dev"
             },
             "webSiteName": {
-               "value": "{{WebAppName}}Dev{{uuid}}"
+               "value": "{{WebbotName}}Dev{{uuid}}"
             },
             "hostingPlanName": {
-               "value": "{{WebAppName}}Dev"
+               "value": "{{WebbotName}}Dev"
             },
             "aiLocation": {
                "value": "South Central US"
@@ -58,7 +58,7 @@
                   {
                      "taskId": "94a74903-f93f-4075-884f-dc11f34058b4",
                      "version": "2.*",
-                     "name": "Azure Deployment:Create Or Update Resource Group action on {{WebAppName}}",
+                     "name": "Azure Deployment:Create Or Update Resource Group action on {{WebbotName}}",
                      "refName": "arm",
                      "enabled": true,
                      "alwaysRun": false,
@@ -85,7 +85,7 @@
                   {
                      "taskId": "497d490f-eea7-4f2b-ab94-48d9c1acdcb1",
                      "version": "2.*",
-                     "name": "Deploy AzureRM Web App: {{WebAppName}}Dev",
+                     "name": "Deploy AzureRM Web App: {{WebbotName}}Dev",
                      "refName": "deploy",
                      "enabled": true,
                      "alwaysRun": false,
@@ -94,7 +94,7 @@
                      "definitionType": "task",
                      "inputs": {
                         "ConnectedServiceName": "{{ConnectedServiceID}}",
-                        "WebAppName": "$(webSiteName)",
+                        "WebbotName": "$(webSiteName)",
                         "DeployToSlotFlag": "false",
                         "ResourceGroupName": "",
                         "SlotName": "",
@@ -143,13 +143,13 @@
          "rank": 2,
          "variables": {
             "ResourceGroupName": {
-               "value": "{{WebAppName}}QA"
+               "value": "{{WebbotName}}QA"
             },
             "webSiteName": {
-               "value": "{{WebAppName}}QA{{uuid}}"
+               "value": "{{WebbotName}}QA{{uuid}}"
             },
             "hostingPlanName": {
-               "value": "{{WebAppName}}QA"
+               "value": "{{WebbotName}}QA"
             },
             "aiLocation": {
                "value": "South Central US"
@@ -199,7 +199,7 @@
                   {
                      "taskId": "94a74903-f93f-4075-884f-dc11f34058b4",
                      "version": "2.*",
-                     "name": "Azure Deployment:Create Or Update Resource Group action on {{WebAppName}}",
+                     "name": "Azure Deployment:Create Or Update Resource Group action on {{WebbotName}}",
                      "enabled": true,
                      "refName": "arm",
                      "alwaysRun": false,
@@ -226,7 +226,7 @@
                   {
                      "taskId": "497d490f-eea7-4f2b-ab94-48d9c1acdcb1",
                      "version": "2.*",
-                     "name": "Deploy AzureRM Web App: {{WebAppName}}QA",
+                     "name": "Deploy AzureRM Web App: {{WebbotName}}QA",
                      "enabled": true,
                      "refName": "deploy",
                      "alwaysRun": false,
@@ -235,7 +235,7 @@
                      "definitionType": "task",
                      "inputs": {
                         "ConnectedServiceName": "{{ConnectedServiceID}}",
-                        "WebAppName": "$(webSiteName)",
+                        "WebbotName": "$(webSiteName)",
                         "DeployToSlotFlag": "false",
                         "ResourceGroupName": "",
                         "SlotName": "",
@@ -284,13 +284,13 @@
          "rank": 3,
          "variables": {
             "ResourceGroupName": {
-               "value": "{{WebAppName}}Prod"
+               "value": "{{WebbotName}}Prod"
             },
             "webSiteName": {
-               "value": "{{WebAppName}}Prod{{uuid}}"
+               "value": "{{WebbotName}}Prod{{uuid}}"
             },
             "hostingPlanName": {
-               "value": "{{WebAppName}}Prod"
+               "value": "{{WebbotName}}Prod"
             },
             "aiLocation": {
                "value": "South Central US"
@@ -340,7 +340,7 @@
                   {
                      "taskId": "94a74903-f93f-4075-884f-dc11f34058b4",
                      "version": "2.*",
-                     "name": "Azure Deployment:Create Or Update Resource Group action on {{WebAppName}}",
+                     "name": "Azure Deployment:Create Or Update Resource Group action on {{WebbotName}}",
                      "enabled": true,
                      "refName": "arm",
                      "alwaysRun": false,
@@ -367,7 +367,7 @@
                   {
                      "taskId": "497d490f-eea7-4f2b-ab94-48d9c1acdcb1",
                      "version": "2.*",
-                     "name": "Deploy AzureRM Web App: {{WebAppName}}Prod",
+                     "name": "Deploy AzureRM Web App: {{WebbotName}}Prod",
                      "enabled": true,
                      "refName": "deploy",
                      "alwaysRun": false,
@@ -376,7 +376,7 @@
                      "definitionType": "task",
                      "inputs": {
                         "ConnectedServiceName": "{{ConnectedServiceID}}",
-                        "WebAppName": "$(webSiteName)",
+                        "WebbotName": "$(webSiteName)",
                         "DeployToSlotFlag": "false",
                         "ResourceGroupName": "",
                         "SlotName": "",

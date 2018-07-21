@@ -10,7 +10,7 @@ const env = require('node-env-file');
 const assert = require(`yeoman-assert`);
 const exec = require('child_process').exec;
 
-const userAgent = `yo team`;
+const userAgent = `yo csebot`;
 
 var __basedir = process.cwd();
 
@@ -49,15 +49,15 @@ function runTests(iteration) {
 
    // RM has issues if you try to create a release on
    // a project name that was just deleted and recreated
-   //So we gen a GUID and a portion to the applicationName
+   //So we gen a GUID and a portion to the botName
    // to help with that.
    iteration.uuid = uuidV4();
 
    // Arguments
-   iteration.applicationName = iteration.appName + iteration.uuid.substring(0, 8);
+   iteration.botName = iteration.botName + iteration.uuid.substring(0, 8);
 
    var installDep = `false`;
-   context(`${iteration.appType}`, function () {
+   context(`${iteration.botType}`, function () {
       this.bail(true);
 
       before(function (done) {
@@ -70,9 +70,9 @@ function runTests(iteration) {
       context(`Execute command line`, function () {
          it(`Should complete without error`, function (done) {
             // Run the command. The parts will be verified below.
-            let cmd = `yo team ${iteration.appType} ${iteration.applicationName} ${tfs} ${azureSub} "${azureSubId}" ` +
+            let cmd = `yo csebot ${iteration.botType} ${iteration.botName} ${tfs} ${azureSub} "${azureSubId}" ` +
                `"${tenantId}" "${servicePrincipalId}" "${iteration.queue}" ${iteration.target} ${installDep} ` +
-               `"${iteration.groupId}" "${dockerHost}" "${dockerCertPath}" "${dockerRegistry}" ` +
+               `"${dockerHost}" "${dockerCertPath}" "${dockerRegistry}" ` +
                `"${dockerRegistryId}" "${dockerPorts}" "${dockerRegistryPassword}" "${servicePrincipalKey}" ${pat} "${customFolder}"`;
 
             util.log(`run command: ${cmd}`);
@@ -83,7 +83,7 @@ function runTests(iteration) {
                util.log(`stderr: ${stderr}`);
 
                if (error) {
-                  // This may happen if yo team is not installed
+                  // This may happen if yo csebot is not installed
                   console.error(`exec error: ${error}`);
                   done(error);
                   return;
@@ -95,11 +95,11 @@ function runTests(iteration) {
       });
 
       context(`Verify everything was created`, function () {
-         it(`${iteration.applicationName} project should be created`, function (done) {
+         it(`${iteration.botName} project should be created`, function (done) {
             // Arrange
-            util.log(`Find project ${iteration.applicationName}`);
+            util.log(`Find project ${iteration.botName}`);
 
-            vsts.findProject(tfs, iteration.applicationName, pat, userAgent, (e, p) => {
+            vsts.findProject(tfs, iteration.botName, pat, userAgent, (e, p) => {
                // Assert
                util.log(`Error:\r\n${e}`);
                assert.ifError(e);
@@ -113,9 +113,9 @@ function runTests(iteration) {
             });
          });
 
-         it(`${iteration.applicationName}-Docker-CI build definition should be created`, function (done) {
+         it(`${iteration.botName}-Docker-CI build definition should be created`, function (done) {
             // Arrange
-            let expectedName = `${iteration.applicationName}-Docker-CI`;
+            let expectedName = `${iteration.botName}-Docker-CI`;
 
             util.log(`Find build ${expectedName}`);
 
@@ -130,9 +130,9 @@ function runTests(iteration) {
             });
          });
 
-         it(`${iteration.applicationName}-Docker-CD release definition should be created`, function (done) {
+         it(`${iteration.botName}-Docker-CD release definition should be created`, function (done) {
             // Arrange
-            let expectedName = `${iteration.applicationName}-Docker-CD`;
+            let expectedName = `${iteration.botName}-Docker-CD`;
 
             util.log(`Find release ${expectedName}`);
 
@@ -167,14 +167,14 @@ function runTests(iteration) {
          }
 
          it(`files should be created`, function () {
-            assert.ok(fs.existsSync(iteration.applicationName));
+            assert.ok(fs.existsSync(iteration.botName));
          });
       });
 
       context(`Push code to remote`, function () {
          it(`git push should succeed`, function (done) {
-            util.log(`cd to: ${__basedir}${levelsUp}${iteration.applicationName}`);
-            process.chdir(`${__basedir}${levelsUp}${iteration.applicationName}`);
+            util.log(`cd to: ${__basedir}${levelsUp}${iteration.botName}`);
+            process.chdir(`${__basedir}${levelsUp}${iteration.botName}`);
 
             util.log(`git push`);
             exec(`git push`, (error, stdout, stderr) => {
@@ -196,7 +196,7 @@ function runTests(iteration) {
          });
       });
 
-      context(`Build is running ${iteration.appType}`, function () {
+      context(`Build is running ${iteration.botType}`, function () {
          it(`build should succeed`, function (done) {
             // Wait for build to succeed or fail
             async.whilst(
@@ -230,7 +230,7 @@ function runTests(iteration) {
          });
       });
 
-      context(`Release is running ${iteration.appType}`, function () {
+      context(`Release is running ${iteration.botType}`, function () {
          it(`release should succeed in dev`, function (done) {
             iteration.id = 0;
             iteration.status = ``;
@@ -272,7 +272,7 @@ function runTests(iteration) {
                // test running at the same time VSTS will start to 
                // Timeout. Might be DOS protection.
                setTimeout(function () {
-                  azure.getAciIp(`${iteration.applicationName}Dev`, function (e, url) {
+                  azure.getAciIp(`${iteration.botName}Dev`, function (e, url) {
                      assert.ifError(e);
                      let fullUrl = `${url}:${dockerPorts}`;
                      util.log(`trying to access ${fullUrl}`);
@@ -312,10 +312,10 @@ function runTests(iteration) {
          // Delete files, project, and resource group.
          async.parallel([
             function (inParallel) {
-               // If find again because if the execution of the yo team command
+               // If find again because if the execution of the yo csebot command
                // fails the project might have been created but the test that
                // sets project id might not have been executed. 
-               vsts.findProject(tfs, iteration.applicationName, pat, userAgent, (e, p) => {
+               vsts.findProject(tfs, iteration.botName, pat, userAgent, (e, p) => {
                   if (p) {
                      iteration.projectId = p.id;
                      util.log(`delete project: ${iteration.projectId}`);
@@ -326,15 +326,15 @@ function runTests(iteration) {
                });
             },
             function (inParallel) {
-               util.log(`delete folder: ${iteration.applicationName}`);
-               util.rmdir(iteration.applicationName);
+               util.log(`delete folder: ${iteration.botName}`);
+               util.rmdir(iteration.botName);
 
                inParallel();
             },
             function (inParallel) {
                if (iteration.target !== `docker`) {
-                  util.log(`delete resource group: ${iteration.applicationName}Dev`);
-                  azure.deleteResourceGroup(`${iteration.applicationName}Dev`, inParallel);
+                  util.log(`delete resource group: ${iteration.botName}Dev`);
+                  azure.deleteResourceGroup(`${iteration.botName}Dev`, inParallel);
                } else {
                   inParallel();
                }

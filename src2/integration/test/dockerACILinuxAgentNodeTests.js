@@ -6,11 +6,10 @@ describe(`Azure Container Instances (Linux) using Hosted Linux Preview queue`, f
    "use strict";
 
    docker.runTests({
-      appType: `node`,
-      appName: `nodeACITest`,
+      botType: `node`,
+      botName: `nodeACITest`,
       target: `acilinux`,
       queue: `Hosted Linux Preview`,
-      groupId: ` `,
       title: `Home Page - My Express Application`
    });
 });

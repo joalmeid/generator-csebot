@@ -21,7 +21,7 @@ describe(`docker:index`, function () {
       return helpers.run(path.join(__dirname, `../../generators/docker`))
          .withPrompts({
             pat: `token`,
-            applicationName: `aspDemo`,
+            botName: `aspDemo`,
             dockerHost: `dockerHost`,
             dockerCertPath: `dockerCertPath`,
             dockerRegistry: `dockerRegistry`,

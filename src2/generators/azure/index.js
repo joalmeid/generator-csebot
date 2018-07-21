@@ -11,8 +11,9 @@ module.exports = class extends Generator {
       super(args, opts);
 
       // Order is important 
-      argUtils.applicationName(this);
+      argUtils.botName(this);
       argUtils.tfs(this);
+      // argUtils.pat(this); <--
       argUtils.azureSub(this);
       argUtils.azureSubId(this);
       argUtils.tenantId(this);
@@ -28,7 +29,7 @@ module.exports = class extends Generator {
       // when callbacks of prompt
       let cmdLnInput = this;
 
-      // When this generator is called alone as in team:azure
+      // When this generator is called alone as in csebot:azure
       // we have to make sure the prompts below realize they
       // need to get a subscription. If we don't setup everything
       // right now the user will not be asked for a subscription.
@@ -37,7 +38,7 @@ module.exports = class extends Generator {
       return this.prompt([
          prompts.tfs(this),
          prompts.pat(this),
-         prompts.applicationName(this),
+         prompts.botName(this),
          prompts.azureSubInput(this),
          prompts.azureSubList(this),
          prompts.azureSubId(this),
@@ -52,7 +53,7 @@ module.exports = class extends Generator {
          this.azureSub = util.reconcileValue(cmdLnInput.options.azureSub, answers.azureSub);
          this.tenantId = util.reconcileValue(cmdLnInput.options.tenantId, answers.tenantId);
          this.azureSubId = util.reconcileValue(cmdLnInput.options.azureSubId, answers.azureSubId);
-         this.applicationName = util.reconcileValue(cmdLnInput.options.applicationName, answers.applicationName);
+         this.botName = util.reconcileValue(cmdLnInput.options.botName, answers.botName);
          this.servicePrincipalId = util.reconcileValue(cmdLnInput.options.servicePrincipalId, answers.servicePrincipalId);
          this.servicePrincipalKey = util.reconcileValue(cmdLnInput.options.servicePrincipalKey, answers.servicePrincipalKey);
       }.bind(this));
@@ -69,10 +70,10 @@ module.exports = class extends Generator {
          azureSub: this.azureSub,
          tenantId: this.tenantId,
          azureSubId: this.azureSubId,
-         appName: this.applicationName,
+         botName: this.botName,
          servicePrincipalId: this.servicePrincipalId,
          servicePrincipalKey: this.servicePrincipalKey,
-         project: this.applicationName
+         project: this.botName
       };
 
       app.run(args, this, done);

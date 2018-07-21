@@ -8,13 +8,13 @@ describe(`app:index`, function () {
    it(`arguments using fake dependencies dockerpaas linux`, function () {
       // Arrange
       let deps = [
-         [helpers.createDummyGenerator(), `team:asp`],
-         [helpers.createDummyGenerator(), `team:git`],
-         [helpers.createDummyGenerator(), `team:azure`],
-         [helpers.createDummyGenerator(), `team:build`],
-         [helpers.createDummyGenerator(), `team:project`],
-         [helpers.createDummyGenerator(), `team:release`],
-         [helpers.createDummyGenerator(), `team:registry`]
+         [helpers.createDummyGenerator(), `csebot:asp`],
+         [helpers.createDummyGenerator(), `csebot:git`],
+         [helpers.createDummyGenerator(), `csebot:azure`],
+         [helpers.createDummyGenerator(), `csebot:build`],
+         [helpers.createDummyGenerator(), `csebot:project`],
+         [helpers.createDummyGenerator(), `csebot:release`],
+         [helpers.createDummyGenerator(), `csebot:registry`]
       ];
 
       let type = `asp`;
@@ -27,7 +27,6 @@ describe(`app:index`, function () {
       let queue = `Hosted Linux Preview`;
       let target = `dockerpaas`;
       let installDep = `false`;
-      let groupId = ``;
       let dockerHost = ``;
       let dockerCertPath = ``;
       let dockerRegistry = `dockerRegistry`;
@@ -42,7 +41,7 @@ describe(`app:index`, function () {
          .withGenerators(deps)
          .withArguments([type, name, tfs,
             azureSub, azureSubId, tenantId, servicePrincipalId,
-            queue, target, installDep, groupId,
+            queue, target, installDep,
             dockerHost, dockerCertPath,
             dockerRegistry, dockerRegistryId, dockerPorts, dockerRegistryPassword,
             servicePrincipalKey, pat
@@ -55,12 +54,12 @@ describe(`app:index`, function () {
    it(`arguments using fake dependencies paas`, function () {
       // Arrange
       let deps = [
-         [helpers.createDummyGenerator(), `team:asp`],
-         [helpers.createDummyGenerator(), `team:git`],
-         [helpers.createDummyGenerator(), `team:azure`],
-         [helpers.createDummyGenerator(), `team:build`],
-         [helpers.createDummyGenerator(), `team:project`],
-         [helpers.createDummyGenerator(), `team:release`]
+         [helpers.createDummyGenerator(), `csebot:asp`],
+         [helpers.createDummyGenerator(), `csebot:git`],
+         [helpers.createDummyGenerator(), `csebot:azure`],
+         [helpers.createDummyGenerator(), `csebot:build`],
+         [helpers.createDummyGenerator(), `csebot:project`],
+         [helpers.createDummyGenerator(), `csebot:release`]
       ];
 
       let type = `asp`;
@@ -73,7 +72,6 @@ describe(`app:index`, function () {
       let queue = `default`;
       let target = `paas`;
       let installDep = `false`;
-      let groupId = ``;
       let dockerHost = ``;
       let dockerCertPath = ``;
       let dockerRegistry = ``;
@@ -88,7 +86,7 @@ describe(`app:index`, function () {
          .withGenerators(deps)
          .withArguments([type, name, tfs,
             azureSub, azureSubId, tenantId, servicePrincipalId,
-            queue, target, installDep, groupId,
+            queue, target, installDep,
             dockerHost, dockerCertPath,
             dockerRegistry, dockerRegistryId, dockerPorts, dockerRegistryPassword,
             servicePrincipalKey, pat
@@ -98,18 +96,18 @@ describe(`app:index`, function () {
          });
    });
 
-   it(`arguments using fake dependencies aspFull paas`, function () {
+   it(`arguments using fake dependencies csharp paas`, function () {
       // Arrange
       let deps = [
-         [helpers.createDummyGenerator(), `team:aspFull`],
-         [helpers.createDummyGenerator(), `team:git`],
-         [helpers.createDummyGenerator(), `team:azure`],
-         [helpers.createDummyGenerator(), `team:build`],
-         [helpers.createDummyGenerator(), `team:project`],
-         [helpers.createDummyGenerator(), `team:release`]
+         [helpers.createDummyGenerator(), `csebot:csharp`],
+         [helpers.createDummyGenerator(), `csebot:git`],
+         [helpers.createDummyGenerator(), `csebot:azure`],
+         [helpers.createDummyGenerator(), `csebot:build`],
+         [helpers.createDummyGenerator(), `csebot:project`],
+         [helpers.createDummyGenerator(), `csebot:release`]
       ];
 
-      let type = `aspFull`;
+      let type = `csharp`;
       let name = `aspDemo`;
       let tfs = `vsts`;
       let azureSub = `AzureSub`;
@@ -119,7 +117,6 @@ describe(`app:index`, function () {
       let queue = `default`;
       let target = `paas`;
       let installDep = `false`;
-      let groupId = ``;
       let dockerHost = ``;
       let dockerCertPath = ``;
       let dockerRegistry = ``;
@@ -134,7 +131,7 @@ describe(`app:index`, function () {
          .withGenerators(deps)
          .withArguments([type, name, tfs,
             azureSub, azureSubId, tenantId, servicePrincipalId,
-            queue, target, installDep, groupId,
+            queue, target, installDep,
             dockerHost, dockerCertPath,
             dockerRegistry, dockerRegistryId, dockerPorts, dockerRegistryPassword,
             servicePrincipalKey, pat
@@ -146,12 +143,12 @@ describe(`app:index`, function () {
 
    it(`prompts using fake dependencies paas`, function () {
       let deps = [
-         [helpers.createDummyGenerator(), `team:asp`],
-         [helpers.createDummyGenerator(), `team:git`],
-         [helpers.createDummyGenerator(), `team:azure`],
-         [helpers.createDummyGenerator(), `team:build`],
-         [helpers.createDummyGenerator(), `team:project`],
-         [helpers.createDummyGenerator(), `team:release`]
+         [helpers.createDummyGenerator(), `csebot:asp`],
+         [helpers.createDummyGenerator(), `csebot:git`],
+         [helpers.createDummyGenerator(), `csebot:azure`],
+         [helpers.createDummyGenerator(), `csebot:build`],
+         [helpers.createDummyGenerator(), `csebot:project`],
+         [helpers.createDummyGenerator(), `csebot:release`]
       ];
 
       var cleanUp = function () {
@@ -166,7 +163,7 @@ describe(`app:index`, function () {
             pat: `token`,
             queue: `Default`,
             type: `asp`,
-            applicationName: `aspDemo`,
+            botName: `aspDemo`,
             target: `paas`,
             azureSub: `azureSub`,
             installDep: `false`
@@ -188,13 +185,13 @@ describe(`app:index`, function () {
    it(`arguments using fake dependencies docker`, function () {
       // Arrange
       let deps = [
-         [helpers.createDummyGenerator(), `team:git`],
-         [helpers.createDummyGenerator(), `team:node`],
-         [helpers.createDummyGenerator(), `team:build`],
-         [helpers.createDummyGenerator(), `team:docker`],
-         [helpers.createDummyGenerator(), `team:project`],
-         [helpers.createDummyGenerator(), `team:release`],
-         [helpers.createDummyGenerator(), `team:registry`]
+         [helpers.createDummyGenerator(), `csebot:git`],
+         [helpers.createDummyGenerator(), `csebot:node`],
+         [helpers.createDummyGenerator(), `csebot:build`],
+         [helpers.createDummyGenerator(), `csebot:docker`],
+         [helpers.createDummyGenerator(), `csebot:project`],
+         [helpers.createDummyGenerator(), `csebot:release`],
+         [helpers.createDummyGenerator(), `csebot:registry`]
       ];
 
       let type = `node`;
@@ -207,7 +204,6 @@ describe(`app:index`, function () {
       let queue = `default`;
       let target = `docker`;
       let installDep = `false`;
-      let groupId = ``;
       let dockerHost = `dockerHost`;
       let dockerCertPath = `dockerCertPath`;
       let dockerRegistry = `dockerRegistry`;
@@ -221,7 +217,7 @@ describe(`app:index`, function () {
          .withGenerators(deps)
          .withArguments([type, name, tfs,
             azureSub, azureSubId, tenantId, servicePrincipalId,
-            queue, target, installDep, groupId,
+            queue, target, installDep,
             dockerHost, dockerCertPath,
             dockerRegistry, dockerRegistryId, dockerPorts, dockerRegistryPassword,
             servicePrincipalKey, pat
@@ -233,14 +229,14 @@ describe(`app:index`, function () {
 
    it(`prompts using fake dependencies docker`, function () {
       let deps = [
-         [helpers.createDummyGenerator(), `team:asp`],
-         [helpers.createDummyGenerator(), `team:git`],
-         [helpers.createDummyGenerator(), `team:java`],
-         [helpers.createDummyGenerator(), `team:build`],
-         [helpers.createDummyGenerator(), `team:docker`],
-         [helpers.createDummyGenerator(), `team:project`],
-         [helpers.createDummyGenerator(), `team:release`],
-         [helpers.createDummyGenerator(), `team:registry`]
+         [helpers.createDummyGenerator(), `csebot:asp`],
+         [helpers.createDummyGenerator(), `csebot:git`],
+         [helpers.createDummyGenerator(), `csebot:java`],
+         [helpers.createDummyGenerator(), `csebot:build`],
+         [helpers.createDummyGenerator(), `csebot:docker`],
+         [helpers.createDummyGenerator(), `csebot:project`],
+         [helpers.createDummyGenerator(), `csebot:release`],
+         [helpers.createDummyGenerator(), `csebot:registry`]
       ];
 
       var cleanUp = function () {
@@ -254,13 +250,12 @@ describe(`app:index`, function () {
             tfs: `vsts`,
             type: `java`,
             pat: `token`,
-            groupId: `demo`,
             queue: `Default`,
             target: `docker`,
             installDep: `false`,
             dockerHost: `dockerHost`,
             dockerPorts: `dockerPorts`,
-            applicationName: `javaDemo`,
+            botName: `javaDemo`,
             dockerCertPath: `dockerCertPath`,
             dockerRegistry: `dockerRegistry`,
             dockerRegistryId: `dockerRegistryId`,

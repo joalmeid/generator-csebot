@@ -13,8 +13,8 @@ module.exports = class extends Generator {
       super(args, opts);
 
       // Order is important 
-      argUtils.applicationType(this);
-      argUtils.applicationName(this);
+      argUtils.botType(this);
+      argUtils.botName(this);
       argUtils.tfs(this);
       argUtils.queue(this);
       argUtils.target(this);
@@ -36,8 +36,8 @@ module.exports = class extends Generator {
          prompts.tfs(this),
          prompts.pat(this),
          prompts.queue(this),
-         prompts.applicationType(this),
-         prompts.applicationName(this),
+         prompts.botType(this),
+         prompts.botName(this),
          prompts.customFolder(this),
          prompts.target(this),
          prompts.dockerHost(this),
@@ -57,7 +57,7 @@ module.exports = class extends Generator {
          this.dockerHost = util.reconcileValue(cmdLnInput.options.dockerHost, answers.dockerHost, ``);
          this.customFolder = util.reconcileValue(cmdLnInput.options.customFolder, answers.customFolder, ``);
          this.dockerRegistry = util.reconcileValue(cmdLnInput.options.dockerRegistry, answers.dockerRegistry, ``);
-         this.applicationName = util.reconcileValue(cmdLnInput.options.applicationName, answers.applicationName, ``);
+         this.botName = util.reconcileValue(cmdLnInput.options.botName, answers.botName, ``);
          this.dockerRegistryId = util.reconcileValue(cmdLnInput.options.dockerRegistryId, answers.dockerRegistryId, ``);
       }.bind(this));
    }
@@ -82,8 +82,8 @@ module.exports = class extends Generator {
             buildJson: build,
             queue: _this.queue,
             target: _this.target,
-            appName: _this.applicationName,
-            project: _this.applicationName
+            botName: _this.botName,
+            project: _this.botName
          };
 
          if (util.isDocker(_this.target)) {

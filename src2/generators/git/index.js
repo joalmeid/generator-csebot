@@ -11,7 +11,7 @@ module.exports = class extends Generator {
       super(args, opts);
 
       // Order is important 
-      argUtils.applicationName(this);
+      argUtils.botName(this);
       argUtils.tfs(this);
       argUtils.gitAction(this);
       argUtils.pat(this);
@@ -27,14 +27,14 @@ module.exports = class extends Generator {
       return this.prompt([
          prompts.tfs(this),
          prompts.pat(this),
-         prompts.applicationName(this),
+         prompts.botName(this),
          prompts.gitAction(this)
       ]).then(function (answers) {
          // Transfer answers to local object for use in the rest of the generator
          this.pat = util.reconcileValue(cmdLnInput.options.pat, answers.pat);
          this.tfs = util.reconcileValue(cmdLnInput.options.tfs, answers.tfs);
          this.action = util.reconcileValue(cmdLnInput.options.action, answers.action);
-         this.applicationName = util.reconcileValue(cmdLnInput.options.applicationName, answers.applicationName);
+         this.botName = util.reconcileValue(cmdLnInput.options.botName, answers.botName);
       }.bind(this));
    }
 
@@ -44,11 +44,11 @@ module.exports = class extends Generator {
       if (this.action === `clone` || this.action === `all`) {
          // Clone the repository of the team project so the user only has to add 
          // and commit.
-         this.log(`+ Cloning repository ${util.getFullURL(this.tfs)}/_git/${this.applicationName}`);
+         this.log(`+ Cloning repository ${util.getFullURL(this.tfs)}/_git/${this.botName}`);
 
          // By adding the PAT right after https:// I can clone a repo without 
          // asking user for creds
-         let url = `${util.getFullURL(this.tfs)}/_git/${this.applicationName}`;
+         let url = `${util.getFullURL(this.tfs)}/_git/${this.botName}`;
          url = url.replace(`https://`, `https://${this.pat}@`);
 
          this.spawnCommandSync(`git`, [`clone`, `-q`, url], {
@@ -60,7 +60,7 @@ module.exports = class extends Generator {
    // 8. Called last, cleanup, say good bye, etc
    end() {
       if (this.action === `commit` || this.action === `all`) {
-         process.chdir(path.join(this.destinationRoot(), this.applicationName));
+         process.chdir(path.join(this.destinationRoot(), this.botName));
 
          this.log(`+ Adding initial files`);
          // I don`t want to see the output of this command
@@ -68,12 +68,12 @@ module.exports = class extends Generator {
             stdio: ['pipe', 'pipe', process.stderr]
          });
 
-         this.log(`+ Configuring email and name as yo team`);
-         this.spawnCommandSync(`git`, [`config`, `user.email`, `yo team`], {
+         this.log(`+ Configuring email and name as yo csebot`);
+         this.spawnCommandSync(`git`, [`config`, `user.email`, `yo csebot`], {
             stdio: ['pipe', 'pipe', process.stderr]
          });
 
-         this.spawnCommandSync(`git`, [`config`, `user.name`, `yo team`], {
+         this.spawnCommandSync(`git`, [`config`, `user.name`, `yo csebot`], {
             stdio: ['pipe', 'pipe', process.stderr]
          });
 

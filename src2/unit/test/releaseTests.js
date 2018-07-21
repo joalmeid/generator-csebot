@@ -36,7 +36,7 @@ describe(`release:index`, function () {
             pat: `token`,
             queue: `Hosted Linux Preview`,
             type: `custom`,
-            applicationName: `nodeDemo`,
+            botName: `nodeDemo`,
             customFolder: `myFolder`,
             target: `dockerpaas`,
             azureSub: `azureSub`,
@@ -90,7 +90,7 @@ describe(`release:index`, function () {
             pat: `token`,
             queue: `Hosted Linux Preview`,
             type: `node`,
-            applicationName: `nodeDemo`,
+            botName: `nodeDemo`,
             target: `dockerpaas`,
             azureSub: `azureSub`,
             dockerHost: `dockerHost`,
@@ -143,7 +143,7 @@ describe(`release:index`, function () {
             pat: `token`,
             queue: `Hosted Linux Preview`,
             type: `node`,
-            applicationName: `nodeDemo`,
+            botName: `nodeDemo`,
             target: `acilinux`,
             azureSub: `azureSub`,
             dockerHost: `dockerHost`,
@@ -195,7 +195,7 @@ describe(`release:index`, function () {
             pat: `token`,
             queue: `Hosted Linux Preview`,
             type: `node`,
-            applicationName: `nodeDemo`,
+            botName: `nodeDemo`,
             target: `acilinux`,
             azureSub: `azureSub`,
             dockerHost: `dockerHost`,
@@ -247,7 +247,7 @@ describe(`release:index`, function () {
             pat: `token`,
             queue: `Default`,
             type: `node`,
-            applicationName: `nodeDemo`,
+            botName: `nodeDemo`,
             target: `docker`,
             dockerHost: `dockerHost`,
             dockerRegistryId: `dockerRegistryId`,
@@ -295,7 +295,7 @@ describe(`release:index`, function () {
             pat: `token`,
             queue: `Default`,
             type: `node`,
-            applicationName: `nodeDemo`,
+            botName: `nodeDemo`,
             target: `docker`,
             dockerHost: `dockerHost`,
             dockerRegistryId: `dockerRegistryId`,
@@ -343,7 +343,7 @@ describe(`release:index`, function () {
             pat: `token`,
             queue: `Default`,
             type: `node`,
-            applicationName: `nodeDemo`,
+            botName: `nodeDemo`,
             target: `paasslots`,
             azureSub: `azureSub`
          })
@@ -388,7 +388,7 @@ describe(`release:index`, function () {
             pat: `token`,
             queue: `Default`,
             type: `node`,
-            applicationName: `nodeDemo`,
+            botName: `nodeDemo`,
             target: `paas`,
             azureSub: `azureSub`
          })
@@ -433,7 +433,7 @@ describe(`release:index`, function () {
             pat: `token`,
             queue: `Default`,
             type: `java`,
-            applicationName: `javaDemo`,
+            botName: `javaDemo`,
             target: `docker`,
             dockerHost: `dockerHost`,
             dockerRegistryId: `dockerRegistryId`,
@@ -480,7 +480,7 @@ describe(`release:index`, function () {
             pat: `token`,
             queue: `Default`,
             type: `java`,
-            applicationName: `javaDemo`,
+            botName: `javaDemo`,
             target: `paas`,
             azureSub: `azureSub`
          })
@@ -525,7 +525,7 @@ describe(`release:index`, function () {
             pat: `token`,
             queue: `Default`,
             type: `asp`,
-            applicationName: `aspDemo`,
+            botName: `aspDemo`,
             target: `docker`,
             dockerHost: `dockerHost`,
             dockerRegistryId: `dockerRegistryId`,
@@ -630,13 +630,13 @@ describe(`release:app`, function () {
       assert.equal(expected, actual);
    });
 
-   it(`getRelease aspFull vsts paasslots`, function (done) {
+   it(`getRelease csharp vsts paasslots`, function (done) {
       // Arrange 
       let expected = `vsts_release_slots.json`;
 
       // Act
       release.getRelease({
-         type: `aspFull`,
+         type: `csharp`,
          target: `paasslots`,
          tfs: `vsts`
       }, function (e, actual) {
@@ -646,13 +646,13 @@ describe(`release:app`, function () {
       });
    });
 
-   it(`getRelease aspFull vsts paas`, function (done) {
+   it(`getRelease csharp vsts paas`, function (done) {
       // Arrange 
       let expected = `vsts_release.json`;
 
       // Act
       release.getRelease({
-         type: `aspFull`,
+         type: `csharp`,
          target: `paas`,
          tfs: `vsts`
       }, function (e, actual) {
@@ -1297,8 +1297,8 @@ describe(`release:app`, function () {
             name: `e2eDemo-CI`
          },
          queueId: `1`,
-         type: `aspFull`,
-         appName: `e2eDemo`,
+         type: `csharp`,
+         botName: `e2eDemo`,
          approverId: `aid`,
          account: `http://localhost:8080/tfs/DefaultCollection`,
          pat: `token`,
@@ -1350,7 +1350,7 @@ describe(`release:app`, function () {
             name: `e2eDemo-CI`
          },
          queueId: `1`,
-         appName: `e2eDemo`,
+         botName: `e2eDemo`,
          approverId: `aid`,
          dockerRegistry: `https://mydockerimages-microsoft.azurecr.io`,
          account: `vsts`,
@@ -1430,7 +1430,7 @@ describe(`release:app`, function () {
             name: `e2eDemo-CI`
          },
          queueId: `1`,
-         appName: `e2eDemo`,
+         botName: `e2eDemo`,
          approverId: `aid`,
          account: `http://localhost:8080/tfs/DefaultCollection`,
          pat: `token`,

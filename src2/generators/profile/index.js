@@ -18,7 +18,7 @@ module.exports = class extends Generator {
       argUtils.profileName(this);
       argUtils.tfs(this);
       argUtils.pat(this);
-      argUtils.tfsVersion(this);
+      // argUtils.tfsVersion(this);
    }
 
    // 2. Where you prompt users for options (where you'd call this.prompt())
@@ -33,7 +33,7 @@ module.exports = class extends Generator {
          prompts.profileName(this),
          prompts.tfs(this),
          prompts.pat(this),
-         prompts.tfsVersion(this)
+         // prompts.tfsVersion(this)
       ]).then(function (answers) {
          // Transfer answers to local object for use in the rest of the generator
          // Pass the cmdLnInput first. This will make sure any command line values

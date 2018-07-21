@@ -19,24 +19,24 @@ function profileName(obj) {
    });
 }
 
-function tfsVersion(obj) {
-   obj.argument(`tfsVersion`, {
-      required: false,
-      desc: `API version to store in profile`
-   });
-}
-
-function applicationType(obj) {
+function botType(obj) {
    obj.argument(`type`, {
       required: false,
-      desc: `Project type to create (asp, node, java or aspFull)`
+      desc: `Project type to create (csharp, node, typescript)`
    });
 }
 
-function applicationName(obj) {
-   obj.argument(`applicationName`, {
+function botName(obj) {
+   obj.argument(`botName`, {
       required: false,
-      desc: `Name of the application`
+      desc: `Name of the Bot`
+   });
+}
+
+function botLocation(obj) {
+   obj.argument(`botLocation`, {
+      required: false,
+      desc: `Location of the Bot`
    });
 }
 
@@ -103,13 +103,6 @@ function installDep(obj) {
    });
 }
 
-function groupId(obj) {
-   obj.argument(`groupId`, {
-      required: false,
-      desc: `Group ID of Java project`
-   });
-}
-
 function dockerHost(obj) {
    obj.argument(`dockerHost`, {
       required: false,
@@ -162,7 +155,7 @@ function servicePrincipalKey(obj) {
 function pat(obj) {
    obj.argument(`pat`, {
       required: false,
-      desc: `Personal Access Token to TFS/VSTS`
+      desc: `Personal Access Token to VSTS`
    });
 }
 
@@ -178,13 +171,11 @@ module.exports = {
    pat: pat,
    queue: queue,
    target: target,
-   groupId: groupId,
    azureSub: azureSub,
    tenantId: tenantId,
    gitAction: gitAction,
    profileCmd: profileCmd,
    profileName: profileName,
-   tfsVersion: tfsVersion,
    azureSubId: azureSubId,
    installDep: installDep,
    dockerHost: dockerHost,
@@ -192,8 +183,9 @@ module.exports = {
    customFolder: customFolder,
    dockerCertPath: dockerCertPath,
    dockerRegistry: dockerRegistry,
-   applicationType: applicationType,
-   applicationName: applicationName,
+   botType: botType,
+   botName: botName,
+   botLocation: botLocation,
    dockerRegistryId: dockerRegistryId,
    servicePrincipalId: servicePrincipalId,
    servicePrincipalKey: servicePrincipalKey,

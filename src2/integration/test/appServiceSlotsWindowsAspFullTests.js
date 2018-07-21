@@ -4,8 +4,8 @@ describe(`Azure App Service Slots (Windows) using Default queue`, function () {
    "use strict";
    
    appService.runTests({
-      appType: `aspFull`,
-      appName: `aspFullTest`,
+      botType: `csharp`,
+      botName: `csharpTest`,
       target: `paasslots`,
       context: `Azure App Service (Windows)`,
       suffix: ``,

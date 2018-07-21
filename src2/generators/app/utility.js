@@ -27,6 +27,8 @@ const RELEASE_MANAGEMENT_SUB_DOMAIN = `vsrm`;
 
 var profile = null;
 
+// var supportedTargets = ['docker', 'dockerpaas', 'paas', 'paasslots'] //'acilinux', 
+
 var logMessage = function (msg) {
    if (process.env.LOGYO === `on`) {
       console.log(msg);
@@ -85,18 +87,7 @@ function getTargets(answers) {
    return new Promise(function (resolve, reject) {
       let targets = [];
 
-      if (answers.type === `custom`) {
-         targets = [{
-            name: `Azure`,
-            value: `paas`
-         }, {
-            name: `Docker`,
-            value: `docker`
-         }, {
-            name: `Both`,
-            value: `dockerpaas`
-         }];
-      } else if (answers.type === `aspFull`) {
+      if (answers.type === `csharp`) {
          targets = [{
             name: `Azure App Service`,
             value: `paas`
@@ -112,50 +103,27 @@ function getTargets(answers) {
             name: `Azure App Service (Deployment Slots)`,
             value: `paasslots`
          }, {
-            name: `Azure Container Instances (Linux)`,
-            value: `acilinux`
-         }, {
             name: `Azure App Service Docker (Linux)`,
             value: `dockerpaas`
          }, {
             name: `Docker Host`,
             value: `docker`
          }];
-
-         // TODO: Investigate if we need to remove these
-         // options. I think you can offer paas and paasslots
-         // for this combination. 
-         if (answers.type === `java` &&
-            answers.queue === `Hosted Linux Preview`) {
-            // Remove Azure App Service
-            targets.splice(0, 1);
-
-            // Remove Azure App Service (Deployment Slots)
-            targets.splice(0, 1);
-         }
       }
 
       resolve(targets);
    });
 }
 
-function getAppTypes(answers) {
+function getBotTypes(answers) {
    // Default to languages that work on all agents
    let types = [{
-      name: `.NET Core`,
-      value: `asp`
-   }, {
       name: `Node.js`,
       value: `node`
    }, {
-      name: `Java`,
-      value: `java`
-   }
-      // , {
-      //    name: `Custom`,
-      //    value: `custom`
-      // }
-   ];
+      name: `Typescript`,
+      value: `tsc`
+   }];
 
    // If this is not a Linux or Mac based agent also show
    // .NET Full
@@ -163,7 +131,7 @@ function getAppTypes(answers) {
       answers.queue.indexOf(`macOS`) === -1) {
       types.splice(1, 0, {
          name: `.NET Framework`,
-         value: `aspFull`
+         value: `csharp`
       });
    }
 
@@ -187,7 +155,7 @@ function getPATPrompt(answers) {
 }
 
 function getInstancePrompt() {
-   return `Enter VSTS account name\n  ({account}.visualstudio.com)\n  Or full TFS URL including collection\n  (http://tfs:8080/tfs/DefaultCollection)\n  Or name of a stored Profile?`;
+   return `Enter VSTS account name\n  ({account}.visualstudio.com)\n  Or name of a stored Profile?`;
 }
 
 function getDefaultPortMapping(answers) {
@@ -218,10 +186,6 @@ function validatePortMapping(input) {
    return validateRequired(input, `You must provide a Port Mapping`);
 }
 
-function validateGroupID(input) {
-   return validateRequired(input, `You must provide a Group ID`);
-}
-
 function validateProfileName(input) {
    return validateRequired(input, `You must provide a profile name`);
 }
@@ -230,8 +194,12 @@ function validateCustomFolder(input) {
    return validateRequired(input, `You must provide a custom template path`);
 }
 
-function validateApplicationName(input) {
+function validateBotName(input) {
    return validateRequired(input, `You must provide a name for your application`);
+}
+
+function validateBotLocation(input) {
+   return validateRequired(input, `You must provide a location for your bot`);
 }
 
 function validatePersonalAccessToken(input) {
@@ -734,7 +702,7 @@ function tryFindRelease(args, callback) {
 function findRelease(args, callback) {
    "use strict";
 
-   var name = isDocker(args.target) ? `${args.appName}-Docker-CD` : `${args.appName}-CD`;
+   var name = isDocker(args.target) ? `${args.botName}-Docker-CD` : `${args.botName}-CD`;
 
    var options = addUserAgent({
       "method": `GET`,
@@ -815,18 +783,6 @@ function getProfileCommands(answers) {
    }, {
       name: `Delete`,
       value: `delete`
-   }];
-}
-
-function getTFSVersion(answers) {
-   "use strict";
-
-   return [{
-      name: `TFS2017`,
-      value: `TFS2017`
-   }, {
-      name: `TFS2018`,
-      value: `TFS2018`
    }];
 }
 
@@ -1193,7 +1149,7 @@ module.exports = {
    getFullURL: getFullURL,
    logMessage: logMessage,
    getTargets: getTargets,
-   getAppTypes: getAppTypes,
+   getBotTypes: getBotTypes,
    checkStatus: checkStatus,
    findProject: findProject,
    findRelease: findRelease,
@@ -1207,12 +1163,10 @@ module.exports = {
    addUserAgent: addUserAgent,
    getUserAgent: getUserAgent,
    needsRegistry: needsRegistry,
-   getTFSVersion: getTFSVersion,
    tryFindRelease: tryFindRelease,
    reconcileValue: reconcileValue,
    searchProfiles: searchProfiles,
    tryFindProject: tryFindProject,
-   validateGroupID: validateGroupID,
    extractInstance: extractInstance,
    needsDockerHost: needsDockerHost,
    validateAzureSub: validateAzureSub,
@@ -1232,7 +1186,8 @@ module.exports = {
    getDefaultPortMapping: getDefaultPortMapping,
    validateAzureTenantID: validateAzureTenantID,
    validateDockerRegistry: validateDockerRegistry,
-   validateApplicationName: validateApplicationName,
+   validateBotName: validateBotName,
+   validateBotLocation: validateBotLocation,
    findAzureServiceEndpoint: findAzureServiceEndpoint,
    getDockerRegistryServer: getDockerRegistryServer,
    findDockerServiceEndpoint: findDockerServiceEndpoint,

@@ -21,7 +21,7 @@ describe(`registry:index`, function () {
       return helpers.run(path.join(__dirname, `../../generators/registry`))
          .withPrompts({
             pat: `token`,
-            applicationName: `aspDemo`,
+            botName: `aspDemo`,
             dockerRegistry: `dockerRegistry`,
             dockerRegistryId: `dockerRegistryId`,
             dockerRegistryPassword: `dockerRegistryPassword`,

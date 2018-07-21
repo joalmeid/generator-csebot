@@ -13,7 +13,7 @@ module.exports = class extends Generator {
       super(args, opts);
 
       // Order is important 
-      argUtils.applicationName(this);
+      argUtils.botName(this);
       argUtils.tfs(this);
       argUtils.dockerHost(this);
       argUtils.dockerCertPath(this);
@@ -30,7 +30,7 @@ module.exports = class extends Generator {
       return this.prompt([
          prompts.tfs(this),
          prompts.pat(this),
-         prompts.applicationName(this),
+         prompts.botName(this),
          prompts.dockerHost(this),
          prompts.dockerCertPath(this)
       ]).then(function (answers) {
@@ -39,7 +39,7 @@ module.exports = class extends Generator {
          this.tfs = util.reconcileValue(cmdLnInput.options.tfs, answers.tfs);
          this.dockerHost = util.reconcileValue(cmdLnInput.options.dockerHost, answers.dockerHost);
          this.dockerCertPath = util.reconcileValue(cmdLnInput.options.dockerCertPath, answers.dockerCertPath);
-         this.applicationName = util.reconcileValue(cmdLnInput.options.applicationName, answers.applicationName);
+         this.botName = util.reconcileValue(cmdLnInput.options.botName, answers.botName);
       }.bind(this));
    }
 
@@ -51,8 +51,8 @@ module.exports = class extends Generator {
          pat: this.pat,
          tfs: this.tfs,
          dockerHost: this.dockerHost,
-         appName: this.applicationName,
-         project: this.applicationName,
+         botName: this.botName,
+         project: this.botName,
          dockerCertPath: this.dockerCertPath
       };
 

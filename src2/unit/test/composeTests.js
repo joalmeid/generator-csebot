@@ -14,15 +14,15 @@ describe(`compose`, function () {
          let called = false;
          let target = {
             type: `node`,
-            applicationName: `nodeTest`,
+            botName: `nodeTest`,
             installDep: `false`,
             dockerPorts: `3000:3000`,
             composeWith: function () {
                called = true;
                assert.equal(arguments.length, 2, `call to composeWith has wrong number of arguments`);
-               assert.equal(arguments[0], `team:node`, `wrong generator`);
+               assert.equal(arguments[0], `csebot:node`, `wrong generator`);
                assert.equal(arguments[1].arguments.length, 3, `object has wrong number of properties`);
-               assert.equal(arguments[1].arguments[0], `nodeTest`, `object has wrong applicationName`);
+               assert.equal(arguments[1].arguments[0], `nodeTest`, `object has wrong botName`);
                assert.equal(arguments[1].arguments[1], `false`, `object has wrong installDep`);
                assert.equal(arguments[1].arguments[2], `3000:3000`, `object has wrong dockerPorts`);
             }
@@ -33,19 +33,19 @@ describe(`compose`, function () {
          assert.equal(called, true);
       }));
 
-      it(`asp`, sinonTest(function () {
+      it(`tsc`, sinonTest(function () {
          let called = false;
          let target = {
-            type: `asp`,
-            applicationName: `aspTest`,
+            type: `tsc`,
+            botName: `tscTest`,
             installDep: `true`,
             dockerPorts: `80:80`,
             composeWith: function () {
                called = true;
                assert.equal(arguments.length, 2, `call to composeWith has wrong number of arguments`);
-               assert.equal(arguments[0], `team:asp`, `wrong generator`);
+               assert.equal(arguments[0], `csebot:tsc`, `wrong generator`);
                assert.equal(arguments[1].arguments.length, 3, `object has wrong number of properties`);
-               assert.equal(arguments[1].arguments[0], `aspTest`, `object has wrong applicationName`);
+               assert.equal(arguments[1].arguments[0], `tscTest`, `object has wrong botName`);
                assert.equal(arguments[1].arguments[1], `true`, `object has wrong installDep`);
                assert.equal(arguments[1].arguments[2], `80:80`, `object has wrong dockerPorts`);
             }
@@ -56,19 +56,19 @@ describe(`compose`, function () {
          assert.equal(called, true);
       }));
 
-      it(`aspFull`, sinonTest(function () {
+      it(`csharp`, sinonTest(function () {
          let called = false;
          let target = {
-            type: `aspFull`,
-            applicationName: `aspFullTest`,
+            type: `csharp`,
+            botName: `csharpTest`,
             installDep: `true`,
             dockerPorts: `80:80`,
             composeWith: function () {
                called = true;
                assert.equal(arguments.length, 2, `call to composeWith has wrong number of arguments`);
-               assert.equal(arguments[0], `team:aspFull`, `wrong generator`);
+               assert.equal(arguments[0], `csebot:csharp`, `wrong generator`);
                assert.equal(arguments[1].arguments.length, 1, `object has wrong number of properties`);
-               assert.equal(arguments[1].arguments[0], `aspFullTest`, `object has wrong applicationName`);
+               assert.equal(arguments[1].arguments[0], `csharpTest`, `object has wrong botName`);
             }
          };
 
@@ -76,33 +76,6 @@ describe(`compose`, function () {
 
          assert.equal(called, true);
       }));
-
-      it(`java`, sinonTest(function () {
-         let called = false;
-         let target = {
-            type: `java`,
-            applicationName: `javaTest`,
-            installDep: `true`,
-            dockerPorts: `8080:8080`,
-            groupId: `unitTests`,
-            composeWith: function () {
-               called = true;
-               assert.equal(arguments.length, 2, `call to composeWith has wrong number of arguments`);
-               assert.equal(arguments[0], `team:java`, `wrong generator`);
-               assert.equal(arguments[1].arguments.length, 4, `object has wrong number of properties`);
-               assert.equal(arguments[1].arguments[0], `javaTest`, `object has wrong applicationName`);
-               assert.equal(arguments[1].arguments[1], `unitTests`, `object has wrong groupId`);
-               assert.equal(arguments[1].arguments[2], `true`, `object has wrong installDep`);
-               assert.equal(arguments[1].arguments[3], `8080:8080`, `object has wrong dockerPorts`);
-            }
-         };
-
-         compose.addLanguage(target);
-
-         assert.equal(called, true);
-      }));
-
-
 
    });
 });

@@ -18,17 +18,18 @@ module.exports = class extends Generator {
       // Order is important
       // These are position based arguments for this generator. If they are not provided
       // via the command line they will be queried during the prompting priority
-      argUtils.applicationType(this);
-      argUtils.applicationName(this);
+      // command line args
+      argUtils.botType(this);
+      argUtils.botName(this);
       argUtils.tfs(this);
       argUtils.azureSub(this);
+      argUtils.botLocation(this);
       argUtils.azureSubId(this);
       argUtils.tenantId(this);
       argUtils.servicePrincipalId(this);
       argUtils.queue(this);
       argUtils.target(this);
       argUtils.installDep(this);
-      argUtils.groupId(this);
       argUtils.dockerHost(this);
       argUtils.dockerCertPath(this);
       argUtils.dockerRegistry(this);
@@ -46,7 +47,8 @@ module.exports = class extends Generator {
       // sub generators. I also use this to determine which data I still need to
       // prompt for.
 
-      this.log(yosay(`Welcome to DevOps powered by Microsoft version ${pkg.version}`));
+      this.log(yosay(`Welcome to CSE bot generator powered by Donovan's team generator ${pkg.version}`));
+
    }
 
    // 2. Where you prompt users for options (where you`d call this.prompt())
@@ -60,12 +62,13 @@ module.exports = class extends Generator {
          prompts.tfs(this),
          prompts.pat(this),
          prompts.queue(this),
-         prompts.applicationType(this),
-         prompts.applicationName(this),
+         prompts.botType(this),
+         prompts.botName(this),
          prompts.customFolder(this),
          prompts.target(this),
          prompts.azureSubInput(this),
          prompts.azureSubList(this),
+         prompts.botLocation(this),
          prompts.azureSubId(this),
          prompts.tenantId(this),
          prompts.creationMode(this),
@@ -77,7 +80,6 @@ module.exports = class extends Generator {
          prompts.dockerRegistryUsername(this),
          prompts.dockerRegistryPassword(this),
          prompts.dockerPorts(this),
-         prompts.groupId(this),
          prompts.installDep(this)
       ]).then(function (answers) {
          // Transfer answers to global object for use in the rest of the generator
@@ -99,17 +101,17 @@ module.exports = class extends Generator {
          this.type = util.reconcileValue(cmdLnInput.options.type, answers.type);
          this.queue = util.reconcileValue(cmdLnInput.options.queue, answers.queue);
          this.target = util.reconcileValue(cmdLnInput.options.target, answers.target);
-         this.groupId = util.reconcileValue(cmdLnInput.options.groupId, answers.groupId, ``);
          this.azureSub = util.reconcileValue(cmdLnInput.options.azureSub, answers.azureSub, ``);
          this.tenantId = util.reconcileValue(cmdLnInput.options.tenantId, answers.tenantId, ``);
          this.installDep = util.reconcileValue(cmdLnInput.options.installDep, answers.installDep);
          this.azureSubId = util.reconcileValue(cmdLnInput.options.azureSubId, answers.azureSubId, ``);
+         this.botLocation = util.reconcileValue(cmdLnInput.options.botLocation, answers.botLocation, ``);
          this.dockerHost = util.reconcileValue(cmdLnInput.options.dockerHost, answers.dockerHost, ``);
          this.dockerPorts = util.reconcileValue(cmdLnInput.options.dockerPorts, answers.dockerPorts, ``);
          this.customFolder = util.reconcileValue(cmdLnInput.options.customFolder, answers.customFolder, ``);
          this.dockerRegistry = util.reconcileValue(cmdLnInput.options.dockerRegistry, answers.dockerRegistry, ``);
          this.dockerCertPath = util.reconcileValue(cmdLnInput.options.dockerCertPath, answers.dockerCertPath, ``);
-         this.applicationName = util.reconcileValue(cmdLnInput.options.applicationName, answers.applicationName, ``);
+         this.botName = util.reconcileValue(cmdLnInput.options.botName, answers.botName, ``);
          this.dockerRegistryId = util.reconcileValue(cmdLnInput.options.dockerRegistryId, answers.dockerRegistryId, ``);
          this.servicePrincipalId = util.reconcileValue(cmdLnInput.options.servicePrincipalId, answers.servicePrincipalId, ``);
          this.servicePrincipalKey = util.reconcileValue(cmdLnInput.options.servicePrincipalKey, answers.servicePrincipalKey, ``);

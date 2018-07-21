@@ -26,7 +26,7 @@ describe(`build:index`, function () {
       return helpers.run(path.join(__dirname, `../../generators/build`))
          .withPrompts({
             type: `custom`,
-            applicationName: `aspDemo`,
+            botName: `aspDemo`,
             customFolder: `myFolder`,
             target: `paas`,
             tfs: `http://localhost:8080/tfs/DefaultCollection`,
@@ -75,7 +75,7 @@ describe(`build:index`, function () {
       return helpers.run(path.join(__dirname, `../../generators/build`))
          .withPrompts({
             type: `asp`,
-            applicationName: `aspDemo`,
+            botName: `aspDemo`,
             target: `paas`,
             tfs: `http://localhost:8080/tfs/DefaultCollection`,
             queue: `Default`,
@@ -108,7 +108,7 @@ describe(`build:index`, function () {
          });
    });
 
-   it(`test prompts tfs 2017 aspFull:paas should not return error`, function () {
+   it(`test prompts tfs 2017 csharp:paas should not return error`, function () {
       let cleanUp = function () {
          util.getPools.restore();
          util.findQueue.restore();
@@ -122,8 +122,8 @@ describe(`build:index`, function () {
 
       return helpers.run(path.join(__dirname, `../../generators/build`))
          .withPrompts({
-            type: `aspFull`,
-            applicationName: `aspDemo`,
+            type: `csharp`,
+            botName: `aspDemo`,
             target: `paas`,
             tfs: `http://localhost:8080/tfs/DefaultCollection`,
             queue: `Default`,
@@ -171,7 +171,7 @@ describe(`build:index`, function () {
       return helpers.run(path.join(__dirname, `../../generators/build`))
          .withPrompts({
             type: `java`,
-            applicationName: `javaDemo`,
+            botName: `javaDemo`,
             target: `paas`,
             tfs: `http://localhost:8080/tfs/DefaultCollection`,
             queue: `Default`,
@@ -219,7 +219,7 @@ describe(`build:index`, function () {
       return helpers.run(path.join(__dirname, `../../generators/build`))
          .withPrompts({
             type: `node`,
-            applicationName: `nodeDemo`,
+            botName: `nodeDemo`,
             target: `paas`,
             tfs: `http://localhost:8080/tfs/DefaultCollection`,
             queue: `Default`,
@@ -267,7 +267,7 @@ describe(`build:index`, function () {
       return helpers.run(path.join(__dirname, `../../generators/build`))
          .withPrompts({
             type: `node`,
-            applicationName: `nodeDemo`,
+            botName: `nodeDemo`,
             target: `docker`,
             tfs: `http://localhost:8080/tfs/DefaultCollection`,
             queue: `Default`,
@@ -315,7 +315,7 @@ describe(`build:index`, function () {
       return helpers.run(path.join(__dirname, `../../generators/build`))
          .withPrompts({
             type: `asp`,
-            applicationName: `aspDemo`,
+            botName: `aspDemo`,
             target: `docker`,
             tfs: `http://localhost:8080/tfs/DefaultCollection`,
             queue: `Default`,
@@ -363,7 +363,7 @@ describe(`build:index`, function () {
       return helpers.run(path.join(__dirname, `../../generators/build`))
          .withPrompts({
             type: `java`,
-            applicationName: `javaDemo`,
+            botName: `javaDemo`,
             target: `docker`,
             tfs: `http://localhost:8080/tfs/DefaultCollection`,
             queue: `Default`,
@@ -610,13 +610,13 @@ describe(`build:app`, function () {
       assert.equal(expected, actual);
    });
 
-   it(`getBuild aspFull vsts pass`, function (done) {
+   it(`getBuild csharp vsts pass`, function (done) {
       // Arrange 
-      let expected = `vsts_aspFull_build.json`;
+      let expected = `vsts_csharp_build.json`;
 
       // Act
       build.getBuild({
-         type: `aspFull`,
+         type: `csharp`,
          target: `paas`,
          tfs: `vsts`
       }, function (e, actual) {

@@ -10,7 +10,7 @@ const env = require('node-env-file');
 const assert = require(`yeoman-assert`);
 const exec = require('child_process').exec;
 
-const userAgent = `yo team`;
+const userAgent = `yo csebot`;
 
 var __basedir = process.cwd();
 
@@ -21,12 +21,12 @@ env(__dirname + '/.env', {
    overwrite: true
 });
 
-function requestSite(applicationName, env, title, cb) {
+function requestSite(botName, env, title, cb) {
    // We need to try the AppService Docker sites at least twice. The first
    // request downloads the image which can cause a server error. You just
    // need to request the site a second time. 
    // Wait before trying to access this site.
-   azure.getWebsiteURL(`${applicationName}${env}`, function (e, url) {
+   azure.getWebsiteURL(`${botName}${env}`, function (e, url) {
       assert.ifError(e);
       util.log(`trying to access ${url}`);
 
@@ -70,13 +70,13 @@ function runTests(iteration) {
 
    // RM has issues if you try to create a release on
    // a project name that was just deleted and recreated
-   //So we gen a GUID and a portion to the applicationName
+   //So we gen a GUID and a portion to the botName
    // to help with that.
    let uuid = uuidV4();
 
    // Arguments
-   var applicationType = iteration.appType;
-   var applicationName = iteration.appName + uuid.substring(0, 8);
+   var botType = iteration.botType;
+   var botName = iteration.botName + uuid.substring(0, 8);
    var tfs = process.env.ACCT;
    var azureSub = process.env.AZURE_SUB || ` `;
    var azureSubId = process.env.AZURE_SUB_ID || ` `;
@@ -85,7 +85,6 @@ function runTests(iteration) {
    var queue = iteration.queue;
    var target = iteration.target;
    var installDep = `false`;
-   var groupId = iteration.appName || ` `;
    var customFolder = iteration.customFolder || ` `;
    var dockerHost = process.env.DOCKER_HOST || ` `;
    var dockerCertPath = process.env.DOCKER_CERT_PATH || ` `;
@@ -102,21 +101,21 @@ function runTests(iteration) {
    // vs. run on a build machine. 
    var levelsUp = process.env.LEVELS_UP || `/../`;
 
-   context(`Running Yo Team ${iteration.appType}`, function () {
+   context(`Running Yo Team ${iteration.botType}`, function () {
       this.bail(true);
 
       before(function (done) {
          // runs before all tests in this block
          // Run the command. The parts will be verified below.
-         let cmd = `yo team ${applicationType} ${applicationName} ${tfs} ${azureSub} "${azureSubId}" ` +
+         let cmd = `yo csebot ${botType} ${botName} ${tfs} ${azureSub} "${azureSubId}" ` +
             `"${tenantId}" "${servicePrincipalId}" "${queue}" ${target} ${installDep} ` +
-            `"${groupId}" "${dockerHost}" "${dockerCertPath}" "${dockerRegistry}" ` +
+            `"${dockerHost}" "${dockerCertPath}" "${dockerRegistry}" ` +
             `"${dockerRegistryId}" "${dockerPorts}" "${dockerRegistryPassword}" "${servicePrincipalKey}" ${pat} "${customFolder}"`;
 
          util.log(`run command: ${cmd}`);
 
          // Act
-         // Execute yo team and log into azure (used during clean up).
+         // Execute yo csebot and log into azure (used during clean up).
          async.parallel([
             function (parallel) {
                exec(cmd, (error, stdout, stderr) => {
@@ -124,7 +123,7 @@ function runTests(iteration) {
                   util.log(`stderr: ${stderr}`);
 
                   if (error) {
-                     // This may happen if yo team is not installed
+                     // This may happen if yo csebot is not installed
                      console.error(`exec error: ${error}`);
                      parallel(error);
                      return;
@@ -140,9 +139,9 @@ function runTests(iteration) {
       });
 
       context(`Verify everything was created`, function () {
-         it(`${applicationName} project should be created`, function (done) {
+         it(`${botName} project should be created`, function (done) {
             // Arrange
-            let expectedName = `${applicationName}`;
+            let expectedName = `${botName}`;
 
             util.log(`Find project ${expectedName}`);
 
@@ -157,9 +156,9 @@ function runTests(iteration) {
             });
          });
 
-         it(`${applicationName}${iteration.suffix}-CI build definition should be created`, function (done) {
+         it(`${botName}${iteration.suffix}-CI build definition should be created`, function (done) {
             // Arrange
-            let expectedName = `${applicationName}${iteration.suffix}-CI`;
+            let expectedName = `${botName}${iteration.suffix}-CI`;
 
             util.log(`Find build ${expectedName}`);
 
@@ -172,9 +171,9 @@ function runTests(iteration) {
             });
          });
 
-         it(`${applicationName}${iteration.suffix}-CD release definition should be created`, function (done) {
+         it(`${botName}${iteration.suffix}-CD release definition should be created`, function (done) {
             // Arrange
-            let expectedName = `${applicationName}${iteration.suffix}-CD`;
+            let expectedName = `${botName}${iteration.suffix}-CD`;
 
             util.log(`Find release ${expectedName}`);
 
@@ -209,14 +208,14 @@ function runTests(iteration) {
          });
 
          it(`files should be created`, function () {
-            assert.ok(fs.existsSync(applicationName));
+            assert.ok(fs.existsSync(botName));
          });
       });
 
       context(`Push code to remote`, function () {
          it(`git push should succeed`, function (done) {
-            util.log(`cd to: ${__basedir}${levelsUp}${applicationName}`);
-            process.chdir(`${__basedir}${levelsUp}${applicationName}`);
+            util.log(`cd to: ${__basedir}${levelsUp}${botName}`);
+            process.chdir(`${__basedir}${levelsUp}${botName}`);
 
             util.log(`git push`);
             exec(`git push`, (error, stdout, stderr) => {
@@ -238,7 +237,7 @@ function runTests(iteration) {
          });
       });
 
-      context(`Build is running ${iteration.appType}`, function () {
+      context(`Build is running ${iteration.botType}`, function () {
          it(`build should succeed`, function (done) {
             let id = 0;
             let result = ``;
@@ -275,7 +274,7 @@ function runTests(iteration) {
          });
       });
 
-      context(`Release to Dev is running ${iteration.appType}`, function () {
+      context(`Release to Dev is running ${iteration.botType}`, function () {
          it(`release should succeed in dev`, function (done) {
             let id = 0;
             let status = ``;
@@ -313,7 +312,7 @@ function runTests(iteration) {
             // Some sites take a while to jit.
             this.retries(30);
 
-            requestSite(applicationName, "Dev", iteration.title, done);
+            requestSite(botName, "Dev", iteration.title, done);
          });
 
          it(`approval is waiting to qa`, function (done) {
@@ -331,7 +330,7 @@ function runTests(iteration) {
          });
       });
 
-      context(`Release to QA is running ${iteration.appType}`, function () {
+      context(`Release to QA is running ${iteration.botType}`, function () {
          it(`release should succeed in qa`, function (done) {
             let id = 0;
             let status = ``;
@@ -375,7 +374,7 @@ function runTests(iteration) {
             // Some sites take a while to jit.
             this.retries(30);
 
-            requestSite(applicationName, "QA", iteration.title, done);
+            requestSite(botName, "QA", iteration.title, done);
          });
 
          it(`approval is waiting to prod`, function (done) {
@@ -393,7 +392,7 @@ function runTests(iteration) {
          });
       });
 
-      context(`Release to Prod is running ${iteration.appType}`, function () {
+      context(`Release to Prod is running ${iteration.botType}`, function () {
          it(`release should succeed in prod`, function (done) {
             let id = 0;
             let status = ``;
@@ -436,7 +435,7 @@ function runTests(iteration) {
             // Some sites take a while to jit.
             this.retries(30);
 
-            requestSite(applicationName, "Prod", iteration.title, done);
+            requestSite(botName, "Prod", iteration.title, done);
          });
       });
 
@@ -450,7 +449,7 @@ function runTests(iteration) {
          // Delete files, project, and resource group.
          async.parallel([
             function (inParallel) {
-               vsts.findProject(tfs, applicationName, pat, userAgent, (e, p) => {
+               vsts.findProject(tfs, botName, pat, userAgent, (e, p) => {
                   if (!e) {
                      util.log(`delete project: ${p.id}`);
                      vsts.deleteProject(tfs, p.id, pat, userAgent, inParallel);
@@ -458,22 +457,22 @@ function runTests(iteration) {
                });
             },
             function (inParallel) {
-               util.log(`delete folder: ${applicationName}`);
-               util.rmdir(applicationName);
+               util.log(`delete folder: ${botName}`);
+               util.rmdir(botName);
 
                inParallel();
             },
             function (inParallel) {
-               util.log(`delete resource group: ${applicationName}Dev`);
-               azure.deleteResourceGroup(`${applicationName}Dev`, inParallel);
+               util.log(`delete resource group: ${botName}Dev`);
+               azure.deleteResourceGroup(`${botName}Dev`, inParallel);
             },
             function (inParallel) {
-               util.log(`delete resource group: ${applicationName}QA`);
-               azure.deleteResourceGroup(`${applicationName}QA`, inParallel);
+               util.log(`delete resource group: ${botName}QA`);
+               azure.deleteResourceGroup(`${botName}QA`, inParallel);
             },
             function (inParallel) {
-               util.log(`delete resource group: ${applicationName}Prod`);
-               azure.deleteResourceGroup(`${applicationName}Prod`, inParallel);
+               util.log(`delete resource group: ${botName}Prod`);
+               azure.deleteResourceGroup(`${botName}Prod`, inParallel);
             }
          ], done);
       });

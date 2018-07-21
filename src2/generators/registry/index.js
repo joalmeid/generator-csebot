@@ -13,7 +13,7 @@ module.exports = class extends Generator {
       super(args, opts);
 
       // Order is important 
-      argUtils.applicationName(this);
+      argUtils.botName(this);
       argUtils.tfs(this);
       argUtils.dockerRegistry(this);
       argUtils.dockerRegistryId(this);
@@ -31,7 +31,7 @@ module.exports = class extends Generator {
       return this.prompt([
          prompts.tfs(this),
          prompts.pat(this),
-         prompts.applicationName(this),
+         prompts.botName(this),
          prompts.dockerRegistry(this),
          prompts.dockerRegistryUsername(this),
          prompts.dockerRegistryPassword(this)
@@ -40,7 +40,7 @@ module.exports = class extends Generator {
          this.pat = util.reconcileValue(cmdLnInput.options.pat, answers.pat);
          this.tfs = util.reconcileValue(cmdLnInput.options.tfs, answers.tfs);
          this.dockerRegistry = util.reconcileValue(cmdLnInput.options.dockerRegistry, answers.dockerRegistry);
-         this.applicationName = util.reconcileValue(cmdLnInput.options.applicationName, answers.applicationName);
+         this.botName = util.reconcileValue(cmdLnInput.options.botName, answers.botName);
          this.dockerRegistryId = util.reconcileValue(cmdLnInput.options.dockerRegistryId, answers.dockerRegistryId);
          this.dockerRegistryPassword = util.reconcileValue(cmdLnInput.options.dockerRegistryPassword, answers.dockerRegistryPassword);
       }.bind(this));
@@ -53,8 +53,8 @@ module.exports = class extends Generator {
       var args = {
          pat: this.pat,
          tfs: this.tfs,
-         appName: this.applicationName,
-         project: this.applicationName,
+         botName: this.botName,
+         project: this.botName,
          dockerRegistry: this.dockerRegistry,
          dockerRegistryId: this.dockerRegistryId,
          dockerRegistryPassword: this.dockerRegistryPassword

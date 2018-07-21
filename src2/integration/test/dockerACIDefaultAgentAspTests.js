@@ -4,11 +4,10 @@ describe(`Azure Container Instances (Linux) using Default queue`, function () {
    "use strict";
 
    docker.runTests({
-      appType: `asp`,
-      appName: `aspACITest`,
+      botType: `asp`,
+      botName: `aspACITest`,
       target: `acilinux`,
       queue: `Default`,
-      groupId: ` `,
       title: `Home Page - My .NET Core Application`
    });
 });

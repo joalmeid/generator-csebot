@@ -6,11 +6,10 @@ describe(`Azure Container Instances (Linux) using Hosted Linux Preview queue`, f
    "use strict";
 
    docker.runTests({
-      appType: `asp`,
-      appName: `aspACITest`,
+      botType: `asp`,
+      botName: `aspACITest`,
       target: `acilinux`,
       queue: `Hosted Linux Preview`,
-      groupId: ` `,
       title: `Home Page - My .NET Core Application`
    });
 });

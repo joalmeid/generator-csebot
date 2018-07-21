@@ -4,8 +4,8 @@ describe(`Azure App Service (Windows) using Default queue`, function () {
    "use strict";
 
    appService.runTests({
-      appType: `asp`,
-      appName: `aspPaaSTest`,
+      botType: `asp`,
+      botName: `aspPaaSTest`,
       target: `paas`,
       context: `Azure App Service (Windows)`,
       suffix: ``,

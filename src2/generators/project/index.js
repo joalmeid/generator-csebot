@@ -14,7 +14,7 @@ module.exports = class extends Generator {
       super(args, opts);
 
       // Order is important 
-      argUtils.applicationName(this);
+      argUtils.botName(this);
       argUtils.tfs(this);
       argUtils.pat(this);
    }
@@ -29,12 +29,12 @@ module.exports = class extends Generator {
       return this.prompt([
          prompts.tfs(this),
          prompts.pat(this),
-         prompts.applicationName(this)
+         prompts.botName(this)
       ]).then(function (answers) {
          // Transfer answers to local object for use in the rest of the generator
          this.pat = util.reconcileValue(cmdLnInput.options.pat, answers.pat);
          this.tfs = util.reconcileValue(cmdLnInput.options.tfs, answers.tfs);
-         this.applicationName = util.reconcileValue(cmdLnInput.options.applicationName, answers.applicationName);
+         this.botName = util.reconcileValue(cmdLnInput.options.botName, answers.botName);
       }.bind(this));
    }
 

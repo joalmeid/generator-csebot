@@ -32,7 +32,7 @@ describe(`project:index cmdLine`, function () {
 
    it(`project should be created`, function (done) {
       // Act
-      let cmd = `yo team:project ${expectedProjectName} ${tfs} ${pat}`;
+      let cmd = `yo csebot:project ${expectedProjectName} ${tfs} ${pat}`;
       
       exec(cmd, (error, stdout, stderr) => {
          if (error) {
@@ -55,7 +55,7 @@ describe(`project:index cmdLine`, function () {
 
    after(function (done) {
       // runs after all tests in this block
-      vsts.deleteProject(tfs, projectId, pat, `yo team`, function (e) {
+      vsts.deleteProject(tfs, projectId, pat, `yo csebot`, function (e) {
          done(e);
       });
    });

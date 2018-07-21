@@ -44,7 +44,7 @@ describe(`project:index`, function () {
 
       return helpers.run(path.join(__dirname, `../../generators/project`))
          .withPrompts({
-            applicationName: `unitTest`,
+            botName: `unitTest`,
             tfs: `unitTest`
          })
          .on(`error`, function (error) {
@@ -124,7 +124,7 @@ describe(`project:app`, function () {
          tfs: `http://localhost:8080/tfs/DefaultCollection`,
          pat: `token`,
          project: `e2eDemo`,
-         appName: `e2eDemo`,
+         botName: `e2eDemo`,
          queue: `Default`,
          azureSub: `AzureSub`,
          target: `paas`,
@@ -188,7 +188,7 @@ describe(`project:app`, function () {
          tfs: `http://localhost:8080/tfs/DefaultCollection`,
          pat: `token`,
          project: `e2eDemo`,
-         appName: `e2eDemo`,
+         botName: `e2eDemo`,
          queue: `Default`,
          azureSub: `AzureSub`,
          target: `paas`,
@@ -246,7 +246,7 @@ describe(`project:app`, function () {
          tfs: `http://localhost:8080/tfs/DefaultCollection`,
          pat: `token`,
          project: `e2eDemo`,
-         appName: `e2eDemo`,
+         botName: `e2eDemo`,
          queue: `Default`,
          azureSub: `AzureSub`,
          target: `paas`,
@@ -302,7 +302,7 @@ describe(`project:app`, function () {
          tfs: `http://localhost:8080/tfs/DefaultCollection`,
          pat: `token`,
          project: `e2eDemo`,
-         appName: `e2eDemo`,
+         botName: `e2eDemo`,
          queue: `Default`,
          azureSub: `AzureSub`,
          target: `paas`,

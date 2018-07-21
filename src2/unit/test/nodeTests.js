@@ -4,7 +4,7 @@ const fs = require(`fs-extra`);
 const helpers = require(`yeoman-test`);
 const assert = require(`yeoman-assert`);
 
-describe(`team:node docker`, function () {
+describe(`csebot:node docker`, function () {
    var spawnStub;
 
    before(function () {
@@ -63,7 +63,7 @@ describe(`team:node docker`, function () {
    });
 });
 
-describe(`team:node paas`, function () {
+describe(`csebot:node paas`, function () {
    var bowerStub;
 
    before(function () {

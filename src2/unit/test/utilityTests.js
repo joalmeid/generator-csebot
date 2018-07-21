@@ -628,11 +628,11 @@ describe(`utility`, function () {
          });
       });
 
-      it(`getTargets Default queue, aspFull app type 2018/VSTS`, function (done) {
+      it(`getTargets Default queue, csharp app type 2018/VSTS`, function (done) {
          // Arrange
          let answers = {
             queue: `Default`,
-            type: `aspFull`,
+            type: `csharp`,
             tfs: `vsts`,
             pat: `token`
          };
@@ -648,11 +648,11 @@ describe(`utility`, function () {
          });
       });
 
-      it(`getTargets Default queue, aspFull app type 2017`, function (done) {
+      it(`getTargets Default queue, csharp app type 2017`, function (done) {
          // Arrange
          let answers = {
             queue: `Default`,
-            type: `aspFull`,
+            type: `csharp`,
             tfs: `http://localhost:8080/tfs/DefaultCollection`,
             pat: `token`
          };
@@ -780,7 +780,7 @@ describe(`utility`, function () {
       assert.equal(expected, actual);
    });
 
-   it(`getAppTypes linux`, function () {
+   it(`getbotTypes linux`, function () {
 
       // Arrange
       let answers = {
@@ -788,13 +788,13 @@ describe(`utility`, function () {
       };
 
       // Act
-      let actual = util.getAppTypes(answers);
+      let actual = util.getbotTypes(answers);
 
       // Assert
       assert.equal(3, actual.length, `Wrong number of items returned`);
    });
 
-   it(`getAppTypes macOS`, function () {
+   it(`getbotTypes macOS`, function () {
 
       // Arrange
       let answers = {
@@ -802,13 +802,13 @@ describe(`utility`, function () {
       };
 
       // Act
-      let actual = util.getAppTypes(answers);
+      let actual = util.getbotTypes(answers);
 
       // Assert
       assert.equal(3, actual.length, `Wrong number of items returned`);
    });
 
-   it(`getAppTypes default`, function () {
+   it(`getbotTypes default`, function () {
 
       // Arrange
       let answers = {
@@ -816,7 +816,7 @@ describe(`utility`, function () {
       };
 
       // Act
-      let actual = util.getAppTypes(answers);
+      let actual = util.getbotTypes(answers);
 
       // Assert
       assert.equal(4, actual.length, `Wrong number of items returned`);
@@ -1104,12 +1104,8 @@ describe(`utility`, function () {
          assert.equal(`You must provide a Port Mapping`, util.validatePortMapping(null));
       });
 
-      it(`validateApplicationName should return error`, function () {
-         assert.equal(`You must provide a name for your application`, util.validateApplicationName(null));
-      });
-
-      it(`validateGroupID should return error`, function () {
-         assert.equal(`You must provide a Group ID`, util.validateGroupID(null));
+      it(`validateBotName should return error`, function () {
+         assert.equal(`You must provide a name for your application`, util.validateBotName(null));
       });
 
       it(`validatePersonalAccessToken should return error`, function () {
@@ -1830,7 +1826,7 @@ describe(`utility`, function () {
 
       var args = {
          target: `paas`,
-         appName: `e2eDemo`,
+         botName: `e2eDemo`,
          token: `token`,
          account: `http://localhost:8080/tfs/DefaultCollection`,
          teamProject: {
@@ -1865,7 +1861,7 @@ describe(`utility`, function () {
       var args = {
          token: `token`,
          target: `docker`,
-         appName: `e2eDemo`,
+         botName: `e2eDemo`,
          teamProject: {
             name: `e2eDemo`
          },
@@ -1897,7 +1893,7 @@ describe(`utility`, function () {
       var args = {
          token: `token`,
          target: `paas`,
-         appName: `e2eDemo`,
+         botName: `e2eDemo`,
          teamProject: {
             name: `e2eDemo`
          },

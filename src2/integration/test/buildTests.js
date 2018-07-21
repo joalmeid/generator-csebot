@@ -26,19 +26,19 @@ describe(`Testing PaaS builds`, function () {
    let uuid = uuidV4();
 
    var iterations = [{
-      appType: `asp`,
+      botType: `asp`,
       target: `paas`,
       suffix: ``
    }, {
-      appType: `java`,
+      botType: `java`,
       target: `paas`,
       suffix: ``
    }, {
-      appType: `node`,
+      botType: `node`,
       target: `paas`,
       suffix: ``
    }, {
-      appType: `aspFull`,
+      botType: `csharp`,
       target: `paas`,
       suffix: ``
    }];
@@ -66,9 +66,9 @@ describe(`Testing PaaS builds`, function () {
 
       iterations.forEach(function (iteration) {
 
-         context(`Creating ${iteration.appType} build`, function () {
+         context(`Creating ${iteration.botType} build`, function () {
 
-            it(`${iteration.appType} - ${projectName}${iteration.suffix}-CI build should be created`, function (done) {
+            it(`${iteration.botType} - ${projectName}${iteration.suffix}-CI build should be created`, function (done) {
                // Arrange
                expectedName = `${projectName}${iteration.suffix}-CI`;
 
@@ -76,7 +76,7 @@ describe(`Testing PaaS builds`, function () {
                dockerRegistryId = ``;
 
                // Act
-               let cmd = `yo team:build ${iteration.appType} ${projectName} ${acct} ${queue} ${iteration.target} '${dockerHost}' '${dockerRegistry}' '${dockerRegistryId}' ${pat}`;
+               let cmd = `yo csebot:build ${iteration.botType} ${projectName} ${acct} ${queue} ${iteration.target} '${dockerHost}' '${dockerRegistry}' '${dockerRegistryId}' ${pat}`;
 
                util.log(`run command: ${cmd}`);
 
@@ -102,7 +102,7 @@ describe(`Testing PaaS builds`, function () {
             afterEach(function (done) {
                // runs after each test in this block
                util.log(`deleting build: ${buildDefinitionId}`);
-               vsts.deleteBuildDefinition(acct, projectId, buildDefinitionId, pat, `yo team`, function (e) {
+               vsts.deleteBuildDefinition(acct, projectId, buildDefinitionId, pat, `yo csebot`, function (e) {
                   done(e);
                });
             });
@@ -111,7 +111,7 @@ describe(`Testing PaaS builds`, function () {
 
       after(function (done) {
          // runs after all tests in this block
-         vsts.deleteProject(acct, projectId, pat, `yo team`, function (e) {
+         vsts.deleteProject(acct, projectId, pat, `yo csebot`, function (e) {
             done(e);
          });
       });
@@ -124,39 +124,39 @@ describe(`Testing Docker builds without Docker service endpoint`, function () {
    let uuid = uuidV4();
 
    var iterations = [{
-      appType: `asp`,
+      botType: `asp`,
       target: `docker`,
       suffix: `-Docker`
    }, {
-      appType: `java`,
+      botType: `java`,
       target: `docker`,
       suffix: `-Docker`
    }, {
-      appType: `node`,
+      botType: `node`,
       target: `docker`,
       suffix: `-Docker`
    }, {
-      appType: `asp`,
+      botType: `asp`,
       target: `acilinux`,
       suffix: `-Docker`
    }, {
-      appType: `java`,
+      botType: `java`,
       target: `acilinux`,
       suffix: `-Docker`
    }, {
-      appType: `node`,
+      botType: `node`,
       target: `acilinux`,
       suffix: `-Docker`
    }, {
-      appType: `asp`,
+      botType: `asp`,
       target: `dockerpaas`,
       suffix: `-Docker`
    }, {
-      appType: `java`,
+      botType: `java`,
       target: `dockerpaas`,
       suffix: `-Docker`
    }, {
-      appType: `node`,
+      botType: `node`,
       target: `dockerpaas`,
       suffix: `-Docker`
    }];
@@ -183,9 +183,9 @@ describe(`Testing Docker builds without Docker service endpoint`, function () {
       });
 
       iterations.forEach(function (iteration) {
-         context(`Creating ${iteration.appType} build targeting ${iteration.target} with Default queue`, function () {
+         context(`Creating ${iteration.botType} build targeting ${iteration.target} with Default queue`, function () {
 
-            it(`${iteration.appType} - ${projectName}${iteration.suffix}-CI build should NOT be created`, function (done) {
+            it(`${iteration.botType} - ${projectName}${iteration.suffix}-CI build should NOT be created`, function (done) {
                // Arrange
                expectedName = `${projectName}${iteration.suffix}-CI`;
 
@@ -193,7 +193,7 @@ describe(`Testing Docker builds without Docker service endpoint`, function () {
                dockerRegistryId = ``;
 
                // Act
-               let cmd = `yo team:build ${iteration.appType} ${projectName} ${acct} "${queue}" ${iteration.target} '${dockerHost}' '${dockerRegistry}' '${dockerRegistryId}' ${pat}`;
+               let cmd = `yo csebot:build ${iteration.botType} ${projectName} ${acct} "${queue}" ${iteration.target} '${dockerHost}' '${dockerRegistry}' '${dockerRegistryId}' ${pat}`;
 
                util.log(`run command: ${cmd}`);
 
@@ -220,9 +220,9 @@ describe(`Testing Docker builds without Docker service endpoint`, function () {
          // If you are using your own docker host you have to provide a service endpoint even if you 
          // are using the Linux agent.
          if (util.isVSTS(acct) && iteration.target !== `docker`) {
-            context(`Creating ${iteration.appType} build targeting ${iteration.target} with Linux queue`, function () {
+            context(`Creating ${iteration.botType} build targeting ${iteration.target} with Linux queue`, function () {
 
-               it(`${iteration.appType} - ${projectName}${iteration.suffix}-CI build should NOT be created`, function (done) {
+               it(`${iteration.botType} - ${projectName}${iteration.suffix}-CI build should NOT be created`, function (done) {
                   // Arrange
                   expectedName = `${projectName}${iteration.suffix}-CI`;
 
@@ -230,7 +230,7 @@ describe(`Testing Docker builds without Docker service endpoint`, function () {
                   dockerRegistryId = ``;
 
                   // Act
-                  let cmd = `yo team:build ${iteration.appType} ${projectName} ${acct} "${queue}" ${iteration.target} "${dockerHost}" "${dockerRegistry}" "${dockerRegistryId}" ${pat}`;
+                  let cmd = `yo csebot:build ${iteration.botType} ${projectName} ${acct} "${queue}" ${iteration.target} "${dockerHost}" "${dockerRegistry}" "${dockerRegistryId}" ${pat}`;
 
                   util.log(`run command: ${cmd}`);
 
@@ -257,7 +257,7 @@ describe(`Testing Docker builds without Docker service endpoint`, function () {
                   // those cases buildDefinitionId will be undefined
                   if (buildDefinitionId) {
                      util.log(`deleting build: ${buildDefinitionId}`);
-                     vsts.deleteBuildDefinition(acct, projectId, buildDefinitionId, pat, `yo team`, function (e) {
+                     vsts.deleteBuildDefinition(acct, projectId, buildDefinitionId, pat, `yo csebot`, function (e) {
                         done(e);
                      });
                   } else {
@@ -270,7 +270,7 @@ describe(`Testing Docker builds without Docker service endpoint`, function () {
 
       after(function (done) {
          // runs after all tests in this block
-         vsts.deleteProject(acct, projectId, pat, `yo team`, function (e) {
+         vsts.deleteProject(acct, projectId, pat, `yo csebot`, function (e) {
             done(e);
          });
       });

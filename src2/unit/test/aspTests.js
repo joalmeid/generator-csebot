@@ -3,7 +3,7 @@ const sinon = require(`sinon`);
 const helpers = require(`yeoman-test`);
 const assert = require(`yeoman-assert`);
 
-describe(`team:asp docker`, function () {
+describe(`csebot:asp docker`, function () {
    var spawnStub;
 
    before(function () {
@@ -47,7 +47,7 @@ describe(`team:asp docker`, function () {
    });
 });
 
-describe(`team:asp paas`, function () {
+describe(`csebot:asp paas`, function () {
    var bowerStub;
 
    before(function () {

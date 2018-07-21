@@ -18,8 +18,8 @@ module.exports = class extends Generator {
       // Order is important
       // These are position based arguments for this generator. If they are not provided
       // via the command line they will be queried during the prompting priority
-      argUtils.applicationType(this);
-      argUtils.applicationName(this);
+      argUtils.botType(this);
+      argUtils.botName(this);
       argUtils.tfs(this);
       argUtils.queue(this);
       argUtils.target(this);
@@ -49,8 +49,8 @@ module.exports = class extends Generator {
          prompts.tfs(this),
          prompts.pat(this),
          prompts.queue(this),
-         prompts.applicationType(this),
-         prompts.applicationName(this),
+         prompts.botType(this),
+         prompts.botName(this),
          prompts.customFolder(this),
          prompts.target(this),
          prompts.azureSubInput(this),
@@ -82,7 +82,7 @@ module.exports = class extends Generator {
          this.customFolder = util.reconcileValue(cmdLnInput.options.customFolder, answers.customFolder, ``);
          this.dockerRegistry = util.reconcileValue(cmdLnInput.options.dockerRegistry, answers.dockerRegistry, ``);
          this.dockerCertPath = util.reconcileValue(cmdLnInput.options.dockerCertPath, answers.dockerCertPath, ``);
-         this.applicationName = util.reconcileValue(cmdLnInput.options.applicationName, answers.applicationName, ``);
+         this.botName = util.reconcileValue(cmdLnInput.options.botName, answers.botName, ``);
          this.dockerRegistryId = util.reconcileValue(cmdLnInput.options.dockerRegistryId, answers.dockerRegistryId, ``);
          this.servicePrincipalId = util.reconcileValue(cmdLnInput.options.servicePrincipalId, answers.servicePrincipalId, ``);
          this.servicePrincipalKey = util.reconcileValue(cmdLnInput.options.servicePrincipalKey, answers.servicePrincipalKey, ``);

@@ -3,7 +3,8 @@
     "promptValues": {
       "authorName": "@jalmeida",
       "authorEmail": "joalmeid@microsoft.com",
-      "authorUrl": "http://joalmeid.github.io"
+      "authorUrl": "http://joalmeid.github.io",
+      "tfs": "joalmeid"
     }
   }
 }
