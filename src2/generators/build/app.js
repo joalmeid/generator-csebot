@@ -153,26 +153,11 @@ function getBuild(args, callback) {
    let pat = util.encodePat(args.pat);
 
    if (util.isDocker(args.target)) {
-      util.isTFSGreaterThan2017(args.tfs, pat, (e, result) => {
-         if (result) {
-            build = `vsts_${args.type}_docker_build.json`;
-         } else {
-            build = `tfs_${args.type}_docker_build.json`;
-         }
-
-         callback(e, build);
-      });
+      build = `vsts_bot_${args.type}_docker_build.json`;
    } else {
-      util.isTFSGreaterThan2017(args.tfs, pat, (e, result) => {
-         if (result) {
-            build = `vsts_${args.type}_build.json`;
-         } else {
-            build = `tfs_${args.type}_build.json`;
-         }
-
-         callback(e, build);
-      });
+      build = `vsts_bot_${args.type}_build.json`;
    }
+   callback(build);
 }
 
 module.exports = {

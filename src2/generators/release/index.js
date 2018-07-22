@@ -19,12 +19,12 @@ module.exports = class extends Generator {
       argUtils.queue(this);
       argUtils.target(this);
       argUtils.azureSub(this);
+      argUtils.botLocation(this);
       argUtils.dockerHost(this);
       argUtils.dockerRegistry(this);
       argUtils.dockerRegistryId(this);
       argUtils.dockerPorts(this);
       argUtils.dockerRegistryPassword(this);
-      argUtils.botLocation(this);
       argUtils.pat(this);
       // argUtils.customFolder(this);
    }
@@ -61,7 +61,7 @@ module.exports = class extends Generator {
          this.queue = util.reconcileValue(cmdLnInput.options.queue, answers.queue);
          this.target = util.reconcileValue(cmdLnInput.options.target, answers.target);
          this.azureSub = util.reconcileValue(cmdLnInput.options.azureSub, answers.azureSub, ``);
-         this.botLocation = util.reconcileValue(answers.botLocation, cmdLnInput.botLocation, ``);
+         this.botLocation = util.reconcileValue(cmdLnInput.options.botLocation, answers.botLocation, ``);
          this.dockerHost = util.reconcileValue(cmdLnInput.options.dockerHost, answers.dockerHost, ``);
          this.dockerPorts = util.reconcileValue(cmdLnInput.options.dockerPorts, answers.dockerPorts, ``);
          // this.customFolder = util.reconcileValue(cmdLnInput.options.customFolder, answers.customFolder, ``);
@@ -82,7 +82,7 @@ module.exports = class extends Generator {
       util.supportsLoadTests(this.tfs, this.pat, function (e, supportsLoadTests) {
          _this.removeloadTest = !supportsLoadTests;
 
-         app.getRelease(_this, function (e, result) {
+         app.getRelease(_this, function (result) {
             var release = _this.templatePath(result);
 
             // if (_this.type === `custom`) {
@@ -97,8 +97,8 @@ module.exports = class extends Generator {
                target: _this.target,
                releaseJson: release,
                azureSub: _this.azureSub,
+               location: _this.botLocation,
                botName: _this.botName,
-               botLocation: _this.botLocation,
                project: _this.botName
             };
 

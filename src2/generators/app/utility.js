@@ -15,7 +15,7 @@ const BUILD_API_VERSION = `2.0`;
 const PROJECT_API_VERSION = `1.0`;
 const RELEASE_API_VERSION = `3.0-preview`;
 const DISTRIBUTED_TASK_API_VERSION = `3.0-preview`;
-const SERVICE_ENDPOINTS_API_VERSION = `3.0-preview`;
+const SERVICE_ENDPOINTS_API_VERSION = `3.0-preview`; //4.1-preview.1
 
 // This location is the same as the VSTeam PowerShell module. Therefore,
 // the profiles can be shared between Yo Team and the VSTeam PowerShell

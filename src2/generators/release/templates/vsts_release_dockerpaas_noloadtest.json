@@ -27,13 +27,13 @@
          "rank": 1,
          "variables": {
             "ResourceGroupName": {
-               "value": "{{WebbotName}}Dev"
+               "value": "{{WebAppName}}Dev"
             },
             "webSiteName": {
-               "value": "{{WebbotName}}Dev{{uuid}}"
+               "value": "{{WebAppName}}Dev{{uuid}}"
             },
             "hostingPlanName": {
-               "value": "{{WebbotName}}Dev"
+               "value": "{{WebAppName}}Dev"
             }
          },
          "preDeployApprovals": {
@@ -71,7 +71,7 @@
                   {
                      "taskId": "94a74903-f93f-4075-884f-dc11f34058b4",
                      "version": "1.*",
-                     "name": "Azure Deployment:Create Or Update Resource Group action on {{WebbotName}}",
+                     "name": "Azure Deployment:Create Or Update Resource Group action on {{WebAppName}}",
                      "enabled": true,
                      "refName": "arm",
                      "alwaysRun": false,
@@ -129,16 +129,16 @@
          "rank": 2,
          "variables": {
             "ResourceGroupName": {
-               "value": "{{WebbotName}}QA"
+               "value": "{{WebAppName}}QA"
             },
             "webSiteName": {
-               "value": "{{WebbotName}}QA{{uuid}}"
+               "value": "{{WebAppName}}QA{{uuid}}"
             },
             "hostingPlanName": {
-               "value": "{{WebbotName}}QA"
+               "value": "{{WebAppName}}QA"
             },
             "webSiteURL": {
-               "value": "http://{{WebbotName}}QA{{uuid}}.azurewebsites.net/"
+               "value": "http://{{WebAppName}}QA{{uuid}}.azurewebsites.net/"
             }
          },
          "preDeployApprovals": {
@@ -185,7 +185,7 @@
                   {
                      "taskId": "94a74903-f93f-4075-884f-dc11f34058b4",
                      "version": "1.*",
-                     "name": "Azure Deployment:Create Or Update Resource Group action on {{WebbotName}}",
+                     "name": "Azure Deployment:Create Or Update Resource Group action on {{WebAppName}}",
                      "enabled": true,
                      "alwaysRun": false,
                      "refName": "arm",
@@ -243,13 +243,13 @@
          "rank": 3,
          "variables": {
             "ResourceGroupName": {
-               "value": "{{WebbotName}}Prod"
+               "value": "{{WebAppName}}Prod"
             },
             "webSiteName": {
-               "value": "{{WebbotName}}Prod{{uuid}}"
+               "value": "{{WebAppName}}Prod{{uuid}}"
             },
             "hostingPlanName": {
-               "value": "{{WebbotName}}Prod"
+               "value": "{{WebAppName}}Prod"
             }
          },
          "preDeployApprovals": {
@@ -296,7 +296,7 @@
                   {
                      "taskId": "94a74903-f93f-4075-884f-dc11f34058b4",
                      "version": "1.*",
-                     "name": "Azure Deployment:Create Or Update Resource Group action on {{WebbotName}}",
+                     "name": "Azure Deployment:Create Or Update Resource Group action on {{WebAppName}}",
                      "enabled": true,
                      "alwaysRun": false,
                      "refName": "arm",

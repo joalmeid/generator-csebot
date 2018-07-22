@@ -69,7 +69,7 @@ module.exports = class extends Generator {
       var _this = this;
       var done = this.async();
 
-      app.getBuild(this, function (e, result) {
+      app.getBuild(this, function (result) {
          var build = _this.templatePath(result);
 
          // if (_this.type === `custom`) {

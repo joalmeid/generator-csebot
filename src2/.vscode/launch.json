@@ -29,7 +29,7 @@
             "West Europe", // botLocation
             "255588a0-fd77-4e6f-8455-b24faa4e275c", // azureSubId
             "72f988bf-86f1-41af-91ab-2d7cd011db47", // tenantId
-            "TODO:servicePrincipalId", // servicePrincipalId
+            " ", //"98719e4b-6d5a-4e7d-b180-ef506768e944", // servicePrincipalId
             "Hosted Linux Preview", // queue
             "paas", // target
             "No", // installDep
@@ -39,7 +39,7 @@
             "TODO:dockerRegistryId", // dockerRegistryId
             "TODO:dockerPorts", // dockerPorts
             "TODO:dockerRegistryPassword", // dockerRegistryPassword
-            "TODO:servicePrincipalKey", // servicePrincipalKey
+            " ", //"TvYvfgINJufM+NEVmA9ulzBIfDUyRfF2jynpItV7t7s=", // servicePrincipalKey
             "zp7ymvrorounmt35bizp6d4ejilwlhzgwqfydmlp2k4aj2awokqa"  // pat
             //"C:\\JDA\\DX\\_FY19\\generator-trials" // customFolder
 

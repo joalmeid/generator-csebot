@@ -88,6 +88,7 @@ function run(args, gen, done) {
             account: args.tfs,
             target: args.target,
             botName: args.botName,
+            location: args.location,
             approverId: approverId,
             teamProject: teamProject,
             template: args.releaseJson,
@@ -126,53 +127,29 @@ function getRelease(args, callback) {
    let pat = util.encodePat(args.pat);
 
    if (util.isDocker(args.target)) {
-      util.isTFSGreaterThan2017(args.tfs, pat, (e, result) => {
-         if (result) {
 
-            // see if they support load tests or not
-            if (args.removeloadTest && args.target === `dockerpaas`) {
-               release = `vsts_release_${args.target}_noloadtest.json`;
-            } else {
-               release = `vsts_release_${args.target}.json`;
-            }
+      // see if they support load tests or not
+      if (args.removeloadTest && args.target === `dockerpaas`) {
+         release = `vsts_bot_release_${args.target}_noloadtest.json`;
+      } else {
+         release = `vsts_bot_release_${args.target}.json`;
+      }
+      callback(release);
 
-            if (!util.isVSTS(args.tfs) && args.target === `dockerpaas`) {
-               release = `tfs_2018_release_${args.target}.json`;
-            }
-         } else {
-            release = `tfs_release_${args.target}.json`;
-         }
-
-         callback(e, release);
-      });
    } else {
-      util.isTFSGreaterThan2017(args.tfs, pat, (e, result) => {
-         if (result) {
-            if (util.isVSTS(args.tfs)) {
 
-               if (args.target === `paasslots`) {
-                  release = `vsts_release_slots.json`;
-               } else {
-                  // see if they support load tests or not
-                  if (args.removeloadTest) {
-                     release = `vsts_release_noloadtest.json`;
-                  } else {
-                     release = `vsts_release.json`;
-                  }
-               }
-            } else {
-               release = `tfs_2018_release.json`;
-            }
+      if (args.target === `paasslots`) {
+         release = `vsts_bot_release_slots.json`;
+      } else {
+         // see if they support load tests or not
+         if (args.removeloadTest) {
+            release = `vsts_bot_release_noloadtest.json`;
          } else {
-            if (args.target === `paasslots`) {
-               release = `vsts_release_slots.json`;
-            } else {
-               release = `tfs_release.json`;
-            }
+            release = `vsts_bot_release.json`;
          }
+      }
 
-         callback(e, release);
-      });
+      callback(release);
    }
 }
 
@@ -212,7 +189,8 @@ function createRelease(args, gen, callback) {
    var tokens = {
       '{{BuildId}}': args.build.id,
       '"{{QueueId}}"': args.queueId,
-      '{{WebbotName}}': args.botName,
+      '{{WebAppName}}': args.botName,
+      '{{azLocation}}': args.location,
       '{{uuid}}': uuid.substring(0, 8),
       '{{BuildName}}': args.build.name,
       '{{ApproverId}}': args.approverId,
