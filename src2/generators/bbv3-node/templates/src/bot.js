@@ -4,7 +4,7 @@ const instrumentation = require('./util/instrumentation');
 
 function create(connector, botConfig) {
 
-    var azureTableClient = new botAzure.AzureTableClient('botstate', process.env.STATE_STORAGE_CONNECTION_STRING);
+    var azureTableClient = new botAzure.AzureTableClient('botstate', process.env.CUSTOMCONNSTR_STATE_STORAGE_CONNECTION_STRING);
     var tableStorage = new botAzure.AzureBotStorage({ gzipData: false }, azureTableClient);
 
     // Setting up advanced instrumentation
@@ -20,7 +20,7 @@ function create(connector, botConfig) {
     {
         'Name': bot.name,
         'Instrumentation': botConfig.APPINSIGHTS_INSTRUMENTATIONKEY,
-        'State': botConfig.STATE_STORAGE_CONNECTION_STRING,
+        'State': botConfig.CUSTOMCONNSTR_STATE_STORAGE_CONNECTION_STRING,
         'Port': botConfig.PORT,
         'MSAppId': botConfig.MICROSOFT_APP_ID,
         'LUIS': botConfig.LUIS_MODEL_URL
