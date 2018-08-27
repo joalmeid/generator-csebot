@@ -126,7 +126,7 @@
             "Resource": "[concat(variables('botTagNamePrefix'), '-connectionstrings')]"
             },
           "properties": {
-            "StorageConnectionString": {
+            "STATE_STORAGE_CONNECTION_STRING": {
               "value":
                 "[concat('DefaultEndpointsProtocol=https;AccountName=', variables('webSiteName'), ';AccountKey=', listKeys(resourceId('Microsoft.Storage/storageAccounts', variables('webSiteName')), '2015-05-01-preview').key1)]",
               "type": "Custom"
