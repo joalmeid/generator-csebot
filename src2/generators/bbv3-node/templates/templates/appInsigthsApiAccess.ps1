@@ -42,6 +42,7 @@ try
         } else { throw "Unable to remove Apikey with id $($telemetryKeys[0].Id)"; }
     } 
 
+    Write-Host "##vso[task.setvariable variable=appInsightsAPIkey]$($apiKey.ApiKey)";
     return $apiKey.ApiKey;
 }
 catch
