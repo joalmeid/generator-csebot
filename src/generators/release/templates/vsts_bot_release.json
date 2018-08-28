@@ -12,8 +12,8 @@
       "variables": {
         "ResourceGroupName": { "value": "{{WebAppName}}Dev"},
         "webSiteName": { "value": "{{WebAppName}}Dev{{uuid}}" },
-        "botMSAppID": { "value": "xxDEVxx" },
-        "botMSAppPasswd": { "value": "xxDEVxx" }
+        "botMSAppID": { "value": "5ee17bde-1761-46b7-98b0-07f5a765903d" },
+        "botMSAppPasswd": { "value": "eldMXNI@$-zoepOOW85575[" }
       },
       "preDeployApprovals": {
         "approvals": [
@@ -83,14 +83,13 @@
                 "userName": "",
                 "password": "",
                 "outputVariable": "",
-                "deploymentOutputs": "armDeploymentOutputs"
+                "deploymentOutputs": ""
               }
             },
             {
               "taskId": "72a1931b-effb-4d2e-8fd8-f8472a07cb62",
-              "version": "2.*",
+              "version": "3.*",
               "name": "Create AppInsights API Access Key",
-              "refName": "appInsightskey",
               "enabled": true,
               "alwaysRun": false,
               "continueOnError": false,
@@ -98,12 +97,13 @@
               "definitionType": "task",
               "overrideInputs": {},
               "condition": "succeeded()",
+              "refName":"appInsightsAPIKey",
               "inputs": {
                 "ConnectedServiceNameSelector": "ConnectedServiceNameARM",
                 "ConnectedServiceName": "",
                 "ConnectedServiceNameARM": "{{ConnectedServiceID}}",
                 "ScriptType": "FilePath",
-                "ScriptPath": "$(System.DefaultWorkingDirectory)/botregjda-CI/drop/templates/appInsigthsApiAccess.ps1",
+                "ScriptPath": "$(System.DefaultWorkingDirectory)/{{BuildName}}/drop/templates/appInsigthsApiAccess.ps1",
                 "Inline": "# You can write your azure powershell scripts inline here. \n# You can also pass predefined and custom variables to this script using arguments",
                 "ScriptArguments": "-ResourceGroup '$(ResourceGroupName)' -ApplicationInsightsName '$(webSiteName)-insights' -ApplicationInsightsApiKeyName '$(webSiteName)-telemetry'",
                 "TargetAzurePs": "LatestVersion"
@@ -131,7 +131,7 @@
                 "csmParametersFileLink": "",
                 "csmFile": "**/bot-registration.json",
                 "csmParametersFile": "**/bot-registration.parameters.json",
-                "overrideParameters": "-webSiteName $(webSiteName) -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\" -appInsightsAPIKey $(appInsightskey)",
+                "overrideParameters": "-webSiteName $(webSiteName) -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\" -appInsightsAPIKey $(appInsightsAPIkey)",
                 "deploymentMode": "Incremental",
                 "enableDeploymentPrerequisitesForCreate": "false",
                 "enableDeploymentPrerequisitesForSelect": "false",
@@ -304,14 +304,13 @@
                     "userName": "",
                     "password": "",
                     "outputVariable": "",
-                    "deploymentOutputs": "armDeploymentOutputs"
+                    "deploymentOutputs": ""
                   }
                 },
                 {
                   "taskId": "72a1931b-effb-4d2e-8fd8-f8472a07cb62",
-                  "version": "2.*",
+                  "version": "3.*",
                   "name": "Create AppInsights API Access Key",
-                  "refName": "appInsightskey",
                   "enabled": true,
                   "alwaysRun": false,
                   "continueOnError": false,
@@ -319,12 +318,13 @@
                   "definitionType": "task",
                   "overrideInputs": {},
                   "condition": "succeeded()",
+                  "refName":"appInsightsAPIKey",
                   "inputs": {
                     "ConnectedServiceNameSelector": "ConnectedServiceNameARM",
                     "ConnectedServiceName": "",
                     "ConnectedServiceNameARM": "{{ConnectedServiceID}}",
                     "ScriptType": "FilePath",
-                    "ScriptPath": "$(System.DefaultWorkingDirectory)/botregjda-CI/drop/templates/appInsigthsApiAccess.ps1",
+                    "ScriptPath": "$(System.DefaultWorkingDirectory)/{{BuildName}}/drop/templates/appInsigthsApiAccess.ps1",
                     "Inline": "# You can write your azure powershell scripts inline here. \n# You can also pass predefined and custom variables to this script using arguments",
                     "ScriptArguments": "-ResourceGroup '$(ResourceGroupName)' -ApplicationInsightsName '$(webSiteName)-insights' -ApplicationInsightsApiKeyName '$(webSiteName)-telemetry'",
                     "TargetAzurePs": "LatestVersion"
@@ -352,7 +352,7 @@
                     "csmParametersFileLink": "",
                     "csmFile": "**/bot-registration.json",
                     "csmParametersFile": "**/bot-registration.parameters.json",
-                    "overrideParameters": "-webSiteName $(webSiteName) -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\" -appInsightsAPIKey $(appInsightskey)",
+                    "overrideParameters": "-webSiteName $(webSiteName) -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\" -appInsightsAPIKey $(appInsightsAPIKey)",
                     "deploymentMode": "Incremental",
                     "enableDeploymentPrerequisitesForCreate": "false",
                     "enableDeploymentPrerequisitesForSelect": "false",
@@ -525,14 +525,13 @@
                     "userName": "",
                     "password": "",
                     "outputVariable": "",
-                    "deploymentOutputs": "armDeploymentOutputs"
+                    "deploymentOutputs": ""
                   }
                 },
                 {
                   "taskId": "72a1931b-effb-4d2e-8fd8-f8472a07cb62",
-                  "version": "2.*",
+                  "version": "3.*",
                   "name": "Create AppInsights API Access Key",
-                  "refName": "appInsightskey",
                   "enabled": true,
                   "alwaysRun": false,
                   "continueOnError": false,
@@ -540,12 +539,13 @@
                   "definitionType": "task",
                   "overrideInputs": {},
                   "condition": "succeeded()",
+                  "refName":"appInsightsAPIKey",
                   "inputs": {
                     "ConnectedServiceNameSelector": "ConnectedServiceNameARM",
                     "ConnectedServiceName": "",
                     "ConnectedServiceNameARM": "{{ConnectedServiceID}}",
                     "ScriptType": "FilePath",
-                    "ScriptPath": "$(System.DefaultWorkingDirectory)/botregjda-CI/drop/templates/appInsigthsApiAccess.ps1",
+                    "ScriptPath": "$(System.DefaultWorkingDirectory)/{{BuildName}}/drop/templates/appInsigthsApiAccess.ps1",
                     "Inline": "# You can write your azure powershell scripts inline here. \n# You can also pass predefined and custom variables to this script using arguments",
                     "ScriptArguments": "-ResourceGroup '$(ResourceGroupName)' -ApplicationInsightsName '$(webSiteName)-insights' -ApplicationInsightsApiKeyName '$(webSiteName)-telemetry'",
                     "TargetAzurePs": "LatestVersion"
@@ -573,7 +573,7 @@
                     "csmParametersFileLink": "",
                     "csmFile": "**/bot-registration.json",
                     "csmParametersFile": "**/bot-registration.parameters.json",
-                    "overrideParameters": "-webSiteName $(webSiteName) -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\" -appInsightsAPIKey $(appInsightskey)",
+                    "overrideParameters": "-webSiteName $(webSiteName) -botMSAppID \"$(botMSAppID)\" -botMSAppPasswd \"$(botMSAppPasswd)\" -appInsightsAPIKey $(appInsightsAPIKey)",
                     "deploymentMode": "Incremental",
                     "enableDeploymentPrerequisitesForCreate": "false",
                     "enableDeploymentPrerequisitesForSelect": "false",

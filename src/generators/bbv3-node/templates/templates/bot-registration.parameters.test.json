@@ -1,0 +1,18 @@
+{
+   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+   "contentVersion": "1.0.0.0",
+   "parameters": {
+      "webSiteName": {
+         "value": "botnodetestdev7b01894d"
+      },
+      "botMSAppID": {
+         "value": "5ee17bde-1761-46b7-98b0-07f5a765903d"
+      },
+      "botMSAppPasswd": {
+         "value": "eldMXNI@$-zoepOOW85575["
+      },
+      "appInsightsAPIKey": {
+         "value": "i2p2f4zk3gte0vofq03kan4otjjszauwvebmect2"
+      }
+   }
+}

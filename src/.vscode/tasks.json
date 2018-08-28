@@ -4,10 +4,23 @@
    "version": "2.0.0",
    "tasks": [
       {
-         "label": "CleanDebug",
+         "label": "CleanNodeDebug",
          "type": "shell",
          "command": "rmdir",
          "args": ["/S", "/Q", "${workspaceRoot}\\botnodetest"],
+      },
+      {
+         "label": "CleanCsharpDebug",
+         "type": "shell",
+         "command": "rmdir",
+         "args": ["/S", "/Q", "${workspaceRoot}\\botcsharptest"],
+      },
+      {
+         "label": "CleanTsDebug",
+         "type": "shell",
+         "command": "rmdir",
+         "args": ["/S", "/Q", "${workspaceRoot}\\bottstest"],
       }
+
    ]
 }

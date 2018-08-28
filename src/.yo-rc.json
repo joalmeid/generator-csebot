@@ -6,7 +6,7 @@
       "authorUrl": "http://joalmeid.github.io",
       "tfs": "joalmeid",
       "queue": "Hosted Linux Preview",
-      "type": "node",
+      "type": "csharp",
       "botName": "testeeeeenode",
       "target": "paas",
       "azureSub": "JDADX Internal",
