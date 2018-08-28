@@ -3,7 +3,7 @@
 
 This project is Yeoman Generator with CI/CD for [Microsoft Bot Framework](http://botframework.com) a.k.a BotBuilder.
 It started with a fork from [DarqueWarrior/generator-team](https://github.com/DarqueWarrior/generator-team) where [Donovan Brown](https://twitter.com/DonovanBrown) created a great yeoman generator for several languages and DevOps targeting different platforms.
-Based on this [yo team](http://donovanbrown.com/post/yo-Team) yeoman generator, I had the need to be able to speed up project kickoffs with botbuilder.
+Based on this [yo csebot](http://donovanbrown.com/post/yo-Team) yeoman generator, I had the need to be able to speed up project kickoffs with botbuilder.
 I'm sharing this with the community - feel free to colaboration, raise [issues](https://github.com/joalmeid/generator-csebot/issues), and ask for features!
 
 >

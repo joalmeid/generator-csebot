@@ -14,19 +14,36 @@ function addRelease(obj) {
    }
 
    obj.composeWith(`csebot:release`, {
-      args: [obj.type, obj.botName, obj.tfs,
-         queue, obj.target,
-         obj.azureSub, obj.botLocation,
+      arguments: [obj.type, 
+         obj.botName, 
+         obj.tfs,
+         queue,
+         obj.target,
+         obj.azureSub,
+         obj.botLocation,
+         obj.dockerHost,
+         obj.dockerRegistry,
+         obj.dockerRegistryId,
+         obj.dockerPorts,
+         obj.dockerRegistryPassword,
          obj.pat
+         // obj.customFolder,
       ]
    });
 }
 
 function addBuild(obj) {
    obj.composeWith(`csebot:build`, {
-      args: [obj.type, obj.botName, obj.tfs,
-         obj.queue, obj.target,
+      arguments: [obj.type,
+         obj.botName,
+         obj.tfs,
+         obj.queue,
+         obj.target,
+         obj.dockerHost,
+         obj.dockerRegistry,
+         obj.dockerRegistryId,
          obj.pat
+         // obj.customFolder
       ]
    });
 }
@@ -34,8 +51,13 @@ function addBuild(obj) {
 function addAzure(obj) {
    if (util.isPaaS(obj)) {
       obj.composeWith(`csebot:azure`, {
-         args: [obj.botName, obj.tfs,
-            obj.azureSub, obj.azureSubId, obj.tenantId, obj.servicePrincipalId, obj.servicePrincipalKey,
+         arguments: [obj.botName,
+            obj.tfs,
+            obj.azureSub,
+            obj.azureSubId,
+            obj.tenantId,
+            obj.servicePrincipalId,
+            obj.servicePrincipalKey,
             obj.pat
          ]
       });
@@ -44,7 +66,8 @@ function addAzure(obj) {
 
 function addProject(obj) {
    obj.composeWith(`csebot:project`, {
-      args: [obj.botName, obj.tfs,
+      arguments: [obj.botName,
+         obj.tfs,
          obj.pat
       ]
    });
@@ -53,7 +76,24 @@ function addProject(obj) {
 function addRegistry(obj) {
    if (util.needsRegistry(obj)) {
       obj.composeWith(`csebot:registry`, {
-         args: [obj.botName, obj.tfs,
+         arguments: [obj.botName,
+            obj.tfs,
+            obj.dockerRegistry,
+            obj.dockerRegistryId,
+            obj.dockerRegistryPassword,
+            obj.pat
+         ]
+      });
+   }
+}
+
+function addDockerHost(obj) {
+   if (util.needsDockerHost({}, obj)) {
+      obj.composeWith(`csebot:docker`, {
+         arguments: [obj.botName,
+            obj.tfs,
+            obj.dockerHost,
+            obj.dockerCertPath,
             obj.pat
          ]
       });
@@ -61,25 +101,57 @@ function addRegistry(obj) {
 }
 
 function addLanguage(obj) {
-   if (obj.type === `csharp`) {
-      obj.composeWith(`csebot:bbv3-csharp`, {
-         args: [obj.botName, obj.botLocation, obj.tfs]
-      });
-   } else if (obj.type === `node`) {
-      obj.composeWith(`csebot:bbv3-node`, {
-         args: [obj.botName, obj.installDep, obj.tfs]
-      });
-   } else {
-      obj.composeWith(`csebot:bbv3-typescript`, {
-         args: [obj.botName, obj.installDep, obj.tfs]
-      });
+   // let generator = `csebot:${obj.type}`;
+
+   switch (obj.type) {
+      case `csharp`:
+         obj.composeWith(`csebot:bbv3-csharp`, {
+            arguments: [obj.botName,
+               obj.botLocation,
+               obj.tfs
+            ]
+         });
+         break;
+
+      case `tsc`:
+         obj.composeWith(`csebot:bbv3-typescript`, {
+            arguments: [obj.botName,
+               obj.installDep,
+               obj.dockerPorts,
+               obj.tfs
+            ]
+         });
+         break;
+
+      //node
+      default:
+         obj.composeWith(`csebot:bbv3-node`, {
+            arguments: [obj.botName,
+               obj.installDep,
+               obj.dockerPorts,
+               obj.tfs
+            ]
+         });
+         break;
+
+      // case `node`:
+      //    obj.composeWith(generator, {
+      //       arguments: [obj.botName, obj.installDep, obj.dockerPorts]
+      //    });
+      //    break;
+
+      // default:
+      //    obj.composeWith(generator, {
+      //       arguments: [obj.botName, obj.dockerPorts]
+      //    });
+      //    break;
    }
-   
 }
 
 function addGit(obj) {
    obj.composeWith(`csebot:git`, {
-      args: [obj.botName, obj.tfs,
+      arguments: [obj.botName,
+         obj.tfs,
          `all`,
          obj.pat
       ]
@@ -94,4 +166,5 @@ module.exports = {
    addRelease: addRelease,
    addRegistry: addRegistry,
    addLanguage: addLanguage,
+   addDockerHost: addDockerHost
 };

@@ -3,14 +3,63 @@ const path = require(`path`);
 const sinon = require(`sinon`);
 const assert = require(`assert`);
 const helpers = require(`yeoman-test`);
-const sinonTest = require(`sinon-test`);
 const proxyquire = require(`proxyquire`);
+const sinonTestFactory = require(`sinon-test`);
 const build = require(`../../generators/build/app`);
 const util = require(`../../generators/app/utility`);
 
-sinon.test = sinonTest.configureTest(sinon);
+const sinonTest = sinonTestFactory(sinon);
 
 describe(`build:index`, function () {
+   it(`test prompts tfs 2017 custom:paas should not return error`, function () {
+      let cleanUp = function () {
+         util.getPools.restore();
+         util.findQueue.restore();
+         util.getTargets.restore();
+         util.findProject.restore();
+         util.tryFindBuild.restore();
+         util.isTFSGreaterThan2017.restore();
+         util.findDockerServiceEndpoint.restore();
+         util.findDockerRegistryServiceEndpoint.restore();
+      };
+
+      return helpers.run(path.join(__dirname, `../../generators/build`))
+         .withPrompts({
+            type: `custom`,
+            botName: `aspDemo`,
+            // customFolder: `myFolder`,
+            target: `paas`,
+            tfs: `http://localhost:8080/tfs/DefaultCollection`,
+            queue: `Default`,
+            pat: `token`
+         })
+         .on(`error`, function (e) {
+            cleanUp();
+            assert.fail(e);
+         })
+         .on(`ready`, function (generator) {
+            // This is called right before `generator.run()` is called
+            sinon.stub(util, `getPools`);
+            sinon.stub(util, `getTargets`);
+            sinon.stub(util, `findQueue`).callsArgWith(4, null, 1);
+            sinon.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
+            sinon.stub(util, `findDockerServiceEndpoint`).callsArgWith(5, null, null);
+            sinon.stub(util, `tryFindBuild`).callsArgWith(4, null, {
+               value: "I`m a build."
+            });
+            sinon.stub(util, `findDockerRegistryServiceEndpoint`).callsArgWith(4, null, null);
+            sinon.stub(util, `findProject`).callsArgWith(4, null, {
+               value: "TeamProject",
+               id: 1
+            });
+         })
+         .on(`end`, function () {
+            // Using the yeoman helpers and sinonTest did not play nice
+            // so clean up your stubs
+            cleanUp();
+         });
+   });
+
    it(`test prompts tfs 2017 asp:paas should not return error`, function () {
       let cleanUp = function () {
          util.getPools.restore();
@@ -23,10 +72,10 @@ describe(`build:index`, function () {
          util.findDockerRegistryServiceEndpoint.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/build/index`))
+      return helpers.run(path.join(__dirname, `../../generators/build`))
          .withPrompts({
             type: `asp`,
-            applicationName: `aspDemo`,
+            botName: `aspDemo`,
             target: `paas`,
             tfs: `http://localhost:8080/tfs/DefaultCollection`,
             queue: `Default`,
@@ -53,13 +102,13 @@ describe(`build:index`, function () {
             });
          })
          .on(`end`, function () {
-            // Using the yeoman helpers and sinon.test did not play nice
+            // Using the yeoman helpers and sinonTest did not play nice
             // so clean up your stubs
             cleanUp();
          });
    });
 
-   it(`test prompts tfs 2017 aspFull:paas should not return error`, function () {
+   it(`test prompts tfs 2017 csharp:paas should not return error`, function () {
       let cleanUp = function () {
          util.getPools.restore();
          util.findQueue.restore();
@@ -71,10 +120,10 @@ describe(`build:index`, function () {
          util.findDockerRegistryServiceEndpoint.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/build/index`))
+      return helpers.run(path.join(__dirname, `../../generators/build`))
          .withPrompts({
-            type: `aspFull`,
-            applicationName: `aspDemo`,
+            type: `csharp`,
+            botName: `aspDemo`,
             target: `paas`,
             tfs: `http://localhost:8080/tfs/DefaultCollection`,
             queue: `Default`,
@@ -101,7 +150,7 @@ describe(`build:index`, function () {
             });
          })
          .on(`end`, function () {
-            // Using the yeoman helpers and sinon.test did not play nice
+            // Using the yeoman helpers and sinonTest did not play nice
             // so clean up your stubs
             cleanUp();
          });
@@ -119,10 +168,10 @@ describe(`build:index`, function () {
          util.findDockerRegistryServiceEndpoint.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/build/index`))
+      return helpers.run(path.join(__dirname, `../../generators/build`))
          .withPrompts({
             type: `java`,
-            applicationName: `javaDemo`,
+            botName: `javaDemo`,
             target: `paas`,
             tfs: `http://localhost:8080/tfs/DefaultCollection`,
             queue: `Default`,
@@ -149,7 +198,7 @@ describe(`build:index`, function () {
             });
          })
          .on(`end`, function () {
-            // Using the yeoman helpers and sinon.test did not play nice
+            // Using the yeoman helpers and sinonTest did not play nice
             // so clean up your stubs
             cleanUp();
          });
@@ -167,10 +216,10 @@ describe(`build:index`, function () {
          util.findDockerRegistryServiceEndpoint.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/build/index`))
+      return helpers.run(path.join(__dirname, `../../generators/build`))
          .withPrompts({
             type: `node`,
-            applicationName: `nodeDemo`,
+            botName: `nodeDemo`,
             target: `paas`,
             tfs: `http://localhost:8080/tfs/DefaultCollection`,
             queue: `Default`,
@@ -197,7 +246,7 @@ describe(`build:index`, function () {
             });
          })
          .on(`end`, function () {
-            // Using the yeoman helpers and sinon.test did not play nice
+            // Using the yeoman helpers and sinonTest did not play nice
             // so clean up your stubs
             cleanUp();
          });
@@ -215,10 +264,10 @@ describe(`build:index`, function () {
          util.findDockerRegistryServiceEndpoint.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/build/index`))
+      return helpers.run(path.join(__dirname, `../../generators/build`))
          .withPrompts({
             type: `node`,
-            applicationName: `nodeDemo`,
+            botName: `nodeDemo`,
             target: `docker`,
             tfs: `http://localhost:8080/tfs/DefaultCollection`,
             queue: `Default`,
@@ -245,7 +294,7 @@ describe(`build:index`, function () {
             });
          })
          .on(`end`, function () {
-            // Using the yeoman helpers and sinon.test did not play nice
+            // Using the yeoman helpers and sinonTest did not play nice
             // so clean up your stubs
             cleanUp();
          });
@@ -263,10 +312,10 @@ describe(`build:index`, function () {
          util.findDockerRegistryServiceEndpoint.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/build/index`))
+      return helpers.run(path.join(__dirname, `../../generators/build`))
          .withPrompts({
             type: `asp`,
-            applicationName: `aspDemo`,
+            botName: `aspDemo`,
             target: `docker`,
             tfs: `http://localhost:8080/tfs/DefaultCollection`,
             queue: `Default`,
@@ -293,7 +342,7 @@ describe(`build:index`, function () {
             });
          })
          .on(`end`, function () {
-            // Using the yeoman helpers and sinon.test did not play nice
+            // Using the yeoman helpers and sinonTest did not play nice
             // so clean up your stubs
             cleanUp();
          });
@@ -311,10 +360,10 @@ describe(`build:index`, function () {
          util.findDockerRegistryServiceEndpoint.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/build/index`))
+      return helpers.run(path.join(__dirname, `../../generators/build`))
          .withPrompts({
             type: `java`,
-            applicationName: `javaDemo`,
+            botName: `javaDemo`,
             target: `docker`,
             tfs: `http://localhost:8080/tfs/DefaultCollection`,
             queue: `Default`,
@@ -343,7 +392,7 @@ describe(`build:index`, function () {
             });
          })
          .on(`end`, function () {
-            // Using the yeoman helpers and sinon.test did not play nice
+            // Using the yeoman helpers and sinonTest did not play nice
             // so clean up your stubs
             cleanUp();
          });
@@ -359,7 +408,7 @@ describe(`build:index`, function () {
          util.findDockerRegistryServiceEndpoint.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/build/index`))
+      return helpers.run(path.join(__dirname, `../../generators/build`))
          .withArguments([`node`, `nodeDemo`, `http://localhost:8080/tfs/DefaultCollection`,
             `Default`, `docker`,
             `DockerHost`, `DockerRegistryId`,
@@ -384,7 +433,7 @@ describe(`build:index`, function () {
             });
          })
          .on(`end`, function () {
-            // Using the yeoman helpers and sinon.test did not play nice
+            // Using the yeoman helpers and sinonTest did not play nice
             // so clean up your stubs
             cleanUp();
          });
@@ -400,7 +449,7 @@ describe(`build:index`, function () {
          util.findDockerRegistryServiceEndpoint.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/build/index`))
+      return helpers.run(path.join(__dirname, `../../generators/build`))
          .withArguments([`java`, `javaDemo`, `http://localhost:8080/tfs/DefaultCollection`,
             `Default`, `docker`,
             `DockerHost`, `DockerRegistryId`,
@@ -425,7 +474,7 @@ describe(`build:index`, function () {
             });
          })
          .on(`end`, function () {
-            // Using the yeoman helpers and sinon.test did not play nice
+            // Using the yeoman helpers and sinonTest did not play nice
             // so clean up your stubs
             cleanUp();
          });
@@ -443,7 +492,7 @@ describe(`build:index`, function () {
          util.findDockerRegistryServiceEndpoint.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/build/index`))
+      return helpers.run(path.join(__dirname, `../../generators/build`))
          .withArguments([`asp`, `aspDemo`, `http://localhost:8080/tfs/DefaultCollection`,
             `Default`, `docker`,
             `DockerHost`, `DockerRegistryId`,
@@ -470,7 +519,7 @@ describe(`build:index`, function () {
             });
          })
          .on(`end`, function () {
-            // Using the yeoman helpers and sinon.test did not play nice
+            // Using the yeoman helpers and sinonTest did not play nice
             // so clean up your stubs
             cleanUp();
          });
@@ -488,7 +537,7 @@ describe(`build:index`, function () {
          util.findDockerRegistryServiceEndpoint.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/build/index`))
+      return helpers.run(path.join(__dirname, `../../generators/build`))
          .withArguments([`asp`, `aspDemo`, `http://localhost:8080/tfs/DefaultCollection`,
             `Default`, `docker`,
             `DockerHost`, `DockerRegistryId`,
@@ -515,7 +564,7 @@ describe(`build:index`, function () {
             });
          })
          .on(`end`, function () {
-            // Using the yeoman helpers and sinon.test did not play nice
+            // Using the yeoman helpers and sinonTest did not play nice
             // so clean up your stubs
             cleanUp();
          });
@@ -525,7 +574,7 @@ describe(`build:index`, function () {
 describe(`build:app`, function () {
    "use strict";
 
-   it(`getBuild asp tfs 2017 paas`, sinon.test(function (done) {
+   it(`getBuild asp tfs 2017 paas`, sinonTest(function (done) {
       // Arrange 
       let expected = `tfs_asp_build.json`;
       this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
@@ -561,13 +610,13 @@ describe(`build:app`, function () {
       assert.equal(expected, actual);
    });
 
-   it(`getBuild aspFull vsts pass`, function (done) {
+   it(`getBuild csharp vsts pass`, function (done) {
       // Arrange 
-      let expected = `vsts_aspFull_build.json`;
+      let expected = `vsts_csharp_build.json`;
 
       // Act
       build.getBuild({
-         type: `aspFull`,
+         type: `csharp`,
          target: `paas`,
          tfs: `vsts`
       }, function (e, actual) {
@@ -577,7 +626,7 @@ describe(`build:app`, function () {
       });
    });
 
-   it(`getBuild asp tfs 2017 docker`, sinon.test(function (done) {
+   it(`getBuild asp tfs 2017 docker`, sinonTest(function (done) {
       // Arrange 
       let expected = `tfs_asp_docker_build.json`;
       this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
@@ -610,7 +659,7 @@ describe(`build:app`, function () {
       });
    });
 
-   it(`getBuild asp tfs 2017 dockerpaas`, sinon.test(function (done) {
+   it(`getBuild asp tfs 2017 dockerpaas`, sinonTest(function (done) {
       // Arrange 
       let expected = `tfs_asp_docker_build.json`;
       this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
@@ -643,7 +692,7 @@ describe(`build:app`, function () {
       });
    });
 
-   it(`getBuild asp tfs 2017 acilinux`, sinon.test(function (done) {
+   it(`getBuild asp tfs 2017 acilinux`, sinonTest(function (done) {
       // Arrange 
       let expected = `tfs_asp_docker_build.json`;
       this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
@@ -676,7 +725,7 @@ describe(`build:app`, function () {
       });
    });
 
-   it(`getBuild java tfs 2017 dockerpaas`, sinon.test(function (done) {
+   it(`getBuild java tfs 2017 dockerpaas`, sinonTest(function (done) {
       // Arrange 
       let expected = `tfs_java_docker_build.json`;
       this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
@@ -709,7 +758,7 @@ describe(`build:app`, function () {
       });
    });
 
-   it(`getBuild java tfs 2017 acilinux`, sinon.test(function (done) {
+   it(`getBuild java tfs 2017 acilinux`, sinonTest(function (done) {
       // Arrange 
       let expected = `tfs_java_docker_build.json`;
       this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
@@ -840,7 +889,7 @@ describe(`build:app`, function () {
       });
    });
 
-   it(`getBuild node tfs 2017 acilinux`, sinon.test(function (done) {
+   it(`getBuild node tfs 2017 acilinux`, sinonTest(function (done) {
       // Arrange 
       let expected = `tfs_node_docker_build.json`;
       this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
@@ -857,7 +906,7 @@ describe(`build:app`, function () {
       });
    }));
 
-   it(`getBuild node tfs 2017 dockerpaas`, sinon.test(function (done) {
+   it(`getBuild node tfs 2017 dockerpaas`, sinonTest(function (done) {
       // Arrange 
       let expected = `tfs_node_docker_build.json`;
       this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
@@ -874,7 +923,7 @@ describe(`build:app`, function () {
       });
    }));
 
-   it(`getBuild node tfs 2017 docker`, sinon.test(function (done) {
+   it(`getBuild node tfs 2017 docker`, sinonTest(function (done) {
       // Arrange 
       let expected = `tfs_node_docker_build.json`;
       this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
@@ -891,7 +940,7 @@ describe(`build:app`, function () {
       });
    }));
 
-   it(`getBuild node tfs 2017 paas`, sinon.test(function (done) {
+   it(`getBuild node tfs 2017 paas`, sinonTest(function (done) {
       // Arrange 
       let expected = `tfs_node_build.json`;
       this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
@@ -908,7 +957,7 @@ describe(`build:app`, function () {
       });
    }));
 
-   it(`run with existing build should run without error`, sinon.test(function (done) {
+   it(`run with existing build should run without error`, sinonTest(function (done) {
       // Arrange
       // callsArgWith uses the first argument as the index of the callback function
       // to call and calls it with the rest of the arguments provided.
@@ -942,7 +991,7 @@ describe(`build:app`, function () {
       });
    }));
 
-   it(`run with error should return error`, sinon.test(function (done) {
+   it(`run with error should return error`, sinonTest(function (done) {
       // Arrange
       this.stub(util, `findQueue`).callsArgWith(4, null, 1);
       this.stub(util, `findDockerServiceEndpoint`).callsArgWith(5, null, null);
@@ -980,7 +1029,7 @@ describe(`build:app`, function () {
       });
    }));
 
-   it(`findOrCreateBuild should create build paas`, sinon.test(function (done) {
+   it(`findOrCreateBuild should create build paas`, sinonTest(function (done) {
       // Arrange
       // This allows me to take control of the request requirement
       // without this there would be no way to stub the request calls
@@ -1023,7 +1072,7 @@ describe(`build:app`, function () {
          });
    }));
 
-   it(`findOrCreateBuild should create build docker`, sinon.test(function (done) {
+   it(`findOrCreateBuild should create build docker`, sinonTest(function (done) {
       // Arrange
       // This allows me to take control of the request requirement
       // without this there would be no way to stub the request calls
@@ -1075,7 +1124,7 @@ describe(`build:app`, function () {
          });
    }));
 
-   it(`findOrCreateBuild should return error if build create fails`, sinon.test(function (done) {
+   it(`findOrCreateBuild should return error if build create fails`, sinonTest(function (done) {
       // Arrange
       // This allows me to take control of the request requirement
       // without this there would be no way to stub the request calls

@@ -2,18 +2,18 @@ const path = require(`path`);
 const sinon = require(`sinon`);
 const assert = require(`assert`);
 const helpers = require(`yeoman-test`);
-const sinonTest = require(`sinon-test`);
+const sinonTestFactory = require(`sinon-test`);
 
-sinon.test = sinonTest.configureTest(sinon);
+const sinonTest = sinonTestFactory(sinon);
 
 describe(`git:index clone`, function () {
    let spawnStub;
 
    before(function () {
-      return helpers.run(path.join(__dirname, `../../generators/git/index`))
+      return helpers.run(path.join(__dirname, `../../generators/git`))
          .withPrompts({
             action: `clone`,
-            applicationName: `aspDemo`,
+            botName: `aspDemo`,
             tfs: `http://localhost:8080/tfs/DefaultCollection`
          })
          .on(`error`, function (e) {
@@ -41,10 +41,10 @@ describe(`git:index commit`, function () {
    };
 
    before(function () {
-      return helpers.run(path.join(__dirname, `../../generators/git/index`))
+      return helpers.run(path.join(__dirname, `../../generators/git`))
          .withPrompts({
             action: `commit`,
-            applicationName: `aspDemo`,
+            botName: `aspDemo`,
             tfs: `http://localhost:8080/tfs/DefaultCollection`
          })
          .on(`error`, function (e) {
@@ -58,7 +58,7 @@ describe(`git:index commit`, function () {
             sinon.stub(process, `chdir`);
          })
          .on(`end`, function () {
-            // Using the yeoman helpers and sinon.test did not play nice
+            // Using the yeoman helpers and sinonTest did not play nice
             // so clean up your stubs
             cleanUp();
          });
@@ -71,13 +71,13 @@ describe(`git:index commit`, function () {
    });
 
    it(`git config email should be called`, function () {
-      assert.equal(1, spawnStub.withArgs(`git`, [`config`, `user.email`, `yo team`], {
+      assert.equal(1, spawnStub.withArgs(`git`, [`config`, `user.email`, `yo csebot`], {
          stdio: ['pipe', 'pipe', process.stderr]
       }).callCount, `git config email was not called`);
    });
 
    it(`git config name should be called`, function () {
-      assert.equal(1, spawnStub.withArgs(`git`, [`config`, `user.name`, `yo team`], {
+      assert.equal(1, spawnStub.withArgs(`git`, [`config`, `user.name`, `yo csebot`], {
          stdio: ['pipe', 'pipe', process.stderr]
       }).callCount, `git config name was not called`);
    });
@@ -97,10 +97,10 @@ describe(`git:index all`, function () {
    };
 
    before(function () {
-      return helpers.run(path.join(__dirname, `../../generators/git/index`))
+      return helpers.run(path.join(__dirname, `../../generators/git`))
          .withPrompts({
             action: `all`,
-            applicationName: `aspDemo`,
+            botName: `aspDemo`,
             tfs: `http://localhost:8080/tfs/DefaultCollection`
          })
          .on(`error`, function (e) {
@@ -114,7 +114,7 @@ describe(`git:index all`, function () {
             sinon.stub(process, `chdir`);
          })
          .on(`end`, function () {
-            // Using the yeoman helpers and sinon.test did not play nice
+            // Using the yeoman helpers and sinonTest did not play nice
             // so clean up your stubs
             cleanUp();
          });
@@ -127,13 +127,13 @@ describe(`git:index all`, function () {
    });
 
    it(`git config email should be called`, function () {
-      assert.equal(1, spawnStub.withArgs(`git`, [`config`, `user.email`, `yo team`], {
+      assert.equal(1, spawnStub.withArgs(`git`, [`config`, `user.email`, `yo csebot`], {
          stdio: ['pipe', 'pipe', process.stderr]
       }).callCount, `git config email was not called`);
    });
 
    it(`git config name should be called`, function () {
-      assert.equal(1, spawnStub.withArgs(`git`, [`config`, `user.name`, `yo team`], {
+      assert.equal(1, spawnStub.withArgs(`git`, [`config`, `user.name`, `yo csebot`], {
          stdio: ['pipe', 'pipe', process.stderr]
       }).callCount, `git config name was not called`);
    });

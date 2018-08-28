@@ -1,17 +1,36 @@
+// Collection of utility functions used by other generators. 
+
+const fs = require('fs');
+const os = require('os');
 const url = require('url');
 const request = require(`request`);
 const package = require('../../package.json');
 
+// The version of the API used to talk to TFS and VSTS.  In future
+// versions this might be changed depending on the version of TFS/VSTS
+// we are talking too.  However, the shape of the build and release
+// JSON changes from version to version. The versions used below are 
+// supported in TFS 2017 U3, 2018 U1 and VSTS.
 const BUILD_API_VERSION = `2.0`;
 const PROJECT_API_VERSION = `1.0`;
-const RELEASE_API_VERSION = `3.0-preview.3`;
-const DISTRIBUTED_TASK_API_VERSION = `3.0-preview.1`;
-const SERVICE_ENDPOINTS_API_VERSION = `3.0-preview.1`;
+const RELEASE_API_VERSION = `3.0-preview`;
+const DISTRIBUTED_TASK_API_VERSION = `3.0-preview`;
+const SERVICE_ENDPOINTS_API_VERSION = `3.0-preview`; //4.1-preview.1
 
-var logging = process.env.LOGYO || `off`;
+// This location is the same as the VSTeam PowerShell module. Therefore,
+// the profiles can be shared between Yo Team and the VSTeam PowerShell
+// module.
+const PROFILE_PATH = os.homedir() + '/vsteam_profiles.json';
+
+const EXTENSIONS_SUB_DOMAIN = `extmgmt`;
+const RELEASE_MANAGEMENT_SUB_DOMAIN = `vsrm`;
+
+var profile = null;
+
+// var supportedTargets = ['docker', 'dockerpaas', 'paas', 'paasslots'] //'acilinux', 
 
 var logMessage = function (msg) {
-   if (logging === `on`) {
+   if (process.env.LOGYO === `on`) {
       console.log(msg);
    }
 };
@@ -21,33 +40,34 @@ String.prototype.replaceAll = function (search, replacement) {
    return target.split(search).join(replacement);
 };
 
-// function isDocker(value) {
-//    return value === `docker` || value === `dockerpaas` || value === `acilinux`;
-// }
+function isDocker(value) {
+   return value === `docker` || value === `dockerpaas` || value === `acilinux`;
+}
 
-// function getDockerRegistryServer(server) {
-//    let parts = url.parse(server);
+function getDockerRegistryServer(server) {
+   let parts = url.parse(server);
 
-//    return parts.host;
-// }
+   return parts.host;
+}
 
-// function getImageNamespace(registryId, endPoint) {
-//    let dockerNamespace = registryId ? registryId.toLowerCase() : null;
+function getImageNamespace(registryId, endPoint) {
+   let dockerNamespace = registryId ? registryId.toLowerCase() : null;
 
-//    if (endPoint && endPoint.authorization && !isDockerHub(endPoint.authorization.parameters.registry)) {
-//       dockerNamespace = getDockerRegistryServer(endPoint.authorization.parameters.registry);
-//    }
+   if (endPoint && endPoint.authorization && !isDockerHub(endPoint.authorization.parameters.registry)) {
+      dockerNamespace = getDockerRegistryServer(endPoint.authorization.parameters.registry);
+   }
 
-//    return dockerNamespace;
-// }
+   return dockerNamespace;
+}
 
 function addUserAgent(options) {
    options.headers['user-agent'] = getUserAgent();
    return options;
 }
 
+// Setting the User Agent allows these calls to be identified in the VSTS telemetry.
 function getUserAgent() {
-   return `Yo csebot/${package.version} (${process.platform}: ${process.arch}) Node.js/${process.version}`;
+   return `Yo Team/${package.version} (${process.platform}: ${process.arch}) Node.js/${process.version}`;
 }
 
 function reconcileValue(first, second, fallback) {
@@ -65,58 +85,39 @@ function reconcileValue(first, second, fallback) {
 function getTargets(answers) {
 
    return new Promise(function (resolve, reject) {
-      let pat = encodePat(answers.pat);
+      let targets = [];
 
-      isTFSGreaterThan2017(answers.tfs, pat, function (e, result) {
-         if (e) {
-            reject(e);
-            return;
-         }
+      if (answers.type === `csharp`) {
+         targets = [{
+            name: `Azure App Service`,
+            value: `paas`
+         }, {
+            name: `Azure App Service (Deployment Slots)`,
+            value: `paasslots`
+         }];
+      } else {
+         targets = [{
+            name: `Azure App Service`,
+            value: `paas`
+         }, {
+            name: `Azure App Service (Deployment Slots)`,
+            value: `paasslots`
+         }, {
+            name: `Azure App Service Docker (Linux)`,
+            value: `dockerpaas`
+         }, {
+            name: `Docker Host`,
+            value: `docker`
+         }];
+      }
 
-         let targets = [];
-
-         if (result) {
-
-            if (answers.type === `csharp`) {
-               targets = [{
-                  name: `Azure App Service`,
-                  value: `paas`
-               }, {
-                  name: `Azure App Service (Deployment Slots)`,
-                  value: `paasslots`
-               }];
-            } else {
-               targets = [{
-                  name: `Azure App Service`,
-                  value: `paas`
-               }, {
-                  name: `Azure App Service (Deployment Slots)`,
-                  value: `paasslots`
-               }, {
-                  name: `Azure Container Instances (Linux)`,
-                  value: `acilinux`
-               }];
-               // , {
-               //    name: `Azure App Service Docker (Linux)`,
-               //    value: `dockerpaas`
-               // }];
-
-            }
-         } else {
-
-         }
-
-         resolve(targets);
-      });
+      resolve(targets);
    });
 }
 
 function getBotTypes(answers) {
-   // Default to languages tha work on all agents
+   // Default to languages that work on all agents
    let types = [{
-      name: `.NET`,
-      value: `csharp`
-   }, {
       name: `Node.js`,
       value: `node`
    }, {
@@ -124,14 +125,15 @@ function getBotTypes(answers) {
       value: `tsc`
    }];
 
-   // // If this is not a Linux based agent also show
-   // // .NET Full
-   // if (answers.queue.indexOf(`Linux`) === -1) {
-   //    types.splice(1, 0, {
-   //       name: `.NET Framework`,
-   //       value: `aspFull`
-   //    });
-   // }
+   // If this is not a Linux or Mac based agent also show
+   // .NET Full
+   if (answers.queue.indexOf(`Linux`) === -1 &&
+      answers.queue.indexOf(`macOS`) === -1) {
+      types.splice(1, 0, {
+         name: `.NET Framework`,
+         value: `csharp`
+      });
+   }
 
    return types;
 }
@@ -153,28 +155,27 @@ function getPATPrompt(answers) {
 }
 
 function getInstancePrompt() {
-   return `Enter Team Services account name\n  ({account}.visualstudio.com)\n  Or full TFS URL including collection\n  (http://tfs:8080/tfs/DefaultCollection)?`;
+   return `Enter VSTS account name\n  ({account}.visualstudio.com)\n  Or name of a stored Profile?`;
 }
 
 function getDefaultPortMapping(answers) {
-   // if (answers.target === `docker`) {
-   //    if (answers.type === `java`) {
-   //       return `8080:8080`;
-   //    } else if (answers.type === `node`) {
-   //       return `3000:3000`;
-   //    } else {
-   //       return `80:80`;
-   //    }
-   // } else {
-   // if (answers.type === `java`) {
-   //    return `8080`;
-   // } else if (answers.type === `node`) {
-   if (answers.target === `node` || answers.target === `tsc`) {
-      return `3000`;
+   if (answers.target === `docker`) {
+      if (answers.type === `java`) {
+         return `8080:8080`;
+      } else if (answers.type === `node`) {
+         return `3000:3000`;
+      } else {
+         return `80:80`;
+      }
    } else {
-      return `80`;
+      if (answers.type === `java`) {
+         return `8080`;
+      } else if (answers.type === `node`) {
+         return `3000`;
+      } else {
+         return `80`;
+      }
    }
-   // }
 }
 
 function validateRequired(input, msg) {
@@ -185,12 +186,16 @@ function validatePortMapping(input) {
    return validateRequired(input, `You must provide a Port Mapping`);
 }
 
-// function validateGroupID(input) {
-//    return validateRequired(input, `You must provide a Group ID`);
+function validateProfileName(input) {
+   return validateRequired(input, `You must provide a profile name`);
+}
+
+// function validateCustomFolder(input) {
+//    return validateRequired(input, `You must provide a custom template path`);
 // }
 
 function validateBotName(input) {
-   return validateRequired(input, `You must provide a name for your bot`);
+   return validateRequired(input, `You must provide a name for your application`);
 }
 
 function validateBotLocation(input) {
@@ -209,29 +214,29 @@ function validateAzureSub(input) {
    return validateRequired(input, `You must provide an Azure Subscription Name`);
 }
 
-// function validateDockerHost(input) {
-//    return validateRequired(input, `You must provide a Docker Host URL`);
-// }
+function validateDockerHost(input) {
+   return validateRequired(input, `You must provide a Docker Host URL`);
+}
 
-// function validateDockerCertificatePath(input) {
-//    return validateRequired(input, `You must provide a Docker Certificate Path`);
-// }
+function validateDockerCertificatePath(input) {
+   return validateRequired(input, `You must provide a Docker Certificate Path`);
+}
 
-// function validateDockerHubID(input) {
-//    return validateRequired(input, `You must provide a Docker Registry username`);
-// }
+function validateDockerHubID(input) {
+   return validateRequired(input, `You must provide a Docker Registry username`);
+}
 
-// function validateDockerHubPassword(input) {
-//    return validateRequired(input, `You must provide a Docker Registry Password`);
-// }
+function validateDockerHubPassword(input) {
+   return validateRequired(input, `You must provide a Docker Registry Password`);
+}
 
-// function validateDockerRegistry(input) {
-//    if (!input) {
-//       return validateRequired(input, `You must provide a Docker Registry URL`);
-//    }
+function validateDockerRegistry(input) {
+   if (!input) {
+      return validateRequired(input, `You must provide a Docker Registry URL`);
+   }
 
-//    return input.toLowerCase().match(/http/) === null ? `You must provide a Docker Registry URL including http(s)` : true;
-// }
+   return input.toLowerCase().match(/http/) === null ? `You must provide a Docker Registry URL including http(s)` : true;
+}
 
 function validateAzureSubID(input) {
    return validateRequired(input, `You must provide an Azure Subscription ID`);
@@ -300,63 +305,63 @@ function checkStatus(uri, token, gen, callback) {
    });
 }
 
-// function tryFindDockerRegistryServiceEndpoint(account, projectId, dockerRegistry, token, callback) {
-//    'use strict';
+function tryFindDockerRegistryServiceEndpoint(account, projectId, dockerRegistry, token, callback) {
+   'use strict';
 
-//    // Will NOT throw an error if the endpoint is not found.  This is used
-//    // by code that will create the endpoint if it is not found.
+   // Will NOT throw an error if the endpoint is not found.  This is used
+   // by code that will create the endpoint if it is not found.
 
-//    findDockerRegistryServiceEndpoint(account, projectId, dockerRegistry, token, function (e, ep) {
-//       if (e && e.code === `NotFound`) {
-//          callback(null, undefined);
-//       } else {
-//          callback(e, ep);
-//       }
-//    });
-// }
+   findDockerRegistryServiceEndpoint(account, projectId, dockerRegistry, token, function (e, ep) {
+      if (e && e.code === `NotFound`) {
+         callback(null, undefined);
+      } else {
+         callback(e, ep);
+      }
+   });
+}
 
-// function findDockerRegistryServiceEndpoint(account, projectId, dockerRegistry, token, callback) {
-//    'use strict';
+function findDockerRegistryServiceEndpoint(account, projectId, dockerRegistry, token, callback) {
+   'use strict';
 
-//    // There is nothing to do
-//    if (!dockerRegistry) {
-//       callback(null, null);
-//       return;
-//    }
+   // There is nothing to do
+   if (!dockerRegistry) {
+      callback(null, null);
+      return;
+   }
 
-//    var options = addUserAgent({
-//       "method": `GET`,
-//       "headers": {
-//          "cache-control": `no-cache`,
-//          "authorization": `Basic ${token}`
-//       },
-//       "url": `${getFullURL(account)}/${projectId}/_apis/distributedtask/serviceendpoints`,
-//       "qs": {
-//          "api-version": SERVICE_ENDPOINTS_API_VERSION
-//       }
-//    });
+   var options = addUserAgent({
+      "method": `GET`,
+      "headers": {
+         "cache-control": `no-cache`,
+         "authorization": `Basic ${token}`
+      },
+      "url": `${getFullURL(account)}/${projectId}/_apis/distributedtask/serviceendpoints`,
+      "qs": {
+         "api-version": SERVICE_ENDPOINTS_API_VERSION
+      }
+   });
 
-//    request(options, function (error, response, body) {
-//       var obj = JSON.parse(body);
+   request(options, function (error, response, body) {
+      var obj = JSON.parse(body);
 
-//       // TODO: Test that authorization.parameters.registry === dockerHost.  But that requires
-//       // a second REST call once you know the ID of the dockerregistry type service endpoint.
-//       // For now assume any dockerregistry service endpoint is safe to use.
-//       var endpoint = obj.value.find(function (i) {
-//          return i.type === `dockerregistry`;
-//       });
+      // TODO: Test that authorization.parameters.registry === dockerHost.  But that requires
+      // a second REST call once you know the ID of the dockerregistry type service endpoint.
+      // For now assume any dockerregistry service endpoint is safe to use.
+      var endpoint = obj.value.find(function (i) {
+         return i.type.toLowerCase() === `dockerregistry`;
+      });
 
-//       if (endpoint === undefined) {
-//          callback({
-//             "message": `x Could not find Docker Registry Service Endpoint`,
-//             "code": `NotFound`
-//          }, undefined);
-//       } else {
-//          // Down stream we need the full endpoint so call again with the ID. This will return more data
-//          getServiceEndpoint(account, projectId, endpoint.id, token, callback);
-//       }
-//    });
-// }
+      if (endpoint === undefined) {
+         callback({
+            "message": `x Could not find Docker Registry Service Endpoint`,
+            "code": `NotFound`
+         }, undefined);
+      } else {
+         // Down stream we need the full endpoint so call again with the ID. This will return more data
+         getServiceEndpoint(account, projectId, endpoint.id, token, callback);
+      }
+   });
+}
 
 function getServiceEndpoint(account, projectId, id, token, callback) {
    var options = addUserAgent({
@@ -376,68 +381,79 @@ function getServiceEndpoint(account, projectId, id, token, callback) {
    });
 }
 
-// function tryFindDockerServiceEndpoint(account, projectId, dockerHost, token, gen, callback) {
-//    'use strict';
+function tryFindDockerServiceEndpoint(account, projectId, dockerHost, token, gen, callback) {
+   'use strict';
 
-//    // Will NOT throw an error if the endpoint is not found.  This is used
-//    // by code that will create the endpoint if it is not found.
+   // Will NOT throw an error if the endpoint is not found.  This is used
+   // by code that will create the endpoint if it is not found.
 
-//    findDockerServiceEndpoint(account, projectId, dockerHost, token, gen, function (e, ep) {
-//       if (e && e.code === `NotFound`) {
-//          callback(null, undefined);
-//       } else {
-//          callback(e, ep);
-//       }
-//    });
-// }
+   findDockerServiceEndpoint(account, projectId, dockerHost, token, gen, function (e, ep) {
+      if (e && e.code === `NotFound`) {
+         callback(null, undefined);
+      } else {
+         callback(e, ep);
+      }
+   });
+}
 
-// function findDockerServiceEndpoint(account, projectId, dockerHost, token, gen, callback) {
-//    'use strict';
+function findDockerServiceEndpoint(account, projectId, dockerHost, token, gen, callback) {
+   'use strict';
 
-//    // There is nothing to do
-//    if (!dockerHost) {
-//       callback(null, null);
-//       return;
-//    }
+   // There is nothing to do
+   // This will be true when the user selected Linux for the build queue. 
+   // Because we use ARM deployment with the Hosted VS2017 queue even if
+   // the user selected Linux for build the call to needsDockerHost may
+   // return true for build. However, if they select Linux for build they
+   // would not be prompted for a docker host and dockerHost will be empty.
+   // In that case just return. When user is calling from the command line
+   // and they pass in Linux they have to leave dockerHost empty.  If they
+   // pass in Linux and a dockerHost they will get an error saying the 
+   // docker service endpoint could not be found. That is because we did
+   // not create one because the Hosted Linux build has the docker tools
+   // so we don't need an external host so no service endpoint was created.
+   if (!dockerHost) {
+      callback(null, null);
+      return;
+   }
 
-//    var options = addUserAgent({
-//       "method": `GET`,
-//       "headers": {
-//          "cache-control": `no-cache`,
-//          "authorization": `Basic ${token}`
-//       },
-//       "url": `${getFullURL(account)}/${projectId}/_apis/distributedtask/serviceendpoints`,
-//       "qs": {
-//          "api-version": SERVICE_ENDPOINTS_API_VERSION
-//       }
-//    });
+   var options = addUserAgent({
+      "method": `GET`,
+      "headers": {
+         "cache-control": `no-cache`,
+         "authorization": `Basic ${token}`
+      },
+      "url": `${getFullURL(account)}/${projectId}/_apis/distributedtask/serviceendpoints`,
+      "qs": {
+         "api-version": SERVICE_ENDPOINTS_API_VERSION
+      }
+   });
 
-//    request(options, function (error, response, body) {
-//       // Check the response statusCode first. If it is not a 200
-//       // the body will be html and not JSON
-//       if (response.statusCode >= 400) {
-//          callback(`Error trying to find Docker Service Endpoint: ${response.statusMessage}`);
-//          return;
-//       }
+   request(options, function (error, response, body) {
+      // Check the response statusCode first. If it is not a 200
+      // the body will be html and not JSON
+      if (response.statusCode >= 400) {
+         callback(`Error trying to find Docker Service Endpoint: ${response.statusMessage}`);
+         return;
+      }
 
-//       var obj = JSON.parse(body);
+      var obj = JSON.parse(body);
 
-//       // The i.url is returned with a trailing / so just use starts with just in case
-//       // the dockerHost is passed in without it
-//       var endpoint = obj.value.find(function (i) {
-//          return i.url.startsWith(dockerHost);
-//       });
+      // The i.url is returned with a trailing / so just use starts with just in case
+      // the dockerHost is passed in without it
+      var endpoint = obj.value.find(function (i) {
+         return i.url.toLowerCase().startsWith(dockerHost.toLowerCase());
+      });
 
-//       if (endpoint === undefined) {
-//          callback({
-//             "message": `x Could not find Docker Service Endpoint`,
-//             "code": `NotFound`
-//          }, undefined);
-//       } else {
-//          callback(error, endpoint);
-//       }
-//    });
-// }
+      if (endpoint === undefined) {
+         callback({
+            "message": `x Could not find Docker Service Endpoint`,
+            "code": `NotFound`
+         }, undefined);
+      } else {
+         callback(error, endpoint);
+      }
+   });
+}
 
 function tryFindAzureServiceEndpoint(account, projectId, sub, token, gen, callback) {
    'use strict';
@@ -479,7 +495,7 @@ function findAzureServiceEndpoint(account, projectId, sub, token, gen, callback)
       var obj = JSON.parse(body);
 
       var endpoint = obj.value.find(function (i) {
-         return i.data.subscriptionName === sub.name;
+         return i.data.subscriptionName !== undefined && i.data.subscriptionName.toLowerCase() === sub.name.toLowerCase();
       });
 
       if (endpoint === undefined) {
@@ -511,7 +527,7 @@ function findAzureSub(account, subName, token, gen, callback) {
       var obj = JSON.parse(body);
 
       var sub = obj.value.find(function (i) {
-         return i.displayName === subName;
+         return i.displayName.toLowerCase() === subName.toLowerCase();
       });
 
       callback(error, sub);
@@ -640,8 +656,7 @@ function tryFindBuild(account, teamProject, token, target, callback) {
 function findBuild(account, teamProject, token, target, callback) {
    'use strict';
 
-   // var name = isDocker(target) ? `${teamProject.name}-Docker-CI` : `${teamProject.name}-CI`;
-   var name = `${teamProject.name}-CI`;
+   var name = isDocker(target) ? `${teamProject.name}-Docker-CI` : `${teamProject.name}-CI`;
    var options = addUserAgent({
       "method": `GET`,
       "headers": {
@@ -658,7 +673,7 @@ function findBuild(account, teamProject, token, target, callback) {
       var obj = JSON.parse(body);
 
       var bld = obj.value.find(function (i) {
-         return i.name === name;
+         return i.name.toLowerCase() === name.toLowerCase();
       });
 
       if (!bld) {
@@ -687,16 +702,15 @@ function tryFindRelease(args, callback) {
 function findRelease(args, callback) {
    "use strict";
 
-   // var name = isDocker(args.target) ? `${args.appName}-Docker-CD` : `${args.appName}-CD`;
-   var name = `${args.appName}-CD`;
-   
+   var name = isDocker(args.target) ? `${args.botName}-Docker-CD` : `${args.botName}-CD`;
+
    var options = addUserAgent({
       "method": `GET`,
       "headers": {
          "cache-control": `no-cache`,
          "authorization": `Basic ${args.token}`
       },
-      "url": `${getFullURL(args.account, true, true)}/${args.teamProject.name}/_apis/release/definitions`,
+      "url": `${getFullURL(args.account, true, RELEASE_MANAGEMENT_SUB_DOMAIN)}/${args.teamProject.name}/_apis/release/definitions`,
       "qs": {
          "api-version": RELEASE_API_VERSION
       }
@@ -706,7 +720,7 @@ function findRelease(args, callback) {
       var obj = JSON.parse(body);
 
       var rel = obj.value.find(function (i) {
-         return i.name === name;
+         return i.name.toLowerCase() === name.toLowerCase();
       });
 
       if (!rel) {
@@ -757,6 +771,21 @@ function getAzureSubs(answers) {
    });
 }
 
+function getProfileCommands(answers) {
+   "use strict";
+
+   return [{
+      name: `Add`,
+      value: `add`
+   }, {
+      name: `List`,
+      value: `list`
+   }, {
+      name: `Delete`,
+      value: `delete`
+   }];
+}
+
 function getPools(answers) {
    "use strict";
 
@@ -787,11 +816,92 @@ function getPools(answers) {
    });
 }
 
-// function isDockerHub(dockerRegistry) {
-//    return dockerRegistry.toLowerCase().match(/index.docker.io/) !== null;
-// }
+function isDockerHub(dockerRegistry) {
+   return dockerRegistry.toLowerCase().match(/index.docker.io/) !== null;
+}
+
+function loadProfiles() {
+
+   let results = {
+      error: null,
+      profiles: null
+   };
+
+   if (fs.existsSync(PROFILE_PATH)) {
+      try {
+         results.profiles = JSON.parse(fs.readFileSync(PROFILE_PATH, 'utf8'));
+      } catch (error) {
+         // The file is invalid
+         results.error = `Invalid file.`;
+      }
+   } else {
+      results.error = `No profiles file.`;
+   }
+
+   return results;
+}
+
+// Reads profiles created by the VSTeam PowerShell module.
+// Search ignores case.
+// Yo team stores the full URL of TFS and the account name
+// for VSTS.  The profile name might not match the account
+// name or full URL.  So when you run Yo Team again it will
+// default to the full URL or account name and fail to find
+// the profile and prompt for the PAT.  Therefore, here you 
+// need to seach the profile name and URL 
+function searchProfiles(input) {
+   let results = loadProfiles();
+
+   if (results.profiles !== null) {
+      var found = results.profiles.filter(function (i) {
+         return (i.Name.toLowerCase().includes(input.toLowerCase()) ||
+            i.URL.toLowerCase().includes(input.toLowerCase())) &&
+            i.Type === `Pat`;
+      });
+
+      if (found.length > 1) {
+         // Try to find the correct entry 
+         found = results.profiles.filter(function (i) {
+            return (i.Name.toLowerCase() === input.toLowerCase() ||
+               i.URL.toLowerCase() === input.toLowerCase());
+         });
+      }
+
+      if (found.length === 1) {
+         return found[0];
+      }
+   }
+
+   return null;
+}
+
+// Used to determine if we need to prompt the user for a PAT
+// If the PAT was read from the profile this method returns
+// false letting the prompt know it does not need to ask for 
+// a PAT.
+function readPatFromProfile(answers, obj) {
+   if (profile) {
+      // Profiles are stored 64 bit encoded
+      let b = new Buffer(profile.Pat, 'base64');
+      // Skip the leading :
+      obj.options.pat = b.toString().substring(1);
+   }
+
+   // If the value was passed on the command line it will
+   // not be set in answers which other prompts expect.
+   // So, place it in answers now.
+   answers.pat = obj.options.pat;
+
+   return obj.options.pat === undefined;
+}
 
 function extractInstance(input) {
+   profile = searchProfiles(input);
+
+   if (profile !== null) {
+      input = profile.URL;
+   }
+
    // When using VSTS we only want the account name but
    // people continue to give the entire url which will
    // cause issues later. So check to see if the value
@@ -811,14 +921,14 @@ function extractInstance(input) {
    return match[1];
 }
 
-function needsRegistry(answers, cmdLnInput) {
-   if (cmdLnInput !== undefined) {
+function needsRegistry(answers, options) {
+   if (options !== undefined) {
       return (answers.target === `docker` ||
-         cmdLnInput.target === `docker` ||
+         options.target === `docker` ||
          answers.target === `acilinux` ||
-         cmdLnInput.target === `acilinux` ||
+         options.target === `acilinux` ||
          answers.target === `dockerpaas` ||
-         cmdLnInput.target === `dockerpaas`);
+         options.target === `dockerpaas`);
    } else {
       return (answers.target === `docker` ||
          answers.target === `acilinux` ||
@@ -826,45 +936,45 @@ function needsRegistry(answers, cmdLnInput) {
    }
 }
 
-// function needsDockerHost(answers, cmdLnInput) {
-//    let isDocker;
-//    let paasRequiresHost;
+function needsDockerHost(answers, options) {
+   let isDocker;
+   let paasRequiresHost;
 
-//    if (cmdLnInput !== undefined) {
-//       // If you pass in the target on the command line 
-//       // answers.target will be undefined so test cmdLnInput
-//       isDocker = (answers.target === `docker` || cmdLnInput.target === `docker`);
+   if (options !== undefined) {
+      // If you pass in the target on the command line 
+      // answers.target will be undefined so test options
+      isDocker = (answers.target === `docker` || options.target === `docker`);
 
-//       // This will be true if the user did not select the Hosted Linux queue
-//       paasRequiresHost = (answers.target === `dockerpaas` ||
-//             cmdLnInput.target === `dockerpaas` ||
-//             answers.target === `acilinux` ||
-//             cmdLnInput.target === `acilinux`) &&
-//          ((answers.queue === undefined || answers.queue.indexOf(`Linux`) === -1) &&
-//             (cmdLnInput.queue === undefined || cmdLnInput.queue.indexOf(`Linux`) === -1));
-//    } else {
-//       // If you pass in the target on the command line 
-//       // answers.target will be undefined so test cmdLnInput
-//       isDocker = answers.target === `docker`;
+      // This will be true if the user did not select the Hosted Linux queue
+      paasRequiresHost = (answers.target === `dockerpaas` ||
+         options.target === `dockerpaas` ||
+         answers.target === `acilinux` ||
+         options.target === `acilinux`) &&
+         ((answers.queue === undefined || answers.queue.indexOf(`Linux`) === -1) &&
+            (options.queue === undefined || options.queue.indexOf(`Linux`) === -1));
+   } else {
+      // If you pass in the target on the command line 
+      // answers.target will be undefined so test options
+      isDocker = answers.target === `docker`;
 
-//       // This will be true the user did not select the Hosted Linux queue
-//       paasRequiresHost = (answers.target === `dockerpaas` || answers.target === `acilinux`) && answers.queue.indexOf(`Linux`) === -1;
-//    }
+      // This will be true the user did not select the Hosted Linux queue
+      paasRequiresHost = (answers.target === `dockerpaas` || answers.target === `acilinux`) && answers.queue.indexOf(`Linux`) === -1;
+   }
 
-//    logMessage(`needsDockerHost returning = ${isDocker || paasRequiresHost}`);
-//    return (isDocker || paasRequiresHost);
-// }
+   logMessage(`needsDockerHost returning = ${isDocker || paasRequiresHost}`);
+   return (isDocker || paasRequiresHost);
+}
 
 function isPaaS(answers, cmdLnInput) {
    if (cmdLnInput !== undefined) {
       return (answers.target === `paas` ||
-         cmdLnInput.target === `paas` ||
+         cmdLnInput.options.target === `paas` ||
          answers.target === `paasslots` ||
-         cmdLnInput.target === `paasslots` ||
+         cmdLnInput.options.target === `paasslots` ||
          answers.target === `acilinux` ||
-         cmdLnInput.target === `acilinux` ||
+         cmdLnInput.options.target === `acilinux` ||
          answers.target === `dockerpaas` ||
-         cmdLnInput.target === `dockerpaas`);
+         cmdLnInput.options.target === `dockerpaas`);
    } else {
       return (answers.target === `paas` ||
          answers.target === `paasslots` ||
@@ -874,7 +984,80 @@ function isPaaS(answers, cmdLnInput) {
 }
 
 function isVSTS(instance) {
-   return instance.toLowerCase().match(/http/) === null;
+   if (instance) {
+      return instance.toLowerCase().match(/http/) === null || instance.toLowerCase().match(/visualstudio\.com/) !== null;
+   }
+
+   return false;
+}
+
+function supportsLoadTests(account, token, callback) {
+   if (isVSTS(account)) {
+      let pat = encodePat(token);
+
+      // We can determine if this is 2017 or not by searching for a 
+      // specific docker task.
+      var options = addUserAgent({
+         "method": `GET`,
+         "headers": {
+            "cache-control": `no-cache`,
+            "authorization": `Basic ${pat}`
+         },
+         "url": `${getFullURL(account)}/_api/_account/GetAccountSettings?__v=5`
+      });
+
+      request(options, function (error, response, body) {
+         if (error) {
+            callback(error, undefined);
+         } else if (response.statusCode >= 200 && response.statusCode < 300) {
+            let obj = {};
+            let result = true;
+
+            try {
+               obj = JSON.parse(body);
+
+               if (obj.accountRegion === `West Central US`) {
+                  result = false;
+               }
+
+               callback(undefined, result);
+            } catch (error) {
+               // This a HTML page with an error message.
+               err = error;
+               console.log(body);
+               callback(err, undefined);
+            }
+         } else {
+            callback(undefined, undefined);
+         }
+      });
+   } else {
+      callback(undefined, false);
+   }
+}
+
+//
+// Returns true if the extension is installed.
+// Despite the resource name of installedextensionsbyname you actually have to pass in the ID.
+// https://{accountName}.extmgmt.visualstudio.com/_apis/extensionmanagement/installedextensionsbyname/{publisherId}/{extensionId}
+//
+function isExtensionInstalled(account, token, publisherId, extensionId, callback) {
+   var options = addUserAgent({
+      "method": `GET`,
+      "headers": {
+         "cache-control": `no-cache`,
+         "authorization": `Basic ${token}`
+      },
+      "url": `${getFullURL(account)}/_apis/extensionmanagement/installedextensionsbyname/${publisherId}/${extensionId}`
+   });
+
+   request(options, function (error, response, body) {
+      if (error) {
+         callback(undefined, false);
+      } else {
+         callback(undefined, true);
+      }
+   });
 }
 
 //
@@ -884,30 +1067,37 @@ function isTFSGreaterThan2017(account, token, callback) {
    if (isVSTS(account)) {
       callback(undefined, true);
    } else {
-      // We can determine if this is 2017 or not by searching for a 
-      // specific docker task.
+      // We can determine if this is 2017 or not by reviewing
+      // the values from teh serviceLevel
       var options = addUserAgent({
          "method": `GET`,
          "headers": {
             "cache-control": `no-cache`,
             "authorization": `Basic ${token}`
          },
-         "url": `${getFullURL(account)}/_apis/distributedtask/tasks/e28912f1-0114-4464-802a-a3a35437fd16`
+         "url": `${getFullURL(account)}/_apis/servicelevel`
       });
 
       request(options, function (error, response, body) {
          if (error) {
             callback(error, undefined);
          } else if (response.statusCode === 200) {
-            callback(undefined, true);
+
+            var obj = JSON.parse(body);
+
+            if (obj.configurationDatabaseServiceLevel.startsWith(`Dev15`)) {
+               callback(undefined, false);
+            } else {
+               callback(undefined, true);
+            }
          } else {
-            callback(undefined, false);
+            callback(undefined, true);
          }
       });
    }
 }
 
-function getFullURL(instance, includeCollection, forRM) {
+function getFullURL(instance, includeCollection, subDomain) {
    // The user MUST only enter the VSTS account name and not the full url.
    // This is how the system determines which system is being targeted.  Some
    // URL for VSTS are not the same as they are for TFS for example Release
@@ -923,8 +1113,8 @@ function getFullURL(instance, includeCollection, forRM) {
 
    var vstsURL = `https://${instance}.visualstudio.com`;
 
-   if (forRM) {
-      vstsURL = `https://${instance}.vsrm.visualstudio.com`;
+   if (subDomain) {
+      vstsURL = `https://${instance}.${subDomain}.visualstudio.com`;
    }
 
    if (includeCollection) {
@@ -938,12 +1128,21 @@ module.exports = {
 
    // Exports the portions of the file we want to share with files that require
    // it.
+   PROFILE_PATH: PROFILE_PATH,
+   BUILD_API_VERSION: BUILD_API_VERSION,
+   PROJECT_API_VERSION: PROJECT_API_VERSION,
+   RELEASE_API_VERSION: RELEASE_API_VERSION,
+   EXTENSIONS_SUB_DOMAIN: EXTENSIONS_SUB_DOMAIN,
+   DISTRIBUTED_TASK_API_VERSION: DISTRIBUTED_TASK_API_VERSION,
+   SERVICE_ENDPOINTS_API_VERSION: SERVICE_ENDPOINTS_API_VERSION,
+   RELEASE_MANAGEMENT_SUB_DOMAIN: RELEASE_MANAGEMENT_SUB_DOMAIN,
+
 
    isVSTS: isVSTS,
    isPaaS: isPaaS,
    getPools: getPools,
    tokenize: tokenize,
-   // isDocker: isDocker,
+   isDocker: isDocker,
    encodePat: encodePat,
    findQueue: findQueue,
    findBuild: findBuild,
@@ -955,9 +1154,10 @@ module.exports = {
    findProject: findProject,
    findRelease: findRelease,
    validateTFS: validateTFS,
-   // isDockerHub: isDockerHub,
+   isDockerHub: isDockerHub,
    getAzureSubs: getAzureSubs,
    findAzureSub: findAzureSub,
+   loadProfiles: loadProfiles,
    getPATPrompt: getPATPrompt,
    tryFindBuild: tryFindBuild,
    addUserAgent: addUserAgent,
@@ -965,33 +1165,39 @@ module.exports = {
    needsRegistry: needsRegistry,
    tryFindRelease: tryFindRelease,
    reconcileValue: reconcileValue,
+   searchProfiles: searchProfiles,
    tryFindProject: tryFindProject,
-   // validateGroupID: validateGroupID,
    extractInstance: extractInstance,
-   // needsDockerHost: needsDockerHost,
+   needsDockerHost: needsDockerHost,
    validateAzureSub: validateAzureSub,
    getInstancePrompt: getInstancePrompt,
-   // getImageNamespace: getImageNamespace,
-   // validateDockerHost: validateDockerHost,
+   getImageNamespace: getImageNamespace,
+   supportsLoadTests: supportsLoadTests,
+   getProfileCommands: getProfileCommands,
+   readPatFromProfile: readPatFromProfile,
+   validateDockerHost: validateDockerHost,
    validateAzureSubID: validateAzureSubID,
    validatePortMapping: validatePortMapping,
-   // validateDockerHubID: validateDockerHubID,
+   validateProfileName: validateProfileName,
+   validateDockerHubID: validateDockerHubID,
+   isExtensionInstalled: isExtensionInstalled,
    isTFSGreaterThan2017: isTFSGreaterThan2017,
+   // validateCustomFolder: validateCustomFolder,
    getDefaultPortMapping: getDefaultPortMapping,
    validateAzureTenantID: validateAzureTenantID,
-   // validateDockerRegistry: validateDockerRegistry,
+   validateDockerRegistry: validateDockerRegistry,
    validateBotName: validateBotName,
    validateBotLocation: validateBotLocation,
    findAzureServiceEndpoint: findAzureServiceEndpoint,
-   // getDockerRegistryServer: getDockerRegistryServer,
-   // findDockerServiceEndpoint: findDockerServiceEndpoint,
-   // validateDockerHubPassword: validateDockerHubPassword,
+   getDockerRegistryServer: getDockerRegistryServer,
+   findDockerServiceEndpoint: findDockerServiceEndpoint,
+   validateDockerHubPassword: validateDockerHubPassword,
    validateServicePrincipalID: validateServicePrincipalID,
    validateServicePrincipalKey: validateServicePrincipalKey,
    tryFindAzureServiceEndpoint: tryFindAzureServiceEndpoint,
    validatePersonalAccessToken: validatePersonalAccessToken,
-   // tryFindDockerServiceEndpoint: tryFindDockerServiceEndpoint,
-   // validateDockerCertificatePath: validateDockerCertificatePath,
-   // findDockerRegistryServiceEndpoint: findDockerRegistryServiceEndpoint,
-   // tryFindDockerRegistryServiceEndpoint: tryFindDockerRegistryServiceEndpoint
+   tryFindDockerServiceEndpoint: tryFindDockerServiceEndpoint,
+   validateDockerCertificatePath: validateDockerCertificatePath,
+   findDockerRegistryServiceEndpoint: findDockerRegistryServiceEndpoint,
+   tryFindDockerRegistryServiceEndpoint: tryFindDockerRegistryServiceEndpoint
 };

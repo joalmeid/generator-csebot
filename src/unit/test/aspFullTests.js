@@ -3,12 +3,12 @@ const sinon = require(`sinon`);
 const helpers = require(`yeoman-test`);
 const assert = require(`yeoman-assert`);
 
-describe(`team:aspFull paas`, function () {
+describe(`csebot:csharp paas`, function () {
    var bowerStub;
 
    before(function () {
-      return helpers.run(path.join(__dirname, `../../generators/aspFull/index`))
-         .withArguments([`aspFullUnitTest`])
+      return helpers.run(path.join(__dirname, `../../generators/csharp`))
+         .withArguments([`csharpUnitTest`])
          .on(`error`, function (e) {
             assert.fail(e);
          })
@@ -20,11 +20,11 @@ describe(`team:aspFull paas`, function () {
 
    it(`files should be generated`, function () {
       assert.file([
-         `./aspFullUnitTest/aspFullUnitTest.sln`,
-         `./aspFullUnitTest/.gitattributes`,
-         `./aspFullUnitTest/.gitignore`,
-         `./aspFullUnitTest/aspFullUnitTest.IaC/WebSite.json`,
-         `./aspFullUnitTest/aspFullUnitTest.IaC/WebSite.parameters.json`,
+         `./csharpUnitTest/csharpUnitTest.sln`,
+         `./csharpUnitTest/.gitattributes`,
+         `./csharpUnitTest/.gitignore`,
+         `./csharpUnitTest/csharpUnitTest.IaC/WebSite.json`,
+         `./csharpUnitTest/csharpUnitTest.IaC/WebSite.parameters.json`,
       ]);
    });
 });

@@ -1,11 +1,11 @@
-const appService = require('./appService');
+const appService = require('./_appService');
 
 describe(`Azure App Service Slots (Windows) using Default queue`, function () {
    "use strict";
 
    appService.runTests({
-      appType: `asp`,
-      appName: `aspPaaSTest`,
+      botType: `asp`,
+      botName: `aspPaaSTest`,
       target: `paasslots`,
       context: `Azure App Service (Windows)`,
       suffix: ``,

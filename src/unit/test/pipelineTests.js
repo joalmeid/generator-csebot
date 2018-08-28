@@ -5,13 +5,13 @@ const helpers = require(`yeoman-test`);
 const assert = require(`yeoman-assert`);
 const util = require(`../../generators/app/utility`);
 
-describe(`team:pipeline`, function () {
+describe(`csebot:pipeline`, function () {
    it(`using real dependencies`, function () {
       var deps = [
          // No docker gens are listed
-         path.join(__dirname, `../../generators/azure/index`),
-         path.join(__dirname, `../../generators/build/index`),
-         path.join(__dirname, `../../generators/release/index`)
+         path.join(__dirname, `../../generators/azure`),
+         path.join(__dirname, `../../generators/build`),
+         path.join(__dirname, `../../generators/release`)
       ];
 
       let expectedToken = `OnRva2Vu`;
@@ -35,6 +35,7 @@ describe(`team:pipeline`, function () {
       let target = `paas`;
       let dockerHost = ``;
       let dockerPorts = ``;
+      // let customFolder = ` `;
       let queue = `default`;
       let dockerCertPath = ``;
       let dockerRegistry = ``;
@@ -42,18 +43,18 @@ describe(`team:pipeline`, function () {
       let tenantId = `TenantId`;
       let dockerRegistryId = ``;
       let azureSubId = `AzureSubId`;
-      let applicationName = `aspDemo`;
+      let botName = `aspDemo`;
       let dockerRegistryPassword = ``;
       let servicePrincipalId = `servicePrincipalId`;
       let servicePrincipalKey = `servicePrincipalKey`;
       let tfs = `http://localhost:8080/tfs/defaultcollection`;
 
-      return helpers.run(path.join(__dirname, `../../generators/pipeline/index`))
+      return helpers.run(path.join(__dirname, `../../generators/pipeline`))
          .withGenerators(deps)
-         .withArguments([type, applicationName, tfs,
+         .withArguments([type, botName, tfs,
             queue, target, azureSub, azureSubId, tenantId, servicePrincipalId,
             dockerHost, dockerCertPath, dockerRegistry, dockerRegistryId, dockerPorts,
-            dockerRegistryPassword, servicePrincipalKey, pat
+            dockerRegistryPassword, servicePrincipalKey, pat //, customFolder
          ])
          .on(`error`, function (e) {
             cleanUp();
@@ -169,9 +170,9 @@ describe(`team:pipeline`, function () {
    it(`prompts for azure should not compose with Docker`, function () {
       let deps = [
          // No docker gens are listed
-         [helpers.createDummyGenerator(), `team:azure`],
-         [helpers.createDummyGenerator(), `team:build`],
-         [helpers.createDummyGenerator(), `team:release`]
+         [helpers.createDummyGenerator(), `csebot:azure`],
+         [helpers.createDummyGenerator(), `csebot:build`],
+         [helpers.createDummyGenerator(), `csebot:release`]
       ];
 
       let cleanUp = function () {
@@ -186,7 +187,7 @@ describe(`team:pipeline`, function () {
             pat: `token`,
             queue: `Default`,
             type: `asp`,
-            applicationName: `aspDemo`,
+            botName: `aspDemo`,
             target: `paas`,
             azureSub: `azureSub`,
             installDep: `false`
@@ -208,9 +209,9 @@ describe(`team:pipeline`, function () {
    it(`for azure should not compose with Docker`, function () {
       var deps = [
          // No docker gens are listed
-         [helpers.createDummyGenerator(), `team:azure`],
-         [helpers.createDummyGenerator(), `team:build`],
-         [helpers.createDummyGenerator(), `team:release`]
+         [helpers.createDummyGenerator(), `csebot:azure`],
+         [helpers.createDummyGenerator(), `csebot:build`],
+         [helpers.createDummyGenerator(), `csebot:release`]
       ];
 
       return helpers.run(path.join(__dirname, `../../generators/pipeline/index.js`))
@@ -228,10 +229,10 @@ describe(`team:pipeline`, function () {
    it(`for docker should not compose with azure`, function () {
       var deps = [
          // No azure gens are listed
-         [helpers.createDummyGenerator(), `team:build`],
-         [helpers.createDummyGenerator(), `team:docker`],
-         [helpers.createDummyGenerator(), `team:release`],
-         [helpers.createDummyGenerator(), `team:registry`]
+         [helpers.createDummyGenerator(), `csebot:build`],
+         [helpers.createDummyGenerator(), `csebot:docker`],
+         [helpers.createDummyGenerator(), `csebot:release`],
+         [helpers.createDummyGenerator(), `csebot:registry`]
       ];
 
       // Defining the arguments this way and calling the function under test
@@ -247,7 +248,7 @@ describe(`team:pipeline`, function () {
       let servicePrincipalKey = ``;
       let dockerHost = `DockerHost`;
       let dockerPorts = `DockerPorts`;
-      let applicationName = `nodeDemo`;
+      let botName = `nodeDemo`;
       let dockerCertPath = `DockerCert`;
       let dockerRegistry = `DockerRegistry`;
       let dockerRegistryId = `DockerUsername`;
@@ -256,7 +257,7 @@ describe(`team:pipeline`, function () {
 
       return helpers.run(path.join(__dirname, `../../generators/pipeline/index.js`))
          .withGenerators(deps)
-         .withArguments([type, applicationName, tfs,
+         .withArguments([type, botName, tfs,
             queue, target, azureSub, azureSubId, tenantId, servicePrincipalId,
             dockerHost, dockerCertPath, dockerRegistry, dockerRegistryId, dockerPorts,
             dockerRegistryPassword, servicePrincipalKey, pat

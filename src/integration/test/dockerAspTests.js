@@ -1,14 +1,13 @@
-const docker = require('./docker');
+const docker = require('./_docker');
 
 describe(`Docker Host using Default queue`, function () {
    "use strict";
 
    docker.runTests({
-      appType: `asp`,
-      appName: `aspDockerTest`,
+      botType: `asp`,
+      botName: `aspDockerTest`,
       target: `docker`,
       queue: `Default`,
-      groupId: ` `,
       title: `Home Page - My .NET Core Application`
    });
 });

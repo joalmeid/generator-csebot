@@ -3,18 +3,18 @@ const path = require(`path`);
 const sinon = require(`sinon`);
 const stubs = require(`./stubs`);
 const helpers = require(`yeoman-test`);
-const sinonTest = require(`sinon-test`);
 const assert = require(`yeoman-assert`);
 const proxyquire = require(`proxyquire`);
+const sinonTestFactory = require(`sinon-test`);
 const util = require(`../../generators/app/utility`);
 const release = require(`../../generators/release/app`);
 
-sinon.test = sinonTest.configureTest(sinon);
+const sinonTest = sinonTestFactory(sinon);
 
 describe(`release:index`, function () {
    "use strict";
 
-   it(`test prompts node dockerpaas vsts`, function () {
+   it(`test prompts custom dockerpaas vsts`, function () {
       let expectedToken = `OnRva2Vu`;
       let expectedAccount = `vsts`;
 
@@ -25,17 +25,19 @@ describe(`release:index`, function () {
          util.findProject.restore();
          util.getAzureSubs.restore();
          util.tryFindRelease.restore();
+         util.supportsLoadTests.restore();
          util.findAzureServiceEndpoint.restore();
          util.findDockerRegistryServiceEndpoint.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/release/index`))
+      return helpers.run(path.join(__dirname, `../../generators/release`))
          .withPrompts({
             tfs: `vsts`,
             pat: `token`,
             queue: `Hosted Linux Preview`,
-            type: `node`,
-            applicationName: `nodeDemo`,
+            type: `custom`,
+            botName: `nodeDemo`,
+            // customFolder: `myFolder`,
             target: `dockerpaas`,
             azureSub: `azureSub`,
             dockerHost: `dockerHost`,
@@ -52,6 +54,7 @@ describe(`release:index`, function () {
             // This is called right before `generator.run()` is called.
             sinon.stub(util, `getPools`);
             sinon.stub(util, `getAzureSubs`);
+            sinon.stub(util, `supportsLoadTests`).callsArgWith(2, null, true);
             stubs.findProject(expectedAccount, `nodeDemo`, expectedToken);
             stubs.findQueue(expectedAccount, `Hosted Linux Preview`, expectedToken);
             stubs.findBuild(expectedAccount, `dockerpaas`, expectedToken);
@@ -81,13 +84,13 @@ describe(`release:index`, function () {
          util.findDockerRegistryServiceEndpoint.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/release/index`))
+      return helpers.run(path.join(__dirname, `../../generators/release`))
          .withPrompts({
             tfs: `http://localhost:8080/tfs/DefaultCollection`,
             pat: `token`,
             queue: `Hosted Linux Preview`,
             type: `node`,
-            applicationName: `nodeDemo`,
+            botName: `nodeDemo`,
             target: `dockerpaas`,
             azureSub: `azureSub`,
             dockerHost: `dockerHost`,
@@ -105,7 +108,7 @@ describe(`release:index`, function () {
             sinon.stub(util, `getPools`);
             sinon.stub(util, `getTargets`);
             sinon.stub(util, `getAzureSubs`);
-            sinon.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);            
+            sinon.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
             stubs.findProject(expectedAccount, `nodeDemo`, expectedToken);
             stubs.findQueue(expectedAccount, `Hosted Linux Preview`, expectedToken);
             stubs.findBuild(expectedAccount, `dockerpaas`, expectedToken);
@@ -129,17 +132,18 @@ describe(`release:index`, function () {
          util.findProject.restore();
          util.getAzureSubs.restore();
          util.tryFindRelease.restore();
+         util.supportsLoadTests.restore();
          util.findAzureServiceEndpoint.restore();
          util.findDockerRegistryServiceEndpoint.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/release/index`))
+      return helpers.run(path.join(__dirname, `../../generators/release`))
          .withPrompts({
             tfs: `vsts`,
             pat: `token`,
             queue: `Hosted Linux Preview`,
             type: `node`,
-            applicationName: `nodeDemo`,
+            botName: `nodeDemo`,
             target: `acilinux`,
             azureSub: `azureSub`,
             dockerHost: `dockerHost`,
@@ -156,6 +160,7 @@ describe(`release:index`, function () {
             // This is called right before `generator.run()` is called.
             sinon.stub(util, `getPools`);
             sinon.stub(util, `getAzureSubs`);
+            sinon.stub(util, `supportsLoadTests`).callsArgWith(2, null, true);
             stubs.findProject(expectedAccount, `nodeDemo`, expectedToken);
             stubs.findQueue(expectedAccount, `Hosted Linux Preview`, expectedToken);
             stubs.findBuild(expectedAccount, `acilinux`, expectedToken);
@@ -184,13 +189,13 @@ describe(`release:index`, function () {
          util.findDockerRegistryServiceEndpoint.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/release/index`))
+      return helpers.run(path.join(__dirname, `../../generators/release`))
          .withPrompts({
             tfs: `http://localhost:8080/tfs/DefaultCollection`,
             pat: `token`,
             queue: `Hosted Linux Preview`,
             type: `node`,
-            applicationName: `nodeDemo`,
+            botName: `nodeDemo`,
             target: `acilinux`,
             azureSub: `azureSub`,
             dockerHost: `dockerHost`,
@@ -231,17 +236,18 @@ describe(`release:index`, function () {
          util.findQueue.restore();
          util.findProject.restore();
          util.tryFindRelease.restore();
+         util.supportsLoadTests.restore();
          util.findDockerServiceEndpoint.restore();
          util.findDockerRegistryServiceEndpoint.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/release/index`))
+      return helpers.run(path.join(__dirname, `../../generators/release`))
          .withPrompts({
             tfs: `vsts`,
             pat: `token`,
             queue: `Default`,
             type: `node`,
-            applicationName: `nodeDemo`,
+            botName: `nodeDemo`,
             target: `docker`,
             dockerHost: `dockerHost`,
             dockerRegistryId: `dockerRegistryId`,
@@ -254,6 +260,7 @@ describe(`release:index`, function () {
          .on(`ready`, function (generator) {
             // This is called right before `generator.run()` is called.
             sinon.stub(util, `getPools`);
+            sinon.stub(util, `supportsLoadTests`).callsArgWith(2, null, true);
             stubs.findProject(expectedAccount, `nodeDemo`, expectedToken);
             stubs.findQueue(expectedAccount, `Default`, expectedToken);
             stubs.findBuild(expectedAccount, `docker`, expectedToken);
@@ -282,13 +289,13 @@ describe(`release:index`, function () {
          util.findDockerRegistryServiceEndpoint.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/release/index`))
+      return helpers.run(path.join(__dirname, `../../generators/release`))
          .withPrompts({
             tfs: `http://localhost:8080/tfs/DefaultCollection`,
             pat: `token`,
             queue: `Default`,
             type: `node`,
-            applicationName: `nodeDemo`,
+            botName: `nodeDemo`,
             target: `docker`,
             dockerHost: `dockerHost`,
             dockerRegistryId: `dockerRegistryId`,
@@ -326,16 +333,17 @@ describe(`release:index`, function () {
          util.findProject.restore();
          util.getAzureSubs.restore();
          util.tryFindRelease.restore();
+         util.supportsLoadTests.restore();
          util.findAzureServiceEndpoint.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/release/index`))
+      return helpers.run(path.join(__dirname, `../../generators/release`))
          .withPrompts({
             tfs: `vsts`,
             pat: `token`,
             queue: `Default`,
             type: `node`,
-            applicationName: `nodeDemo`,
+            botName: `nodeDemo`,
             target: `paasslots`,
             azureSub: `azureSub`
          })
@@ -347,6 +355,7 @@ describe(`release:index`, function () {
             // This is called right before `generator.run()` is called.
             sinon.stub(util, `getPools`);
             sinon.stub(util, `getAzureSubs`);
+            sinon.stub(util, `supportsLoadTests`).callsArgWith(2, null, true);
             stubs.findProject(expectedAccount, `nodeDemo`, expectedToken);
             stubs.findQueue(expectedAccount, `Default`, expectedToken);
             stubs.findBuild(expectedAccount, `paasslots`, expectedToken);
@@ -369,16 +378,17 @@ describe(`release:index`, function () {
          util.findProject.restore();
          util.getAzureSubs.restore();
          util.tryFindRelease.restore();
+         util.supportsLoadTests.restore();
          util.findAzureServiceEndpoint.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/release/index`))
+      return helpers.run(path.join(__dirname, `../../generators/release`))
          .withPrompts({
             tfs: `vsts`,
             pat: `token`,
             queue: `Default`,
             type: `node`,
-            applicationName: `nodeDemo`,
+            botName: `nodeDemo`,
             target: `paas`,
             azureSub: `azureSub`
          })
@@ -390,6 +400,7 @@ describe(`release:index`, function () {
             // This is called right before `generator.run()` is called.
             sinon.stub(util, `getPools`);
             sinon.stub(util, `getAzureSubs`);
+            sinon.stub(util, `supportsLoadTests`).callsArgWith(2, null, true);
             stubs.findProject(expectedAccount, `nodeDemo`, expectedToken);
             stubs.findQueue(expectedAccount, `Default`, expectedToken);
             stubs.findBuild(expectedAccount, `paas`, expectedToken);
@@ -411,17 +422,18 @@ describe(`release:index`, function () {
          util.findQueue.restore();
          util.findProject.restore();
          util.tryFindRelease.restore();
+         util.supportsLoadTests.restore();
          util.findDockerServiceEndpoint.restore();
          util.findDockerRegistryServiceEndpoint.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/release/index`))
+      return helpers.run(path.join(__dirname, `../../generators/release`))
          .withPrompts({
             tfs: `vsts`,
             pat: `token`,
             queue: `Default`,
             type: `java`,
-            applicationName: `javaDemo`,
+            botName: `javaDemo`,
             target: `docker`,
             dockerHost: `dockerHost`,
             dockerRegistryId: `dockerRegistryId`,
@@ -434,6 +446,7 @@ describe(`release:index`, function () {
          .on(`ready`, function (generator) {
             // This is called right before `generator.run()` is called.
             sinon.stub(util, `getPools`);
+            sinon.stub(util, `supportsLoadTests`).callsArgWith(2, null, true);
             stubs.findProject(expectedAccount, `javaDemo`, expectedToken);
             stubs.findQueue(expectedAccount, `Default`, expectedToken);
             stubs.findBuild(expectedAccount, `docker`, expectedToken);
@@ -457,16 +470,17 @@ describe(`release:index`, function () {
          util.findProject.restore();
          util.getAzureSubs.restore();
          util.tryFindRelease.restore();
+         util.supportsLoadTests.restore();
          util.findAzureServiceEndpoint.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/release/index`))
+      return helpers.run(path.join(__dirname, `../../generators/release`))
          .withPrompts({
             tfs: `vsts`,
             pat: `token`,
             queue: `Default`,
             type: `java`,
-            applicationName: `javaDemo`,
+            botName: `javaDemo`,
             target: `paas`,
             azureSub: `azureSub`
          })
@@ -478,6 +492,7 @@ describe(`release:index`, function () {
             // This is called right before `generator.run()` is called.
             sinon.stub(util, `getPools`);
             sinon.stub(util, `getAzureSubs`);
+            sinon.stub(util, `supportsLoadTests`).callsArgWith(2, null, true);
             stubs.findProject(expectedAccount, `javaDemo`, expectedToken);
             stubs.findQueue(expectedAccount, `Default`, expectedToken);
             stubs.findBuild(expectedAccount, `paas`, expectedToken);
@@ -499,17 +514,18 @@ describe(`release:index`, function () {
          util.findQueue.restore();
          util.findProject.restore();
          util.tryFindRelease.restore();
+         util.supportsLoadTests.restore();
          util.findDockerServiceEndpoint.restore();
          util.findDockerRegistryServiceEndpoint.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/release/index`))
+      return helpers.run(path.join(__dirname, `../../generators/release`))
          .withPrompts({
             tfs: `vsts`,
             pat: `token`,
             queue: `Default`,
             type: `asp`,
-            applicationName: `aspDemo`,
+            botName: `aspDemo`,
             target: `docker`,
             dockerHost: `dockerHost`,
             dockerRegistryId: `dockerRegistryId`,
@@ -522,6 +538,7 @@ describe(`release:index`, function () {
          .on(`ready`, function (generator) {
             // This is called right before `generator.run()` is called.
             sinon.stub(util, `getPools`);
+            sinon.stub(util, `supportsLoadTests`).callsArgWith(2, null, true);
             stubs.findProject(expectedAccount, `aspDemo`, expectedToken);
             stubs.findQueue(expectedAccount, `Default`, expectedToken);
             stubs.findBuild(expectedAccount, `docker`, expectedToken);
@@ -541,7 +558,7 @@ describe(`release:app`, function () {
    let expectedToken = `OnRva2Vu`;
    let expectedAccount = `http://localhost:8080/tfs/DefaultCollection`;
 
-   it(`getRelease asp tfs 2017 paas`, sinon.test(function (done) {
+   it(`getRelease asp tfs 2017 paas`, sinonTest(function (done) {
       // Arrange 
       let expected = `tfs_release.json`;
       this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
@@ -550,6 +567,23 @@ describe(`release:app`, function () {
       release.getRelease({
          type: `asp`,
          target: `paas`,
+         tfs: `http://tfs:8080/tfs/DefaultCollection`
+      }, function (e, actual) {
+         // Assert
+         assert.equal(expected, actual);
+         done(e);
+      });
+   }));
+
+   it(`getRelease asp tfs 2017 paasslots`, sinonTest(function (done) {
+      // Arrange 
+      let expected = `vsts_release_slots.json`;
+      this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
+
+      // Act
+      release.getRelease({
+         type: `asp`,
+         target: `paasslots`,
          tfs: `http://tfs:8080/tfs/DefaultCollection`
       }, function (e, actual) {
          // Assert
@@ -596,13 +630,13 @@ describe(`release:app`, function () {
       assert.equal(expected, actual);
    });
 
-   it(`getRelease aspFull vsts paasslots`, function (done) {
+   it(`getRelease csharp vsts paasslots`, function (done) {
       // Arrange 
       let expected = `vsts_release_slots.json`;
 
       // Act
       release.getRelease({
-         type: `aspFull`,
+         type: `csharp`,
          target: `paasslots`,
          tfs: `vsts`
       }, function (e, actual) {
@@ -612,13 +646,13 @@ describe(`release:app`, function () {
       });
    });
 
-   it(`getRelease aspFull vsts paas`, function (done) {
+   it(`getRelease csharp vsts paas`, function (done) {
       // Arrange 
       let expected = `vsts_release.json`;
 
       // Act
       release.getRelease({
-         type: `aspFull`,
+         type: `csharp`,
          target: `paas`,
          tfs: `vsts`
       }, function (e, actual) {
@@ -628,7 +662,7 @@ describe(`release:app`, function () {
       });
    });
 
-   it(`getRelease asp tfs 2017 docker`, sinon.test(function (done) {
+   it(`getRelease asp tfs 2017 docker`, sinonTest(function (done) {
       // Arrange 
       let expected = `tfs_release_docker.json`;
       this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
@@ -661,7 +695,7 @@ describe(`release:app`, function () {
       });
    });
 
-   it(`getRelease asp tfs 2017 dockerpaas`, sinon.test(function (done) {
+   it(`getRelease asp tfs 2017 dockerpaas`, sinonTest(function (done) {
       // Arrange 
       let expected = `tfs_release_dockerpaas.json`;
       this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
@@ -677,6 +711,111 @@ describe(`release:app`, function () {
          done(e);
       });
    }));
+
+   it(`getRelease asp tfs 2017 dockerpaas no Load Test`, sinonTest(function (done) {
+      // Arrange 
+      let expected = `tfs_release_dockerpaas.json`;
+      this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
+
+      // Act
+      release.getRelease({
+         type: `asp`,
+         target: `dockerpaas`,
+         tfs: `http://tfs:8080/tfs/DefaultCollection`,
+         removeloadTest: true
+      }, function (e, actual) {
+         // Assert
+         assert.equal(expected, actual);
+         done(e);
+      });
+   }));
+
+   // The West Central US region of VSTS does not support Load Test.
+   // So we need to create a release that does not use that task.
+   it(`getRelease java vsts paas no Load Test`, function (done) {
+      // Arrange 
+      let expected = `vsts_release_noloadtest.json`;
+
+      // Act
+      release.getRelease({
+         type: `java`,
+         target: `paas`,
+         tfs: `vsts`,
+         removeloadTest: true
+      }, function (e, actual) {
+         // Assert
+         assert.equal(expected, actual);
+         done(e);
+      });
+   });
+
+   it(`getRelease java vsts paas slots no Load Test`, function (done) {
+      // Arrange 
+      let expected = `vsts_release_slots.json`;
+
+      // Act
+      release.getRelease({
+         type: `java`,
+         target: `paasslots`,
+         tfs: `vsts`,
+         removeloadTest: true
+      }, function (e, actual) {
+         // Assert
+         assert.equal(expected, actual);
+         done(e);
+      });
+   });
+
+   it(`getRelease java vsts docker no Load Test`, function (done) {
+      // Arrange 
+      let expected = `vsts_release_docker.json`;
+
+      // Act
+      release.getRelease({
+         type: `java`,
+         target: `docker`,
+         tfs: `vsts`,
+         removeloadTest: true
+      }, function (e, actual) {
+         // Assert
+         assert.equal(expected, actual);
+         done(e);
+      });
+   });
+
+   it(`getRelease java vsts acilinux no Load Test`, function (done) {
+      // Arrange 
+      let expected = `vsts_release_acilinux.json`;
+
+      // Act
+      release.getRelease({
+         type: `java`,
+         target: `acilinux`,
+         tfs: `vsts`,
+         removeloadTest: true
+      }, function (e, actual) {
+         // Assert
+         assert.equal(expected, actual);
+         done(e);
+      });
+   });
+
+   it(`getRelease asp vsts dockerpaas no Load Test`, function (done) {
+      // Arrange 
+      let expected = `vsts_release_dockerpaas_noloadtest.json`;
+
+      // Act
+      release.getRelease({
+         type: `asp`,
+         target: `dockerpaas`,
+         tfs: `vsts`,
+         removeloadTest: true
+      }, function (e, actual) {
+         // Assert
+         assert.equal(expected, actual);
+         done(e);
+      });
+   });
 
    it(`getRelease asp vsts dockerpaas`, function (done) {
       // Arrange 
@@ -694,7 +833,7 @@ describe(`release:app`, function () {
       });
    });
 
-   it(`getRelease asp tfs 2017 acilinux`, sinon.test(function (done) {
+   it(`getRelease asp tfs 2017 acilinux`, sinonTest(function (done) {
       // Arrange 
       let expected = `tfs_release_acilinux.json`;
       this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
@@ -727,7 +866,7 @@ describe(`release:app`, function () {
       });
    });
 
-   it(`getRelease java tfs 2017 dockerpaas`, sinon.test(function (done) {
+   it(`getRelease java tfs 2017 dockerpaas`, sinonTest(function (done) {
       // Arrange 
       let expected = `tfs_release_dockerpaas.json`;
       this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
@@ -760,7 +899,7 @@ describe(`release:app`, function () {
       });
    });
 
-   it(`getRelease java tfs 2017 acilinux`, sinon.test(function (done) {
+   it(`getRelease java tfs 2017 acilinux`, sinonTest(function (done) {
       // Arrange 
       let expected = `tfs_release_acilinux.json`;
       this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
@@ -923,7 +1062,7 @@ describe(`release:app`, function () {
       });
    });
 
-   it(`getRelease node tfs 2017 acilinux`, sinon.test(function (done) {
+   it(`getRelease node tfs 2017 acilinux`, sinonTest(function (done) {
       // Arrange 
       let expected = `tfs_release_acilinux.json`;
       this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
@@ -940,7 +1079,7 @@ describe(`release:app`, function () {
       });
    }));
 
-   it(`getRelease node tfs 2017 dockerpaas`, sinon.test(function (done) {
+   it(`getRelease node tfs 2017 dockerpaas`, sinonTest(function (done) {
       // Arrange 
       let expected = `tfs_release_dockerpaas.json`;
       this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
@@ -957,7 +1096,7 @@ describe(`release:app`, function () {
       });
    }));
 
-   it(`getRelease node tfs 2018 dockerpaas`, sinon.test(function (done) {
+   it(`getRelease node tfs 2018 dockerpaas`, sinonTest(function (done) {
       // Arrange 
       let expected = `tfs_2018_release_dockerpaas.json`;
       this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, true);
@@ -974,7 +1113,7 @@ describe(`release:app`, function () {
       });
    }));
 
-   it(`getRelease node tfs 2017 docker`, sinon.test(function (done) {
+   it(`getRelease node tfs 2017 docker`, sinonTest(function (done) {
       // Arrange 
       let expected = `tfs_release_docker.json`;
       this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
@@ -991,7 +1130,7 @@ describe(`release:app`, function () {
       });
    }));
 
-   it(`getRelease node tfs 2017 paas`, sinon.test(function (done) {
+   it(`getRelease node tfs 2017 paas`, sinonTest(function (done) {
       // Arrange 
       let expected = `tfs_release.json`;
       this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, false);
@@ -1008,7 +1147,7 @@ describe(`release:app`, function () {
       });
    }));
 
-   it(`getRelease node tfs 2018 paas`, sinon.test(function (done) {
+   it(`getRelease node tfs 2018 paas`, sinonTest(function (done) {
       // Arrange 
       let expected = `tfs_2018_release.json`;
       this.stub(util, `isTFSGreaterThan2017`).callsArgWith(2, null, true);
@@ -1025,7 +1164,7 @@ describe(`release:app`, function () {
       });
    }));
 
-   it(`run with existing release should run without error`, sinon.test(function (done) {
+   it(`run with existing release should run without error`, sinonTest(function (done) {
       // Arrange
       stubs.findQueue(expectedAccount, `Default`, expectedToken, this);
       stubs.findDockerServiceEndpoint(expectedAccount, expectedToken, this);
@@ -1059,7 +1198,7 @@ describe(`release:app`, function () {
       });
    }));
 
-   it(`run with error should return error`, sinon.test(function (done) {
+   it(`run with error should return error`, sinonTest(function (done) {
       // Arrange
       this.stub(util, `tryFindRelease`).callsArgWith(1, new Error("boom"), null);
       this.stub(util, `findBuild`).callsArgWith(4, null, {
@@ -1110,7 +1249,7 @@ describe(`release:app`, function () {
       });
    }));
 
-   it(`findOrCreateRelease should create release paas`, sinon.test(function (done) {
+   it(`findOrCreateRelease should create release paas`, sinonTest(function (done) {
       // Arrange
       // This allows me to take control of the request requirement
       // without this there would be no way to stub the request calls
@@ -1158,7 +1297,8 @@ describe(`release:app`, function () {
             name: `e2eDemo-CI`
          },
          queueId: `1`,
-         appName: `e2eDemo`,
+         type: `csharp`,
+         botName: `e2eDemo`,
          approverId: `aid`,
          account: `http://localhost:8080/tfs/DefaultCollection`,
          pat: `token`,
@@ -1182,7 +1322,7 @@ describe(`release:app`, function () {
       });
    }));
 
-   it(`findOrCreateRelease should create release docker vsts`, sinon.test(function (done) {
+   it(`findOrCreateRelease should create release docker vsts`, sinonTest(function (done) {
       // Arrange
       // This allows me to take control of the request requirement
       // without this there would be no way to stub the request calls
@@ -1210,7 +1350,7 @@ describe(`release:app`, function () {
             name: `e2eDemo-CI`
          },
          queueId: `1`,
-         appName: `e2eDemo`,
+         botName: `e2eDemo`,
          approverId: `aid`,
          dockerRegistry: `https://mydockerimages-microsoft.azurecr.io`,
          account: `vsts`,
@@ -1256,7 +1396,7 @@ describe(`release:app`, function () {
       });
    }));
 
-   it(`findOrCreateRelease should return error if release create fails`, sinon.test(function (done) {
+   it(`findOrCreateRelease should return error if release create fails`, sinonTest(function (done) {
       // Arrange
       // This allows me to take control of the request requirement
       // without this there would be no way to stub the request calls
@@ -1290,7 +1430,7 @@ describe(`release:app`, function () {
             name: `e2eDemo-CI`
          },
          queueId: `1`,
-         appName: `e2eDemo`,
+         botName: `e2eDemo`,
          approverId: `aid`,
          account: `http://localhost:8080/tfs/DefaultCollection`,
          pat: `token`,

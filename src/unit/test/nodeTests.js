@@ -4,11 +4,11 @@ const fs = require(`fs-extra`);
 const helpers = require(`yeoman-test`);
 const assert = require(`yeoman-assert`);
 
-describe(`team:node docker`, function () {
+describe(`csebot:node docker`, function () {
    var spawnStub;
 
    before(function () {
-      return helpers.run(path.join(__dirname, `../../generators/node/index`))
+      return helpers.run(path.join(__dirname, `../../generators/node`))
          .withArguments([`nodeDemo`, `false`, `80`])
          .on(`error`, function (e) {
             assert.fail(e);
@@ -63,7 +63,7 @@ describe(`team:node docker`, function () {
    });
 });
 
-describe(`team:node paas`, function () {
+describe(`csebot:node paas`, function () {
    var bowerStub;
 
    before(function () {

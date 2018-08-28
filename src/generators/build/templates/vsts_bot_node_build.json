@@ -32,7 +32,7 @@
       },
       {
          "enabled": true,
-         "continueOnError": false,
+         "continueOnError": true,
          "alwaysRun": false,
          "displayName": "npm test",
          "timeoutInMinutes": 0,
@@ -128,7 +128,7 @@
          },
          "inputs": {
             "SourceFolder": "",
-            "Contents": "**/{{Project}}_$(Build.BuildId).zip\n**/templates/botapp.json\n**/templates/botapp.parameters.json",
+            "Contents": "**/{{Project}}_$(Build.BuildId).zip\n**/templates/botapp.json\n**/templates/botapp.parameters.json\n**/templates/bot-registration.json\n**/templates/bot-registration.parameters.json\n**/templates/appInsigthsApiAccess.ps1",
             "TargetFolder": "$(build.artifactstagingdirectory)",
             "CleanTargetFolder": "false",
             "OverWrite": "false",

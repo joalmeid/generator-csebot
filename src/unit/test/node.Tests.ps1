@@ -23,7 +23,7 @@ Describe 'Node_PaaS' {
 
    Context 'Default Agent' {
       Write-Host "   Working with project $projectName"
-      node $env:YO team node $projectName demonstrations PM_DonovanBrown " " " " " " Default paas false " " " " " " " " " " " " " " " " $env:PAT *> .\testresults\$projectName.log
+      node $env:YO csebot node $projectName demonstrations CSE_joalmeid " " " " " " Default paas false " " " " " " " " " " " " " " " " $env:PAT *> .\testresults\$projectName.log
       
       It 'Should create project' {
          Get-Project | Where-Object {$_.Name -eq $projectName} | Should not be $Null
@@ -38,7 +38,7 @@ Describe 'Node_PaaS' {
       }
 
       It 'Should create azure serivce endpoint' {
-         Get-ServiceEndpoint -ProjectName $projectName | Where-Object {$_.Name -eq 'PM_DonovanBrown'}  | Should not be $Null
+         Get-ServiceEndpoint -ProjectName $projectName | Where-Object {$_.Name -eq 'CSE_joalmeid'}  | Should not be $Null
       }
 
       It 'Should create git repo endpoint' {
@@ -57,7 +57,7 @@ Describe 'Node_Docker' {
       
    Context 'Default Agent' {
       Write-Host "    Working with project $projectName"
-      node $env:YO team node $projectName demonstrations PM_DonovanBrown " " " " " " Default docker false " " "tcp://my2016dockerhost.westus.cloudapp.azure.com:2376" ".\test" "https://index.docker.io/v1/" "unittest" "3000:3000" "unittests" " " $env:PAT *> .\testresults\$projectName.log
+      node $env:YO csebot node $projectName demonstrations CSE_joalmeid " " " " " " Default docker false " " "tcp://my2016dockerhost.westus.cloudapp.azure.com:2376" ".\test" "https://index.docker.io/v1/" "unittest" "3000:3000" "unittests" " " $env:PAT *> .\testresults\$projectName.log
       
       It 'Should create project' {
          # I can't use Get-Project -Name because Name if validated against existing 
@@ -100,7 +100,7 @@ Describe 'Node_DockerPaaS' {
       
    Context 'Default Agent' {
       Write-Host "    Working with project $projectName"
-      node $env:YO team node $projectName demonstrations PM_DonovanBrown " " " " " " Default dockerpaas false " " "tcp://my2016dockerhost.westus.cloudapp.azure.com:2376" ".\test" "https://index.docker.io/v1/" "registryUsername" "3000:3000" "registryPassword" " " $env:PAT *> .\testresults\$projectName.log
+      node $env:YO csebot node $projectName demonstrations CSE_joalmeid " " " " " " Default dockerpaas false " " "tcp://my2016dockerhost.westus.cloudapp.azure.com:2376" ".\test" "https://index.docker.io/v1/" "registryUsername" "3000:3000" "registryPassword" " " $env:PAT *> .\testresults\$projectName.log
       
       It 'Should create project' {
          # I can't use Get-Project -Name because Name if validated against existing 
@@ -143,7 +143,7 @@ Describe 'Node_DockerPaaS' {
       
    Context 'Linux Agent' {
       Write-Host "    Working with project $projectName"
-      node $env:YO team node $projectName demonstrations PM_DonovanBrown " " " " " " "Hosted Linux Preview" dockerpaas false " " " " " " "https://index.docker.io/v1/" "registryUsername" "3000:3000" "registryPassword" " " $env:PAT *> .\testresults\$projectName.log
+      node $env:YO csebot node $projectName demonstrations CSE_joalmeid " " " " " " "Hosted Linux Preview" dockerpaas false " " " " " " "https://index.docker.io/v1/" "registryUsername" "3000:3000" "registryPassword" " " $env:PAT *> .\testresults\$projectName.log
       
       It 'Should create project' {
          # I can't use Get-Project -Name because Name if validated against existing 
@@ -163,7 +163,7 @@ Describe 'Node_DockerPaaS' {
       }
 
       It 'Should create azure serivce endpoint' {
-         Get-ServiceEndpoint -ProjectName $projectName | Where-Object {$_.Name -eq 'PM_DonovanBrown'}  | Should not be $Null
+         Get-ServiceEndpoint -ProjectName $projectName | Where-Object {$_.Name -eq 'CSE_joalmeid'}  | Should not be $Null
       }
 
       It 'Should create docker registry serivce endpoints' {

@@ -1,18 +1,12 @@
 const fs = require(`fs`);
 const sinon = require(`sinon`);
 const assert = require(`assert`);
-const sinonTest = require(`sinon-test`);
 const proxyquire = require(`proxyquire`);
 const package = require('../../package.json');
+const sinonTestFactory = require(`sinon-test`);
 const util = require(`../../generators/app/utility`);
 
-const BUILD_API_VERSION = `2.0`;
-const PROJECT_API_VERSION = `1.0`;
-const RELEASE_API_VERSION = `3.0-preview.3`;
-const DISTRIBUTED_TASK_API_VERSION = `3.0-preview.1`;
-const SERVICE_ENDPOINTS_API_VERSION = `3.0-preview.1`;
-
-sinon.test = sinonTest.configureTest(sinon);
+const sinonTest = sinonTestFactory(sinon);
 
 assert.linuxTargets = function (a) {
    assert.equal(a[0].name, `Azure Container Instances (Linux)`);
@@ -30,6 +24,15 @@ assert.allTargets = function (a) {
    assert.equal(a.length, 5, `Wrong number of entries`);
 };
 
+assert.customTargets = function (a) {
+   assert.equal(a[0].name, `Azure`);
+   assert.equal(a[1].name, `Docker`);
+   assert.equal(a[2].name, `Both`);
+
+   // Make sure it did not return too many.
+   assert.equal(a.length, 3, `Wrong number of entries`);
+};
+
 assert.windowsTargets = function (a) {
    assert.equal(a[0].name, `Azure App Service`);
    assert.equal(a[1].name, `Azure App Service (Deployment Slots)`);
@@ -38,17 +41,189 @@ assert.windowsTargets = function (a) {
 
 describe(`utility`, function () {
 
-   context(`registry`, function () {
+   context(`logMessage`, function () {
+      it(`should not log`, sinonTest(function () {
+         let stub = this.stub(console, `log`);
+
+         process.env.LOGYO = `off`;
+
+         util.logMessage(`testing`);
+
+         assert.equal(stub.callCount, 0);
+      }));
+
+      it(`should log`, sinonTest(function () {
+         let stub = this.stub(console, `log`);
+
+         process.env.LOGYO = `on`;
+
+         util.logMessage(`testing`);
+
+         assert.equal(stub.calledOnce, true);
+      }));
+   });
+
+   context(`profiles`, function () {
+      it(`file does not exist`, sinonTest(function () {
+         this.stub(fs, `existsSync`).returns(false);
+
+         let actual = util.searchProfiles(`unitTest`);
+
+         assert.equal(actual, null);
+      }));
+
+      it(`file is invalid`, sinonTest(function () {
+         this.stub(fs, `existsSync`).returns(true);
+         this.stub(fs, `readFileSync`).returns(`This is not json.`);
+
+         let actual = util.searchProfiles(`unitTest`);
+
+         assert.equal(actual, null);
+      }));
+
+      it(`profile is OnPremise`, sinonTest(function () {
+         this.stub(fs, `existsSync`).returns(true);
+         this.stub(fs, `readFileSync`).returns(`
+         [
+            {
+               "Name": "unitTest",
+               "URL": "http://localhost:8080/tfs/defaultcollection",
+               "Pat": "",
+               "Type": "OnPremise",
+               "Version": "TFS2017"
+            },
+            {
+               "Name": "http://192.168.1.3:8080/tfs/defaultcollection",
+               "URL": "http://192.168.1.3:8080/tfs/defaultcollection",
+               "Pat": "OnE2cXpseHk0YXp3dHpz",
+               "Type": "Pat",
+               "Version": "TFS2017"
+            },
+            {
+               "Name": "test",
+               "URL": "https://test.visualstudio.com",
+               "Pat": "OndrejR0ZHpwbDM3bXUycGt5c3hm",
+               "Type": "Pat",
+               "Version": "VSTS"
+            }
+         ]`);
+
+         let actual = util.searchProfiles(`unitTest`);
+
+         assert.equal(actual, null);
+      }));
+
+      it(`profile is found by name`, sinonTest(function () {
+         this.stub(fs, `existsSync`).returns(true);
+         this.stub(fs, `readFileSync`).returns(`
+         [
+            {
+               "Name": "unitTest",
+               "URL": "http://localhost:8080/tfs/defaultcollection",
+               "Pat": "",
+               "Type": "OnPremise",
+               "Version": "TFS2017"
+            },
+            {
+               "Name": "http://192.168.1.3:8080/tfs/defaultcollection",
+               "URL": "http://192.168.1.3:8080/tfs/defaultcollection",
+               "Pat": "OnE2cXpseHk0YXp3dHpz",
+               "Type": "Pat",
+               "Version": "TFS2017"
+            },
+            {
+               "Name": "test",
+               "URL": "https://test.visualstudio.com",
+               "Pat": "OndrejR0ZHpwbDM3bXUycGt5c3hm",
+               "Type": "Pat",
+               "Version": "VSTS"
+            }
+         ]`);
+
+         // This should work even with mixed case.
+         let actual = util.searchProfiles(`Test`);
+
+         assert.notEqual(actual, null);
+      }));
+
+      it(`profile is found by URL`, sinonTest(function () {
+         this.stub(fs, `existsSync`).returns(true);
+         this.stub(fs, `readFileSync`).returns(`
+         [
+            {
+               "Name": "unitTest",
+               "URL": "http://localhost:8080/tfs/defaultcollection",
+               "Pat": "",
+               "Type": "OnPremise",
+               "Version": "TFS2017"
+            },
+            {
+               "Name": "TFS",
+               "URL": "http://192.168.1.3:8080/tfs/defaultcollection",
+               "Pat": "OnE2cXpseHk0YXp3dHpz",
+               "Type": "Pat",
+               "Version": "TFS2017"
+            },
+            {
+               "Name": "test",
+               "URL": "https://test.visualstudio.com",
+               "Pat": "OndrejR0ZHpwbDM3bXUycGt5c3hm",
+               "Type": "Pat",
+               "Version": "VSTS"
+            }
+         ]`);
+
+         // This should work even with mixed case.
+         let actual = util.searchProfiles(`http://192.168.1.3:8080/tfs/defaultcollection`);
+
+         assert.notEqual(actual, null);
+      }));
+
+      it(`profile is found by Account name that does not match profile name`, sinonTest(function () {
+         this.stub(fs, `existsSync`).returns(true);
+         this.stub(fs, `readFileSync`).returns(`
+         [
+            {
+               "Name": "unitTest",
+               "URL": "http://localhost:8080/tfs/defaultcollection",
+               "Pat": "",
+               "Type": "OnPremise",
+               "Version": "TFS2017"
+            },
+            {
+               "Name": "TFS",
+               "URL": "http://192.168.1.3:8080/tfs/defaultcollection",
+               "Pat": "OnE2cXpseHk0YXp3dHpz",
+               "Type": "Pat",
+               "Version": "TFS2017"
+            },
+            {
+               "Name": "test",
+               "URL": "https://testWestUS2.visualstudio.com",
+               "Pat": "OndrejR0ZHpwbDM3bXUycGt5c3hm",
+               "Type": "Pat",
+               "Version": "VSTS"
+            }
+         ]`);
+
+         // This should work even with mixed case.
+         let actual = util.searchProfiles(`testWestUS2`);
+
+         assert.notEqual(actual, null);
+      }));
+   });
+
+   context(`registry from prompts`, function () {
       it(`needsRegistry paas`, function () {
          // Arrange
-         let cmdLnInput = {};
+         let options = {};
          const expected = false;
          let answers = {
             target: `paas`
          };
 
          // Act
-         let actual = util.needsRegistry(answers, cmdLnInput);
+         let actual = util.needsRegistry(answers, options);
 
          // Assert
          assert.equal(expected, actual);
@@ -56,14 +231,14 @@ describe(`utility`, function () {
 
       it(`needsRegistry paasslots`, function () {
          // Arrange
-         let cmdLnInput = {};
+         let options = {};
          const expected = false;
          let answers = {
             target: `paasslots`
          };
 
          // Act
-         let actual = util.needsRegistry(answers, cmdLnInput);
+         let actual = util.needsRegistry(answers, options);
 
          // Assert
          assert.equal(expected, actual);
@@ -71,14 +246,14 @@ describe(`utility`, function () {
 
       it(`needsRegistry docker`, function () {
          // Arrange
-         let cmdLnInput = {};
+         let options = {};
          const expected = true;
          let answers = {
             target: `docker`
          };
 
          // Act
-         let actual = util.needsRegistry(answers, cmdLnInput);
+         let actual = util.needsRegistry(answers, options);
 
          // Assert
          assert.equal(expected, actual);
@@ -86,14 +261,14 @@ describe(`utility`, function () {
 
       it(`needsRegistry dockerpaas`, function () {
          // Arrange
-         let cmdLnInput = {};
+         let options = {};
          const expected = true;
          let answers = {
             target: `dockerpaas`
          };
 
          // Act
-         let actual = util.needsRegistry(answers, cmdLnInput);
+         let actual = util.needsRegistry(answers, options);
 
          // Assert
          assert.equal(expected, actual);
@@ -101,14 +276,91 @@ describe(`utility`, function () {
 
       it(`needsRegistry acilinux`, function () {
          // Arrange
-         let cmdLnInput = {};
+         let options = {};
          const expected = true;
          let answers = {
             target: `acilinux`
          };
 
          // Act
-         let actual = util.needsRegistry(answers, cmdLnInput);
+         let actual = util.needsRegistry(answers, options);
+
+         // Assert
+         assert.equal(expected, actual);
+      });
+   });
+
+   context(`registry from cmdLnInput`, function () {
+      it(`needsRegistry paas`, function () {
+         // Arrange
+         let options = {
+            target: `paas`
+         };
+         const expected = false;
+         let answers = {};
+
+         // Act
+         let actual = util.needsRegistry(answers, options);
+
+         // Assert
+         assert.equal(expected, actual);
+      });
+
+      it(`needsRegistry paasslots`, function () {
+         // Arrange
+         let options = {
+            target: `paasslots`
+         };
+         const expected = false;
+         let answers = {};
+
+         // Act
+         let actual = util.needsRegistry(answers, options);
+
+         // Assert
+         assert.equal(expected, actual);
+      });
+
+      it(`needsRegistry docker`, function () {
+         // Arrange
+         let options = {
+            target: `docker`
+         };
+         const expected = true;
+         let answers = {};
+
+         // Act
+         let actual = util.needsRegistry(answers, options);
+
+         // Assert
+         assert.equal(expected, actual);
+      });
+
+      it(`needsRegistry dockerpaas`, function () {
+         // Arrange
+         let options = {
+            target: `dockerpaas`
+         };
+         const expected = true;
+         let answers = {};
+
+         // Act
+         let actual = util.needsRegistry(answers, options);
+
+         // Assert
+         assert.equal(expected, actual);
+      });
+
+      it(`needsRegistry acilinux`, function () {
+         // Arrange
+         let options = {
+            target: `acilinux`
+         };
+         const expected = true;
+         let answers = {};
+
+         // Act
+         let actual = util.needsRegistry(answers, options);
 
          // Assert
          assert.equal(expected, actual);
@@ -116,6 +368,26 @@ describe(`utility`, function () {
    });
 
    context(`targets`, function () {
+      it(`getTargets Default queue, Custom app type`, function (done) {
+         // Arrange
+         let answers = {
+            queue: `Default`,
+            type: `custom`,
+            tfs: `vsts`,
+            pat: `token`
+         };
+
+         // Act
+         util.getTargets(answers).then(function (actual) {
+            // Assert
+            assert.customTargets(actual);
+            done();
+         }, function (e) {
+            assert.fail();
+            done();
+         });
+      });
+
       it(`getTargets Default queue, node app type 2018/VSTS`, function (done) {
          // Arrange
          let answers = {
@@ -356,17 +628,52 @@ describe(`utility`, function () {
          });
       });
 
-      it(`getTargets Default queue, aspFull app type 2018/VSTS`, function (done) {
+      it(`getTargets Default queue, csharp app type 2018/VSTS`, function (done) {
          // Arrange
          let answers = {
             queue: `Default`,
-            type: `aspFull`,
+            type: `csharp`,
             tfs: `vsts`,
             pat: `token`
          };
 
          // Act
          util.getTargets(answers).then(function (actual) {
+            // Assert
+            assert.windowsTargets(actual);
+            done();
+         }, function (e) {
+            assert.fail();
+            done();
+         });
+      });
+
+      it(`getTargets Default queue, csharp app type 2017`, function (done) {
+         // Arrange
+         let answers = {
+            queue: `Default`,
+            type: `csharp`,
+            tfs: `http://localhost:8080/tfs/DefaultCollection`,
+            pat: `token`
+         };
+
+         // This allows me to take control of the request requirement
+         // without this there would be no way to stub the request calls
+         const proxyApp = proxyquire(`../../generators/app/utility`, {
+            "request": (options, callback) => {
+               callback(null, {
+                  statusCode: 200
+               }, JSON.stringify({
+                  configurationDatabaseServiceLevel: `Dev15.M125.1`,
+                  deploymentHostServiceLevel: `Dev15.M125.1`,
+                  accountDatabaseServiceLevel: `Dev15.M125.1`,
+                  accountHostServiceLevel: `Dev15.M125.1`
+               }));
+            }
+         });
+
+         // Act
+         proxyApp.getTargets(answers).then(function (actual) {
             // Assert
             assert.windowsTargets(actual);
             done();
@@ -384,17 +691,35 @@ describe(`utility`, function () {
 
       let answers = {};
 
-      let cmdLnInput = {
+      let options = {
          queue: `Default`,
          target: `dockerpaas`
       };
 
       // Act
-      let actual = util.needsDockerHost(answers, cmdLnInput);
+      let actual = util.needsDockerHost(answers, options);
 
       // Assert
       assert.equal(expected, actual);
    });
+
+   it(`needsDockerHost no options`, function () {
+
+      // Arrange
+      let expected = true;
+
+      let answers = {
+         queue: `Default`,
+         target: `acilinux`
+      };
+
+      // Act
+      let actual = util.needsDockerHost(answers, undefined);
+
+      // Assert
+      assert.equal(expected, actual);
+   });
+
 
    it(`needsDockerHost default queue dockerpaas`, function () {
 
@@ -405,19 +730,57 @@ describe(`utility`, function () {
          queue: `Default`
       };
 
-      let cmdLnInput = {
+      let options = {
          queue: `Default`,
          target: `dockerpaas`
       };
 
       // Act
-      let actual = util.needsDockerHost(answers, cmdLnInput);
+      let actual = util.needsDockerHost(answers, options);
 
       // Assert
       assert.equal(expected, actual);
    });
 
-   it(`getAppTypes linux`, function () {
+   it(`needsDockerHost linux queue acilinux`, function () {
+
+      // Arrange
+      let expected = false;
+
+      let answers = {};
+
+      let options = {
+         queue: `Hosted Linux Preview`,
+         target: `acilinux`
+      };
+
+      // Act
+      let actual = util.needsDockerHost(answers, options);
+
+      // Assert
+      assert.equal(expected, actual);
+   });
+
+   it(`needsDockerHost default queue acilinux`, function () {
+
+      // Arrange
+      let expected = true;
+
+      let answers = {};
+
+      let options = {
+         queue: `Default`,
+         target: `acilinux`
+      };
+
+      // Act
+      let actual = util.needsDockerHost(answers, options);
+
+      // Assert
+      assert.equal(expected, actual);
+   });
+
+   it(`getbotTypes linux`, function () {
 
       // Arrange
       let answers = {
@@ -425,13 +788,27 @@ describe(`utility`, function () {
       };
 
       // Act
-      let actual = util.getAppTypes(answers);
+      let actual = util.getbotTypes(answers);
 
       // Assert
       assert.equal(3, actual.length, `Wrong number of items returned`);
    });
 
-   it(`getAppTypes default`, function () {
+   it(`getbotTypes macOS`, function () {
+
+      // Arrange
+      let answers = {
+         queue: 'Hosted macOS Preview'
+      };
+
+      // Act
+      let actual = util.getbotTypes(answers);
+
+      // Assert
+      assert.equal(3, actual.length, `Wrong number of items returned`);
+   });
+
+   it(`getbotTypes default`, function () {
 
       // Arrange
       let answers = {
@@ -439,7 +816,7 @@ describe(`utility`, function () {
       };
 
       // Act
-      let actual = util.getAppTypes(answers);
+      let actual = util.getbotTypes(answers);
 
       // Assert
       assert.equal(4, actual.length, `Wrong number of items returned`);
@@ -455,7 +832,7 @@ describe(`utility`, function () {
          },
          url: `https://test.visualstudio.com/_apis/projects/test`,
          qs: {
-            'api-version': PROJECT_API_VERSION
+            'api-version': util.PROJECT_API_VERSION
          }
       };
       let expected = `Yo Team/${package.version} (${process.platform}: ${process.arch}) Node.js/${process.version}`;
@@ -711,6 +1088,14 @@ describe(`utility`, function () {
 
    context(`validation`, function () {
 
+      it(`validateProfileName should return false`, function () {
+         assert.equal(util.validateProfileName(``), `You must provide a profile name`);
+      });
+
+      // it(`validateCustomFolder should return false`, function () {
+      //    assert.equal(util.validateCustomFolder(``), `You must provide a custom template path`);
+      // });
+
       it(`validatePortMapping should return true`, function () {
          assert.ok(util.validatePortMapping(`80:80`));
       });
@@ -719,12 +1104,8 @@ describe(`utility`, function () {
          assert.equal(`You must provide a Port Mapping`, util.validatePortMapping(null));
       });
 
-      it(`validateApplicationName should return error`, function () {
-         assert.equal(`You must provide a name for your application`, util.validateApplicationName(null));
-      });
-
-      it(`validateGroupID should return error`, function () {
-         assert.equal(`You must provide a Group ID`, util.validateGroupID(null));
+      it(`validateBotName should return error`, function () {
+         assert.equal(`You must provide a name for your application`, util.validateBotName(null));
       });
 
       it(`validatePersonalAccessToken should return error`, function () {
@@ -784,7 +1165,7 @@ describe(`utility`, function () {
       });
    });
 
-   it(`checkStatus should run with no error`, sinon.test(function (done) {
+   it(`checkStatus should run with no error`, sinonTest(function (done) {
       // Arrange
       // This allows me to take control of the request requirement
       // without this there would be no way to stub the request calls
@@ -809,7 +1190,7 @@ describe(`utility`, function () {
       });
 
       var logger = this.stub();
-      logger.log = function () {};
+      logger.log = function () { };
 
       // Act
       proxyApp.checkStatus(`http://localhost:8080/tfs/DefaultCollection/1/_apis/distributedtask/queues`, `token`, logger, (e, data) => {
@@ -819,8 +1200,39 @@ describe(`utility`, function () {
       });
    }));
 
+   it(`checkStatus should run with html error`, sinonTest(function (done) {
+      // Arrange
+      // This allows me to take control of the request requirement
+      // without this there would be no way to stub the request calls
+      const proxyApp = proxyquire(`../../generators/app/utility`, {
+         "request": (options, callback) => {
+            // Confirm the request was formatted correctly
+            assert.equal(`GET`, options.method, `wrong method`);
+            assert.equal(`Basic token`, options.headers.authorization, `wrong authorization`);
+            assert.equal(`http://localhost:8080/tfs/DefaultCollection/1/_apis/distributedtask/queues`, options.url, `wrong url`);
+
+            // Respond
+            callback(null, {
+               statusCode: 200
+            }, `<html><head></head><body>boom!</body></html>`);
+         }
+      });
+
+      this.stub(console, `log`);
+
+      var logger = this.stub();
+      logger.log = function () { };
+
+      // Act
+      proxyApp.checkStatus(`http://localhost:8080/tfs/DefaultCollection/1/_apis/distributedtask/queues`, `token`, logger, (e, data) => {
+         assert.notEqual(e, null);
+
+         done();
+      });
+   }));
+
    context(`queue`, function () {
-      it(`findQueue should find queue`, sinon.test(function (done) {
+      it(`findQueue should find queue`, sinonTest(function (done) {
          // Arrange
          // This allows me to take control of the request requirement
          // without this there would be no way to stub the request calls
@@ -859,7 +1271,7 @@ describe(`utility`, function () {
             });
       }));
 
-      it(`findQueue should returns error obj from server`, sinon.test(function (done) {
+      it(`findQueue should returns error obj from server`, sinonTest(function (done) {
          // Arrange
          // This allows me to take control of the request requirement
          // without this there would be no way to stub the request calls
@@ -886,7 +1298,7 @@ describe(`utility`, function () {
             });
       }));
 
-      it(`findQueue should returns error`, sinon.test(function (done) {
+      it(`findQueue should returns error`, sinonTest(function (done) {
          // Arrange
          // This allows me to take control of the request requirement
          // without this there would be no way to stub the request calls
@@ -970,7 +1382,7 @@ describe(`utility`, function () {
          assert.equal(expected, actual);
       });
 
-      it(`findDockerRegistryServiceEndpoint should short circuit with null or undefined dockerRegistry`, sinon.test(function (done) {
+      it(`findDockerRegistryServiceEndpoint should short circuit with null or undefined dockerRegistry`, sinonTest(function (done) {
          util.findDockerRegistryServiceEndpoint(null, null, undefined, null, (err, obj) => {
             assert.equal(err, null);
             assert.equal(obj, null);
@@ -979,7 +1391,7 @@ describe(`utility`, function () {
          });
       }));
 
-      it(`tryFindDockerRegistryServiceEndpoint should return null`, sinon.test(function (done) {
+      it(`tryFindDockerRegistryServiceEndpoint should return null`, sinonTest(function (done) {
          // Arrange
          // This allows me to take control of the request requirement
          // without this there would be no way to stub the request calls
@@ -1002,7 +1414,7 @@ describe(`utility`, function () {
             });
       }));
 
-      it(`tryFindDockerRegistryServiceEndpoint should return endpoint`, sinon.test(function (done) {
+      it(`tryFindDockerRegistryServiceEndpoint should return endpoint`, sinonTest(function (done) {
          // Arrange
          // This allows me to take control of the request requirement
          // without this there would be no way to stub the request calls
@@ -1036,7 +1448,7 @@ describe(`utility`, function () {
             });
       }));
 
-      it(`findDockerServiceEndpoint should short circuit with null or undefined dockerHost`, sinon.test(function (done) {
+      it(`findDockerServiceEndpoint should short circuit with null or undefined dockerHost`, sinonTest(function (done) {
          util.findDockerServiceEndpoint(null, null, undefined, null, null, (err, obj) => {
             assert.equal(err, null);
             assert.equal(obj, null);
@@ -1045,7 +1457,7 @@ describe(`utility`, function () {
          });
       }));
 
-      it(`tryFindDockerServiceEndpoint should return undefined`, sinon.test(function (done) {
+      it(`tryFindDockerServiceEndpoint should return undefined`, sinonTest(function (done) {
          // Arrange
          // This allows me to take control of the request requirement
          // without this there would be no way to stub the request calls
@@ -1060,7 +1472,7 @@ describe(`utility`, function () {
          });
 
          var logger = this.stub();
-         logger.log = function () {};
+         logger.log = function () { };
 
          proxyApp.tryFindDockerServiceEndpoint(`http://localhost:8080/tfs/DefaultCollection`,
             `e2eDemo`, `DockerHub`, `token`, logger, (err, obj) => {
@@ -1071,7 +1483,7 @@ describe(`utility`, function () {
             });
       }));
 
-      it(`tryFindDockerServiceEndpoint should return endpoint`, sinon.test(function (done) {
+      it(`tryFindDockerServiceEndpoint should return endpoint`, sinonTest(function (done) {
          // Arrange
          // This allows me to take control of the request requirement
          // without this there would be no way to stub the request calls
@@ -1088,7 +1500,7 @@ describe(`utility`, function () {
          });
 
          var logger = this.stub();
-         logger.log = function () {};
+         logger.log = function () { };
 
          proxyApp.tryFindDockerServiceEndpoint(`http://localhost:8080/tfs/DefaultCollection`,
             `e2eDemo`, `DockerHub`, `token`, logger, (err, obj) => {
@@ -1099,7 +1511,7 @@ describe(`utility`, function () {
             });
       }));
 
-      it(`tryFindDockerServiceEndpoint should return error`, sinon.test(function (done) {
+      it(`tryFindDockerServiceEndpoint should return error`, sinonTest(function (done) {
          // Arrange
          // This allows me to take control of the request requirement
          // without this there would be no way to stub the request calls
@@ -1112,7 +1524,7 @@ describe(`utility`, function () {
          });
 
          var logger = this.stub();
-         logger.log = function () {};
+         logger.log = function () { };
 
          proxyApp.tryFindDockerServiceEndpoint(`http://localhost:8080/tfs/DefaultCollection`,
             `e2eDemo`, `DockerHub`, `token`, logger, (err, obj) => {
@@ -1124,7 +1536,7 @@ describe(`utility`, function () {
       }));
    });
 
-   it(`tryFindAzureServiceEndpoint should short circuit`, sinon.test(function (done) {
+   it(`tryFindAzureServiceEndpoint should short circuit`, sinonTest(function (done) {
       // Arrange
       // This allows me to take control of the request requirement
       // without this there would be no way to stub the request calls
@@ -1139,7 +1551,7 @@ describe(`utility`, function () {
       });
 
       var logger = this.stub();
-      logger.log = function () {};
+      logger.log = function () { };
 
       proxyApp.tryFindAzureServiceEndpoint(`http://localhost:8080/tfs/DefaultCollection`,
          `e2eDemo`, {
@@ -1152,7 +1564,7 @@ describe(`utility`, function () {
          });
    }));
 
-   it(`tryFindAzureServiceEndpoint should return undefined`, sinon.test(function (done) {
+   it(`tryFindAzureServiceEndpoint should return undefined`, sinonTest(function (done) {
       // Arrange
       // This allows me to take control of the request requirement
       // without this there would be no way to stub the request calls
@@ -1167,7 +1579,7 @@ describe(`utility`, function () {
       });
 
       var logger = this.stub();
-      logger.log = function () {};
+      logger.log = function () { };
 
       proxyApp.tryFindAzureServiceEndpoint(`http://localhost:8080/tfs/DefaultCollection`,
          `e2eDemo`, {
@@ -1180,7 +1592,7 @@ describe(`utility`, function () {
          });
    }));
 
-   it(`tryFindAzureServiceEndpoint should return endpoint`, sinon.test(function (done) {
+   it(`tryFindAzureServiceEndpoint should return endpoint`, sinonTest(function (done) {
       // Arrange
       // This allows me to take control of the request requirement
       // without this there would be no way to stub the request calls
@@ -1209,7 +1621,7 @@ describe(`utility`, function () {
       });
 
       var logger = this.stub();
-      logger.log = function () {};
+      logger.log = function () { };
 
       proxyApp.tryFindAzureServiceEndpoint(`http://localhost:8080/tfs/DefaultCollection`,
          `e2eDemo`, {
@@ -1222,7 +1634,7 @@ describe(`utility`, function () {
          });
    }));
 
-   it(`tryFindProject should return project`, sinon.test(function (done) {
+   it(`tryFindProject should return project`, sinonTest(function (done) {
       // Arrange
       // This allows me to take control of the request requirement
       // without this there would be no way to stub the request calls
@@ -1237,7 +1649,7 @@ describe(`utility`, function () {
       });
 
       var logger = this.stub();
-      logger.log = function () {};
+      logger.log = function () { };
 
       proxyApp.tryFindProject(`http://localhost:8080/tfs/DefaultCollection`,
          `e2eDemo`, `token`, logger, (err, obj) => {
@@ -1248,7 +1660,7 @@ describe(`utility`, function () {
          });
    }));
 
-   it(`tryFindProject should return undefined`, sinon.test(function (done) {
+   it(`tryFindProject should return undefined`, sinonTest(function (done) {
       // Arrange
       // This allows me to take control of the request requirement
       // without this there would be no way to stub the request calls
@@ -1261,7 +1673,7 @@ describe(`utility`, function () {
       });
 
       var logger = this.stub();
-      logger.log = function () {};
+      logger.log = function () { };
 
       proxyApp.tryFindProject(`http://localhost:8080/tfs/DefaultCollection`,
          `e2eDemo`, `token`, logger, (err, obj) => {
@@ -1272,7 +1684,7 @@ describe(`utility`, function () {
          });
    }));
 
-   it(`FindProject should return error`, sinon.test(function (done) {
+   it(`FindProject should return error`, sinonTest(function (done) {
       // Arrange
       // This allows me to take control of the request requirement
       // without this there would be no way to stub the request calls
@@ -1285,7 +1697,7 @@ describe(`utility`, function () {
       });
 
       var logger = this.stub();
-      logger.log = function () {};
+      logger.log = function () { };
 
       proxyApp.findProject(`http://localhost:8080/tfs/DefaultCollection`,
          `e2eDemo`, `token`, logger, (err, obj) => {
@@ -1296,7 +1708,7 @@ describe(`utility`, function () {
          });
    }));
 
-   it(`FindProject should return error for auth issue`, sinon.test(function (done) {
+   it(`FindProject should return error for auth issue`, sinonTest(function (done) {
       // Arrange
       // This allows me to take control of the request requirement
       // without this there would be no way to stub the request calls
@@ -1309,8 +1721,8 @@ describe(`utility`, function () {
       });
 
       var logger = this.stub();
-      logger.log = function () {};
-      logger.log.error = function () {};
+      logger.log = function () { };
+      logger.log.error = function () { };
 
       proxyApp.findProject(`http://localhost:8080/tfs/DefaultCollection`,
          `e2eDemo`, `token`, logger, (err, obj) => {
@@ -1320,7 +1732,7 @@ describe(`utility`, function () {
          });
    }));
 
-   it(`tryFindBuild should return build paas`, sinon.test(function (done) {
+   it(`tryFindBuild should return build paas`, sinonTest(function (done) {
       // Arrange
       // This allows me to take control of the request requirement
       // without this there would be no way to stub the request calls
@@ -1346,7 +1758,7 @@ describe(`utility`, function () {
       });
    }));
 
-   it(`tryFindBuild should return build docker`, sinon.test(function (done) {
+   it(`tryFindBuild should return build docker`, sinonTest(function (done) {
       // Arrange
       // This allows me to take control of the request requirement
       // without this there would be no way to stub the request calls
@@ -1372,7 +1784,7 @@ describe(`utility`, function () {
       });
    }));
 
-   it(`tryFindBuild should return undefined`, sinon.test(function (done) {
+   it(`tryFindBuild should return undefined`, sinonTest(function (done) {
       // Arrange
       // This allows me to take control of the request requirement
       // without this there would be no way to stub the request calls
@@ -1396,7 +1808,7 @@ describe(`utility`, function () {
       });
    }));
 
-   it(`tryFindRelease should return release paas`, sinon.test(function (done) {
+   it(`tryFindRelease should return release paas`, sinonTest(function (done) {
       // Arrange
       // This allows me to take control of the request requirement
       // without this there would be no way to stub the request calls
@@ -1414,7 +1826,7 @@ describe(`utility`, function () {
 
       var args = {
          target: `paas`,
-         appName: `e2eDemo`,
+         botName: `e2eDemo`,
          token: `token`,
          account: `http://localhost:8080/tfs/DefaultCollection`,
          teamProject: {
@@ -1430,7 +1842,7 @@ describe(`utility`, function () {
       });
    }));
 
-   it(`tryFindRelease should return release docker`, sinon.test(function (done) {
+   it(`tryFindRelease should return release docker`, sinonTest(function (done) {
       // Arrange
       // This allows me to take control of the request requirement
       // without this there would be no way to stub the request calls
@@ -1449,7 +1861,7 @@ describe(`utility`, function () {
       var args = {
          token: `token`,
          target: `docker`,
-         appName: `e2eDemo`,
+         botName: `e2eDemo`,
          teamProject: {
             name: `e2eDemo`
          },
@@ -1464,7 +1876,7 @@ describe(`utility`, function () {
       });
    }));
 
-   it(`tryFindRelease should return undefined`, sinon.test(function (done) {
+   it(`tryFindRelease should return undefined`, sinonTest(function (done) {
       // Arrange
       // This allows me to take control of the request requirement
       // without this there would be no way to stub the request calls
@@ -1481,7 +1893,7 @@ describe(`utility`, function () {
       var args = {
          token: `token`,
          target: `paas`,
-         appName: `e2eDemo`,
+         botName: `e2eDemo`,
          teamProject: {
             name: `e2eDemo`
          },
@@ -1494,6 +1906,44 @@ describe(`utility`, function () {
 
          done();
       });
+   }));
+
+   it(`extractInstance from profile`, sinonTest(function () {
+      // Arrange
+      var profiles = `
+      [
+         {
+            "Name": "unitTest",
+            "URL": "http://localhost:8080/tfs/defaultcollection",
+            "Pat": "",
+            "Type": "Pat",
+            "Version": "TFS2017"
+         },
+         {
+            "Name": "http://192.168.1.3:8080/tfs/defaultcollection",
+            "URL": "http://192.168.1.3:8080/tfs/defaultcollection",
+            "Pat": "OnE2cXpseHk0YXp3dHpz",
+            "Type": "Pat",
+            "Version": "TFS2017"
+         },
+         {
+            "Name": "test",
+            "URL": "https://test.visualstudio.com",
+            "Pat": "OndrejR0ZHpwbDM3bXUycGt5c3hm",
+            "Type": "Pat",
+            "Version": "VSTS"
+         }
+      ]`;
+
+      this.stub(fs, `existsSync`).returns(true);
+      this.stub(fs, `readFileSync`).returns(profiles);
+      var expected = `http://localhost:8080/tfs/defaultcollection`;
+
+      // Act
+      var actual = util.extractInstance(`unitTest`);
+
+      // Assert
+      assert.equal(expected, actual);
    }));
 
    it(`extractInstance good`, function () {
@@ -1516,6 +1966,186 @@ describe(`utility`, function () {
 
       // Assert
       assert.equal(expected, actual);
+   });
+
+   it(`readPatFromProfile`, sinonTest(function () {
+      // Arrange
+      var profiles = `
+      [
+         {
+            "Name": "unitTest",
+            "URL": "http://localhost:8080/tfs/defaultcollection",
+            "Pat": "",
+            "Type": "Pat",
+            "Version": "TFS2017"
+         },
+         {
+            "Name": "http://192.168.1.3:8080/tfs/defaultcollection",
+            "URL": "http://192.168.1.3:8080/tfs/defaultcollection",
+            "Pat": "OnE2cXpseHk0YXp3dHpz",
+            "Type": "Pat",
+            "Version": "TFS2017"
+         },
+         {
+            "Name": "test",
+            "URL": "https://test.visualstudio.com",
+            "Pat": "OndrejR0ZHpwbDM3bXUycGt5c3hm",
+            "Type": "Pat",
+            "Version": "VSTS"
+         }
+      ]`;
+
+      this.stub(fs, `existsSync`).returns(true);
+      this.stub(fs, `readFileSync`).returns(profiles);
+      let expected = false;
+      let profile = util.extractInstance(`test`);
+      let answers = {};
+      let obj = { options: { pat: `` } };
+
+      // Act
+      let actual = util.readPatFromProfile(answers, obj);
+
+      // Assert
+      assert.equal(expected, actual);
+   }));
+
+
+   context('load test', function () {
+      it(`supportsLoadTests vsts true`, function (done) {
+         // Arrange
+         let expected = true;
+
+         // This allows me to take control of the request requirement
+         // without this there would be no way to stub the request calls
+         const proxyApp = proxyquire(`../../generators/app/utility`, {
+            "request": (options, callback) => {
+               callback(null, {
+                  statusCode: 200
+               }, JSON.stringify({
+                  accountRegion: "South Central US"
+               }));
+            }
+         });
+
+         // Act
+         proxyApp.supportsLoadTests(`vsts`, 'token', (e, actual) => {
+            // Assert
+            assert.equal(expected, actual);
+            done(e);
+         });
+      });
+
+      it(`supportsLoadTests tfs false`, function (done) {
+         // Arrange
+         let expected = false;
+
+         // Act
+         util.supportsLoadTests(`http://localhost:8080/tfs/defaultcollection`, 'token', (e, actual) => {
+            // Assert
+            assert.equal(expected, actual);
+            done(e);
+         });
+      });
+
+      it(`supportsLoadTests vsts false`, function (done) {
+         // Arrange
+         let expected = false;
+
+         // This allows me to take control of the request requirement
+         // without this there would be no way to stub the request calls
+         const proxyApp = proxyquire(`../../generators/app/utility`, {
+            "request": (options, callback) => {
+               callback(null, {
+                  statusCode: 200
+               }, JSON.stringify({
+                  accountRegion: "West Central US"
+               }));
+            }
+         });
+
+         // Act
+         proxyApp.supportsLoadTests(`vsts`, 'token', (e, actual) => {
+            // Assert
+            assert.equal(expected, actual);
+            done(e);
+         });
+      });
+
+      it(`supportsLoadTests error with html`, sinonTest(function (done) {
+         // Arrange
+         let expected = undefined;
+
+         // This allows me to take control of the request requirement
+         // without this there would be no way to stub the request calls
+         const proxyApp = proxyquire(`../../generators/app/utility`, {
+            "request": (options, callback) => {
+               callback(null, {
+                  statusCode: 200
+               }, `<html><head></head><body>boom!</body></html>`);
+            }
+         });
+
+         this.stub(console, `log`);
+
+         // Act
+         proxyApp.supportsLoadTests(`vsts`, 'token', (e, actual) => {
+            // Assert
+            assert.equal(expected, actual);
+
+            // e will be an error as expected and if we pass it to done
+            // the test will fail;
+            done();
+         });
+      }));
+
+      it(`supportsLoadTests errors undefined`, function (done) {
+         // Arrange
+         let expected = undefined;
+
+         // This allows me to take control of the request requirement
+         // without this there would be no way to stub the request calls
+         const proxyApp = proxyquire(`../../generators/app/utility`, {
+            "request": (options, callback) => {
+               callback({ message: `boom` }, undefined);
+            }
+         });
+
+         // Act
+         proxyApp.supportsLoadTests(`vsts`, 'token', (e, actual) => {
+            // Assert
+            assert.equal(expected, actual);
+
+            // e will be an error as expected and if we pass it to done
+            // the test will fail;
+            done();
+         });
+      });
+
+      it(`supportsLoadTests 404 undefined`, function (done) {
+         // Arrange
+         let expected = undefined;
+
+         // This allows me to take control of the request requirement
+         // without this there would be no way to stub the request calls
+         const proxyApp = proxyquire(`../../generators/app/utility`, {
+            "request": (options, callback) => {
+               callback(null, {
+                  statusCode: 404
+               });
+            }
+         });
+
+         // Act
+         proxyApp.supportsLoadTests(`vsts`, 'token', (e, actual) => {
+            // Assert
+            assert.equal(expected, actual);
+
+            // e will be an error as expected and if we pass it to done
+            // the test will fail;
+            done();
+         });
+      });
+
    });
 
    context(`is`, function () {
@@ -1590,7 +2220,9 @@ describe(`utility`, function () {
 
          // Act
          let actual = util.isPaaS({}, {
-            target: `paas`
+            options: {
+               target: `paas`
+            }
          });
 
          // Assert
@@ -1603,7 +2235,9 @@ describe(`utility`, function () {
 
          // Act
          let actual = util.isPaaS({}, {
-            target: `paasslots`
+            options: {
+               target: `paasslots`
+            }
          });
 
          // Assert
@@ -1616,7 +2250,9 @@ describe(`utility`, function () {
 
          // Act
          let actual = util.isPaaS({}, {
-            target: `dockerpaas`
+            options: {
+               target: `dockerpaas`
+            }
          });
 
          // Assert
@@ -1629,7 +2265,9 @@ describe(`utility`, function () {
 
          // Act
          let actual = util.isPaaS({}, {
-            target: `acilinux`
+            options: {
+               target: `acilinux`
+            }
          });
 
          // Assert
@@ -1642,16 +2280,87 @@ describe(`utility`, function () {
 
          // Act
          let actual = util.isPaaS({}, {
-            target: `docker`
+            options: {
+               target: `docker`
+            }
          });
 
          // Assert
          assert.equal(actual, expected);
       });
 
-      it(`isTFSGreaterThan2017 false`, function (done) {
+      it(`isExtensionInstalled return error`, function (done) {
          // Arrange
-         var expected = false;
+         let expected = false;
+
+         // This allows me to take control of the request requirement
+         // without this there would be no way to stub the request calls
+         const proxyApp = proxyquire(`../../generators/app/utility`, {
+            "request": (options, callback) => {
+               callback({ message: `boom` });
+            }
+         });
+
+         // Act
+         proxyApp.isExtensionInstalled(`http://tfs2017:8080/tfs/DefaultCollection`, 'token', 'SomePublisher', 'SomeExtension', (e, actual) => {
+            // Assert
+            assert.equal(expected, actual);
+
+            // e will be an error as expected and if we pass it to done
+            // the test will fail;
+            done();
+         });
+      });
+
+      it(`isExtensionInstalled`, function (done) {
+         // Arrange
+         let expected = true;
+
+         // This allows me to take control of the request requirement
+         // without this there would be no way to stub the request calls
+         const proxyApp = proxyquire(`../../generators/app/utility`, {
+            "request": (options, callback) => {
+               callback(undefined, { extensionName: `SomeExtension` });
+            }
+         });
+
+         // Act
+         proxyApp.isExtensionInstalled(`http://tfs2017:8080/tfs/DefaultCollection`, 'token', 'SomePublisher', 'SomeExtension', (e, actual) => {
+            // Assert
+            assert.equal(expected, actual);
+
+            // e will be an error as expected and if we pass it to done
+            // the test will fail;
+            done();
+         });
+      });
+
+      it(`isTFSGreaterThan2017 return error`, function (done) {
+         // Arrange
+         let expected = undefined;
+
+         // This allows me to take control of the request requirement
+         // without this there would be no way to stub the request calls
+         const proxyApp = proxyquire(`../../generators/app/utility`, {
+            "request": (options, callback) => {
+               callback({ message: `boom` });
+            }
+         });
+
+         // Act
+         proxyApp.isTFSGreaterThan2017(`http://tfs2017:8080/tfs/DefaultCollection`, 'token', (e, actual) => {
+            // Assert
+            assert.equal(expected, actual);
+
+            // e will be an error as expected and if we pass it to done
+            // the test will fail;
+            done();
+         });
+      });
+
+      it(`isTFSGreaterThan2017 return 404 true`, function (done) {
+         // Arrange
+         let expected = true;
 
          // This allows me to take control of the request requirement
          // without this there would be no way to stub the request calls
@@ -1659,16 +2368,7 @@ describe(`utility`, function () {
             "request": (options, callback) => {
                callback(null, {
                   statusCode: 404
-               }, JSON.stringify({
-                  count: 2,
-                  value: [{
-                     id: `1e78dc1b-9132-4b18-9c75-0e7ecc634b74`,
-                     name: `Xcode`
-                  }, {
-                     id: `bcb64569-d51a-4af0-9c01-ea5d05b3b622`,
-                     name: `ManualIntervention`
-                  }]
-               }));
+               });
             }
          });
 
@@ -1682,7 +2382,7 @@ describe(`utility`, function () {
 
       it(`isTFSGreaterThan2017 passed VSTS true`, function (done) {
          // Arrange
-         var expected = true;
+         let expected = true;
 
          // Act
          util.isTFSGreaterThan2017(`vsts`, 'token', (e, actual) => {
@@ -1692,7 +2392,34 @@ describe(`utility`, function () {
          });
       });
 
-      it(`isTFSGreaterThan2017 true`, function (done) {
+      it(`isTFSGreaterThan2017 2017 false`, function (done) {
+         // Arrange
+         var expected = false;
+
+         // This allows me to take control of the request requirement
+         // without this there would be no way to stub the request calls
+         const proxyApp = proxyquire(`../../generators/app/utility`, {
+            "request": (options, callback) => {
+               callback(null, {
+                  statusCode: 200
+               }, JSON.stringify({
+                  configurationDatabaseServiceLevel: `Dev15.M125.1`,
+                  deploymentHostServiceLevel: `Dev15.M125.1`,
+                  accountDatabaseServiceLevel: `Dev15.M125.1`,
+                  accountHostServiceLevel: `Dev15.M125.1`
+               }));
+            }
+         });
+
+         // Act
+         proxyApp.isTFSGreaterThan2017(`http://tfs2017:8080/tfs/DefaultCollection`, 'token', (e, actual) => {
+            // Assert
+            assert.equal(expected, actual);
+            done(e);
+         });
+      });
+
+      it(`isTFSGreaterThan2017 2018 true`, function (done) {
          // Arrange
          var expected = true;
 
@@ -1703,14 +2430,10 @@ describe(`utility`, function () {
                callback(null, {
                   statusCode: 200
                }, JSON.stringify({
-                  count: 2,
-                  value: [{
-                     id: `1e78dc1b-9132-4b18-9c75-0e7ecc634b74`,
-                     name: `Xcode`
-                  }, {
-                     id: `e28912f1-0114-4464-802a-a3a35437fd16`,
-                     name: `Docker`
-                  }]
+                  configurationDatabaseServiceLevel: `Dev16.M121.2`,
+                  deploymentHostServiceLevel: `Dev16.M121.2`,
+                  accountDatabaseServiceLevel: `Dev16.M121.2`,
+                  accountHostServiceLevel: `Dev16.M121.2`
                }));
             }
          });
@@ -1721,6 +2444,17 @@ describe(`utility`, function () {
             assert.equal(expected, actual);
             done(e);
          });
+      });
+
+      it(`isVSTS passed null false`, function () {
+         // Arrange
+         var expected = false;
+
+         // Act
+         var actual = util.isVSTS();
+
+         // Assert
+         assert.equal(expected, actual);
       });
 
       it(`isVSTS false`, function () {
@@ -1740,6 +2474,17 @@ describe(`utility`, function () {
 
          // Act
          var actual = util.isVSTS(`mydemos`);
+
+         // Assert
+         assert.equal(expected, actual);
+      });
+
+      it(`isVSTS true`, function () {
+         // Arrange
+         var expected = true;
+
+         // Act
+         var actual = util.isVSTS(`https://demonstrations.visualstudio.com/`);
 
          // Assert
          assert.equal(expected, actual);
@@ -1774,14 +2519,14 @@ describe(`utility`, function () {
          var expected = `https://vsts.vsrm.visualstudio.com/DefaultCollection`;
 
          // Act
-         var actual = util.getFullURL(`vsts`, true, true);
+         var actual = util.getFullURL(`vsts`, true, util.RELEASE_MANAGEMENT_SUB_DOMAIN);
 
          // Assert
          assert.equal(expected, actual);
       });
    });
 
-   it('findAzureSub should find sub', sinon.test(function (done) {
+   it('findAzureSub should find sub', sinonTest(function (done) {
       // Arrange
       // This allows me to take control of the request requirement
       // without this there would be no way to stub the request calls
@@ -1805,7 +2550,7 @@ describe(`utility`, function () {
       });
 
       var logger = this.stub();
-      logger.log = function () {};
+      logger.log = function () { };
 
       // Act
       proxyApp.findAzureSub(

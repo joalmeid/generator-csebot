@@ -42,14 +42,11 @@ try
         } else { throw "Unable to remove Apikey with id $($telemetryKeys[0].Id)"; }
     } 
 
+    Write-Host "##vso[task.setvariable variable=appInsightsAPIkey]$($apiKey.ApiKey)";
     return $apiKey.ApiKey;
-    #Get-AzureRmApplicationInsightsApiKey -ResourceGroupName $ResourceGroup -Name $ApplicationInsightsName
 }
 catch
 {
     throw
 }
-
-# .\appInsigthsApiAccess.ps1 -rg "jda-bot-tests" -ai "jdabottest-insights" -apikey "jdabottest-telemetry" 
-# .\appInsigthsApiAccess.ps1 -rg "jda-bot-tests" -ai "jdabottest-insights" -apikey "jdabottest-telemetry" -permissions @("ReadTelemetry", "WriteAnnotations", "AuthenticateSDKControlChannel");
 

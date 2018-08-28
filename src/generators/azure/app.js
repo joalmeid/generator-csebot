@@ -3,8 +3,6 @@ const async = require('async');
 const request = require('request');
 const util = require('../app/utility');
 
-const SERVICE_ENDPOINTS_API_VERSION = '3.0-preview.1';
-
 function run(args, gen, done) {
    'use strict';
 
@@ -86,7 +84,10 @@ function createAzureServiceEndpoint(account, projectId, sub, token, gen, callbac
 
    gen.log(`+ Creating ${sub.name} Azure Service Endpoint`);
 
-   let creationMode = util.isVSTS(account) ? `Automatic` : `Manual`;
+   // If the user provides the servicePrincipalId set the creationMode to 
+   // manual. If you try and use creation mode of automatic and pass in
+   // the servicePrincipalId you will get an error.
+   let creationMode = (sub.servicePrincipalId) ? `Manual` : `Automatic`;
 
    var options = util.addUserAgent({
       method: 'POST',
@@ -98,16 +99,11 @@ function createAzureServiceEndpoint(account, projectId, sub, token, gen, callbac
       json: true,
       url: `${util.getFullURL(account)}/${projectId}/_apis/distributedtask/serviceendpoints`,
       qs: {
-         'api-version': SERVICE_ENDPOINTS_API_VERSION
+         'api-version': util.SERVICE_ENDPOINTS_API_VERSION
       },
       body: {
          authorization: {
             parameters: {
-               // I found when testing from the command line that if I am targeting
-               // VSTS that does not require these values but I provide them anyway
-               // the creation fails.  So if the value of creationMode is Automatic
-               // do not set these values even if they are provided in error by the 
-               // user using the command line.
                serviceprincipalid: (sub.servicePrincipalId && creationMode === `Manual`) ? sub.servicePrincipalId : ``,
                serviceprincipalkey: (sub.servicePrincipalKey && creationMode === `Manual`) ? sub.servicePrincipalKey : ``,
                tenantid: sub.tenantId
@@ -131,12 +127,12 @@ function createAzureServiceEndpoint(account, projectId, sub, token, gen, callbac
          return;
       }
 
-      if (util.isVSTS(account)) {
+      if (creationMode === `Automatic`) {
          // Service endpoints are not created instantly in VSTS
          // using the automatic creation mode 
          // we need to wait for the status to be Failed or
          // Ready before proceeding.
-         var url = `${util.getFullURL(account)}/${projectId}/_apis/distributedtask/serviceendpoints/${obj.id}?api-version=${SERVICE_ENDPOINTS_API_VERSION}`;
+         var url = `${util.getFullURL(account)}/${projectId}/_apis/distributedtask/serviceendpoints/${obj.id}?api-version=${util.SERVICE_ENDPOINTS_API_VERSION}`;
 
          var status = '';
 

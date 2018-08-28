@@ -5,8 +5,6 @@ const uuidV4 = require('uuid/v4');
 const request = require('request');
 const util = require('../app/utility');
 
-const RELEASE_API_VERSION = '3.0-preview.3';
-
 function run(args, gen, done) {
    'use strict';
 
@@ -20,8 +18,8 @@ function run(args, gen, done) {
    var azureEndpoint = {};
    var approverUniqueName;
    var approverDisplayName;
-   // var dockerEndpoint = {};
-   // var dockerRegistryEndpoint = {};
+   var dockerEndpoint = {};
+   var dockerRegistryEndpoint = {};
    var token = util.encodePat(args.pat);
 
    async.series([
@@ -39,18 +37,26 @@ function run(args, gen, done) {
                   inParallel(err, id);
                });
             },
-            // function (inParallel) {
-            //    util.findDockerServiceEndpoint(args.tfs, teamProject.id, args.dockerHost, token, gen, function (err, ep) {
-            //       dockerEndpoint = ep;
-            //       inParallel(err, dockerEndpoint);
-            //    });
-            // },
-            // function (inParallel) {
-            //    util.findDockerRegistryServiceEndpoint(args.tfs, teamProject.id, args.dockerRegistry, token, function (err, ep) {
-            //       dockerRegistryEndpoint = ep;
-            //       inParallel(err, dockerRegistryEndpoint);
-            //    });
-            // },
+            function (inParallel) {
+               if (util.needsDockerHost({}, args)) {
+                  util.findDockerServiceEndpoint(args.tfs, teamProject.id, args.dockerHost, token, gen, function (err, ep) {
+                     dockerEndpoint = ep;
+                     inParallel(err, dockerEndpoint);
+                  });
+               } else {
+                  inParallel(null, undefined);
+               }
+            },
+            function (inParallel) {
+               if (util.needsRegistry({}, args)) {
+                  util.findDockerRegistryServiceEndpoint(args.tfs, teamProject.id, args.dockerRegistry, token, function (err, ep) {
+                     dockerRegistryEndpoint = ep;
+                     inParallel(err, dockerRegistryEndpoint);
+                  });
+               } else {
+                  inParallel(null, undefined);
+               }
+            },
             function (inParallel) {
                util.findBuild(args.tfs, teamProject, token, args.target, function (err, bld) {
                   build = bld;
@@ -77,23 +83,24 @@ function run(args, gen, done) {
          var relArgs = {
             token: token,
             build: build,
+            type: args.type,
             queueId: queueId,
             account: args.tfs,
             target: args.target,
-            appName: args.appName,
+            botName: args.botName,
             location: args.location,
             approverId: approverId,
             teamProject: teamProject,
             template: args.releaseJson,
-            // dockerPorts: args.dockerPorts,
-            // dockerHostEndpoint: dockerEndpoint,
-            // dockerRegistry: args.dockerRegistry,
+            dockerPorts: args.dockerPorts,
+            dockerHostEndpoint: dockerEndpoint,
+            dockerRegistry: args.dockerRegistry,
             approverUniqueName: approverUniqueName,
-            // dockerRegistryId: args.dockerRegistryId,
+            dockerRegistryId: args.dockerRegistryId,
             approverDisplayName: approverDisplayName,
-            // dockerRegistryEndpoint: dockerRegistryEndpoint,
-            endpoint: azureEndpoint ? azureEndpoint.id : null
-            // dockerRegistryPassword: args.dockerRegistryPassword
+            dockerRegistryEndpoint: dockerRegistryEndpoint,
+            endpoint: azureEndpoint ? azureEndpoint.id : null,
+            dockerRegistryPassword: args.dockerRegistryPassword
          };
 
          findOrCreateRelease(relArgs, gen, function (err, rel) {
@@ -119,36 +126,31 @@ function getRelease(args, callback) {
 
    let pat = util.encodePat(args.pat);
 
-   // if (util.isDocker(args.target)) {
-   //    util.isTFSGreaterThan2017(args.tfs, pat, (e, result) => {
-   //       if (result) {
-   //          release = `vsts_release_${args.target}.json`;
+   if (util.isDocker(args.target)) {
 
-   //          if (!util.isVSTS(args.tfs) && args.target === `dockerpaas`) {
-   //             release = `tfs_2018_release_${args.target}.json`;
-   //          }
-   //       } else {
-   //          release = `tfs_release_${args.target}.json`;
-   //       }
+      // see if they support load tests or not
+      if (args.removeloadTest && args.target === `dockerpaas`) {
+         release = `vsts_bot_release_${args.target}_noloadtest.json`;
+      } else {
+         release = `vsts_bot_release_${args.target}.json`;
+      }
+      callback(release);
 
-   //       callback(e, release);
-   //    });
-   // } else {
-      util.isTFSGreaterThan2017(args.tfs, pat, (e, result) => {
-         if (result) {
-            if (util.isVSTS(args.tfs)) {
+   } else {
 
-               if (args.target === `paasslots`) {
-                  release = `vsts_bot_release_slots.json`;
-               } else {
-                  release = `vsts_bot_release.json`;
-               }
-            } 
-         } 
+      if (args.target === `paasslots`) {
+         release = `vsts_bot_release_slots.json`;
+      } else {
+         // see if they support load tests or not
+         if (args.removeloadTest) {
+            release = `vsts_bot_release_noloadtest.json`;
+         } else {
+            release = `vsts_bot_release.json`;
+         }
+      }
 
-         callback(e, release);
-      });
-   // }
+      callback(release);
+   }
 }
 
 function findOrCreateRelease(args, gen, callback) {
@@ -171,14 +173,13 @@ function findOrCreateRelease(args, gen, callback) {
 function createRelease(args, gen, callback) {
    'use strict';
 
-   // let releaseDefName = util.isDocker(args.target) ? `${args.teamProject.name}-Docker-CD` : `${args.teamProject.name}-CD`;
-   let releaseDefName = `${args.teamProject.name}-CD`;
-   
+   let releaseDefName = util.isDocker(args.target) ? `${args.teamProject.name}-Docker-CD` : `${args.teamProject.name}-CD`;
+
    gen.log(`+ Creating ${releaseDefName} release definition`);
 
    // Qualify the image name with the dockerRegistryId for docker hub
    // or the server name for other registries. 
-   // let dockerNamespace = util.getImageNamespace(args.dockerRegistryId, args.dockerRegistryEndpoint);
+   let dockerNamespace = util.getImageNamespace(args.dockerRegistryId, args.dockerRegistryEndpoint);
 
    // Azure website names have to be unique.  So we gen a GUID and addUserAgent
    // a portion to the site name to help with that.
@@ -188,7 +189,7 @@ function createRelease(args, gen, callback) {
    var tokens = {
       '{{BuildId}}': args.build.id,
       '"{{QueueId}}"': args.queueId,
-      '{{WebAppName}}': args.appName,
+      '{{WebAppName}}': args.botName,
       '{{azLocation}}': args.location,
       '{{uuid}}': uuid.substring(0, 8),
       '{{BuildName}}': args.build.name,
@@ -198,15 +199,16 @@ function createRelease(args, gen, callback) {
       '{{ProjectName}}': args.teamProject.name,
       '{{ApproverDisplayName}}': args.approverDisplayName,
       '{{ProjectLowerCase}}': args.teamProject.name.toLowerCase(),
-      // '{{dockerPorts}}': args.dockerPorts ? args.dockerPorts : null,
+      '{{dockerPorts}}': args.dockerPorts ? args.dockerPorts : null,
       '{{ApproverUniqueName}}': args.approverUniqueName.replace("\\", "\\\\"),
-      // '{{dockerHostEndpoint}}': args.dockerHostEndpoint ? args.dockerHostEndpoint.id : null,
-      // '{{dockerRegistryId}}': dockerNamespace,
-      // '{{containerregistry}}': args.dockerRegistry,
-      // '{{containerregistry_noprotocol}}': args.dockerRegistry ? util.getDockerRegistryServer(args.dockerRegistry) : null,
-      // '{{containerregistry_username}}': args.dockerRegistryId,
-      // '{{containerregistry_password}}': args.dockerRegistryPassword,
-      // '{{dockerRegistryEndpoint}}': args.dockerRegistryEndpoint ? args.dockerRegistryEndpoint.id : null,
+      '{{dockerHostEndpoint}}': args.dockerHostEndpoint ? args.dockerHostEndpoint.id : null,
+      '{{TemplateFolder}}': args.type === 'csharp' ? `${args.botName}.IaC` : `templates`,
+      '{{dockerRegistryId}}': dockerNamespace,
+      '{{containerregistry}}': args.dockerRegistry,
+      '{{containerregistry_noprotocol}}': args.dockerRegistry ? util.getDockerRegistryServer(args.dockerRegistry) : null,
+      '{{containerregistry_username}}': args.dockerRegistryId,
+      '{{containerregistry_password}}': args.dockerRegistryPassword,
+      '{{dockerRegistryEndpoint}}': args.dockerRegistryEndpoint ? args.dockerRegistryEndpoint.id : null,
       '{{ReleaseDefName}}': releaseDefName
    };
 
@@ -220,9 +222,9 @@ function createRelease(args, gen, callback) {
          'authorization': `Basic ${args.token}`
       },
       json: true,
-      url: `${util.getFullURL(args.account, true, true)}/${args.teamProject.name}/_apis/release/definitions`,
+      url: `${util.getFullURL(args.account, true, util.RELEASE_MANAGEMENT_SUB_DOMAIN)}/${args.teamProject.name}/_apis/release/definitions`,
       qs: {
-         'api-version': RELEASE_API_VERSION
+         'api-version': util.RELEASE_API_VERSION
       },
       body: JSON.parse(util.tokenize(contents, tokens))
    });

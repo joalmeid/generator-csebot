@@ -2,13 +2,13 @@ const path = require(`path`);
 const fs = require(`fs`);
 const sinon = require(`sinon`);
 const helpers = require(`yeoman-test`);
-const sinonTest = require(`sinon-test`);
 const assert = require(`yeoman-assert`);
 const proxyquire = require(`proxyquire`);
+const sinonTestFactory = require(`sinon-test`);
 const util = require(`../../generators/app/utility`);
 const docker = require(`../../generators/docker/app`);
 
-sinon.test = sinonTest.configureTest(sinon);
+const sinonTest = sinonTestFactory(sinon);
 
 describe(`docker:index`, function () {
    "use strict";
@@ -18,10 +18,10 @@ describe(`docker:index`, function () {
          util.findProject.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/docker/index`))
+      return helpers.run(path.join(__dirname, `../../generators/docker`))
          .withPrompts({
             pat: `token`,
-            applicationName: `aspDemo`,
+            botName: `aspDemo`,
             dockerHost: `dockerHost`,
             dockerCertPath: `dockerCertPath`,
             dockerRegistry: `dockerRegistry`,
@@ -45,7 +45,7 @@ describe(`docker:index`, function () {
             });
          })
          .on(`end`, function () {
-            // Using the yeoman helpers and sinon.test did not play nice
+            // Using the yeoman helpers and sinonTest did not play nice
             // so clean up your stubs         
             cleanUp();
          });
@@ -57,7 +57,7 @@ describe(`docker:index`, function () {
          util.findProject.restore();
       };
 
-      return helpers.run(path.join(__dirname, `../../generators/docker/index`))
+      return helpers.run(path.join(__dirname, `../../generators/docker`))
          .withArguments([
             `aspDemo`,
             `http://localhost:8080/tfs/DefaultCollection`,
@@ -85,7 +85,7 @@ describe(`docker:index`, function () {
             });
          })
          .on(`end`, function () {
-            // Using the yeoman helpers and sinon.test did not play nice
+            // Using the yeoman helpers and sinonTest did not play nice
             // so clean up your stubs         
             cleanUp();
          });
@@ -95,7 +95,7 @@ describe(`docker:index`, function () {
 describe(`docker:app`, function () {
    "use strict";
 
-   it(`run with existing endpoint should run without error`, sinon.test(function (done) {
+   it(`run with existing endpoint should run without error`, sinonTest(function (done) {
       // Arrange
       this.stub(util, `findProject`).callsArgWith(4, null, {
          value: "TeamProject",
@@ -125,7 +125,7 @@ describe(`docker:app`, function () {
       });
    }));
 
-   it(`run with error should return error`, sinon.test(function (done) {
+   it(`run with error should return error`, sinonTest(function (done) {
       // Arrange
       this.stub(util, `findProject`).callsArgWith(4, null, {
          value: "TeamProject",
@@ -160,7 +160,7 @@ describe(`docker:app`, function () {
       });
    }));
 
-   it(`findOrCreateDockerServiceEndpoint should create endpoint`, sinon.test(function (done) {
+   it(`findOrCreateDockerServiceEndpoint should create endpoint`, sinonTest(function (done) {
       // Arrange
       // This allows me to take control of the request requirement
       // without this there would be no way to stub the request calls
@@ -199,7 +199,7 @@ describe(`docker:app`, function () {
          });
    }));
 
-   it(`findOrCreateDockerServiceEndpoint should throw error`, sinon.test(function (done) {
+   it(`findOrCreateDockerServiceEndpoint should throw error`, sinonTest(function (done) {
       // Arrange
       // This allows me to take control of the request requirement
       // without this there would be no way to stub the request calls
@@ -238,7 +238,46 @@ describe(`docker:app`, function () {
       });
    }));
 
-   it(`findOrCreateDockerServiceEndpoint should short circuit`, sinon.test(function (done) {
+   it(`findOrCreateDockerServiceEndpoint should not find files`, sinonTest(function (done) {
+      // Arrange
+      // This allows me to take control of the request requirement
+      // without this there would be no way to stub the request calls
+      var requestStub = sinon.stub();
+      const proxyApp = proxyquire(`../../generators/docker/app`, {
+         "request": requestStub
+      });
+
+      this.stub(util, `tryFindDockerServiceEndpoint`).callsArgWith(5, null, undefined);
+
+      this.stub(fs, `readFile`).callsFake((files, options, cb) => {
+         if (cb === undefined) {
+            cb = options;
+         }
+
+         cb(null, undefined);
+      });
+
+      var logger = sinon.stub();
+      logger.log = function () {};
+
+      // Create Project
+      requestStub.onCall(0).yields(null, {
+         statusCode: 400
+      }, null);
+
+      // Act
+      // I use the custom error validation method to call done
+      // because my method is async 
+      assert.throws(function () {
+         proxyApp.findOrCreateDockerServiceEndpoint(`http://localhost:8080/tfs/DefaultCollection`, `ProjectId`,
+            `DockerHost`, `dockerCertPath`, `token`, logger, done);
+      }, function (e) {
+         done();
+         return true;
+      });
+   }));
+
+   it(`findOrCreateDockerServiceEndpoint should short circuit`, sinonTest(function (done) {
       // Arrange
 
       var logger = sinon.stub();

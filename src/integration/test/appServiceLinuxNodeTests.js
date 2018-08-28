@@ -1,12 +1,12 @@
-const appService = require('./appService');
+const appService = require('./_appService');
 
 describe(`Default Node AS Docker`, function () {
    describe(`Azure App Service Docker (Linux) using Default queue`, function () {
       "use strict";
 
       appService.runTests({
-         appType: `node`,
-         appName: `nodeDockerPaaSTest`,
+         botType: `node`,
+         botName: `nodeDockerPaaSTest`,
          target: `dockerpaas`,
          context: `Azure App Service Docker (Linux)`,
          suffix: `-Docker`,

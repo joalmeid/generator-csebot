@@ -1,4 +1,54 @@
+// Many of the generators use the same prompts in their prompting stage so 
+// these functions make it easy to reuse in other generators.
+// This removed a lot of duplicate code and makes sure the prompts are all
+// handled in the same way in each generator.
+
 const util = require(`./utility`);
+
+function profileCmd(obj) {
+   return {
+      store: true,
+      type: `list`,
+      name: `profileCmd`,
+      default: `Add`,
+      choices: util.getProfileCommands,
+      message: `Select a command.`,
+      when: answers => {
+         // If the value was passed on the command line it will
+         // not be set in answers which other prompts expect.
+         // So, place it in answers now.
+         // If you are reading from prompts don't overwrite
+         // what the user entered.
+         if (obj.options.profileCmd !== undefined) {
+            answers.profileCmd = obj.options.profileCmd;
+         }
+
+         return answers.profileCmd === undefined;
+      }
+   };
+}
+
+function profileName(obj) {
+   return {
+      name: `profileName`,
+      type: `input`,
+      store: true,
+      message: `Enter a name of the profile.`,
+      validate: util.validateProfileName,
+      when: answers => {
+         // If the value was passed on the command line it will
+         // not be set in answers which other prompts expect.
+         // So, place it in answers now.
+         // If you are reading from prompts don't overwrite
+         // what the user entered.
+         if (obj.options.profileName !== undefined) {
+            answers.profileName = obj.options.profileName;
+         }
+
+         return answers.profileCmd !== `list` && answers.profileName === undefined;
+      }
+   };
+}
 
 function tfs(obj) {
    return {
@@ -9,12 +59,22 @@ function tfs(obj) {
       validate: util.validateTFS,
       filter: util.extractInstance,
       when: answers => {
-         // If the value was passed on the commandline it will
+         // If the value was passed on the command line it will
          // not be set in answers which other prompts expect.
          // So, place it in answers now.
-         answers.tfs = obj.tfs;
+         // If you are reading from prompts don't overwrite
+         // what the user entered.
+         if (obj.options.tfs !== undefined) {
+            answers.tfs = obj.options.tfs;
+         }
 
-         return obj.tfs === undefined;
+         // You don't need this if you are just listing or deleting a 
+         // prof
+         if (answers.profileCmd === `list` || answers.profileCmd === `delete`) {
+            return false;
+         }
+
+         return answers.tfs === undefined;
       }
    };
 }
@@ -27,12 +87,17 @@ function pat(obj) {
       message: util.getPATPrompt,
       validate: util.validatePersonalAccessToken,
       when: answers => {
-         // If the value was passed on the commandline it will
-         // not be set in answers which other prompts expect.
-         // So, place it in answers now.
-         answers.pat = obj.pat;
+         // You don't need this if you are just listing or deleting a 
+         // profile
+         if (answers.profileCmd === `list` || answers.profileCmd === `delete`) {
+            return false;
+         }
 
-         return obj.pat === undefined;
+         if (answers.profileCmd === `add`) {
+            return true;
+         }
+
+         return util.readPatFromProfile(answers, obj);
       }
    };
 }
@@ -46,7 +111,7 @@ function queue(obj) {
       choices: util.getPools,
       message: `What agent queue would you like to use?`,
       when: answers => {
-         var result = obj.queue === undefined;
+         var result = obj.options.queue === undefined;
 
          if (result) {
             obj.log(`  Getting Agent Queues...`);
@@ -63,23 +128,45 @@ function botType(obj) {
       type: `list`,
       store: true,
       message: `What type of Bot do you want to create?`,
-      default: obj.type,
+      default: obj.options.type,
       choices: util.getBotTypes,
       when: answers => {
-         return obj.type === undefined;
+         // If the value was passed on the command line it will
+         // not be set in answers which other prompts expect.
+         // So, place it in answers now.
+         // If you are reading from prompts don't overwrite
+         // what the user entered.
+         if (obj.options.type !== undefined) {
+            answers.type = obj.options.type;
+         }
+
+         return answers.type === undefined;
       }
    };
 }
+
+// function customFolder(obj) {
+//    return {
+//       name: `customFolder`,
+//       type: `input`,
+//       store: true,
+//       message: `What is your custom template path?`,
+//       validate: util.validateCustomFolder,
+//       when: answers => {
+//          return answers.type === `custom` && obj.options.customFolder === undefined;
+//       }
+//    };
+// }
 
 function botName(obj) {
    return {
       name: `botName`,
       type: `input`,
       store: true,
-      message: `What is the name of your Bot?`,
+      message: `What is the name of your application?`,
       validate: util.validateBotName,
       when: () => {
-         return obj.botName === undefined;
+         return obj.options.botName === undefined;
       }
    };
 }
@@ -92,7 +179,7 @@ function botLocation(obj) {
       message: `What is the azure location of your Bot?`,
       validate: util.validateBotLocation,
       when: () => {
-         return obj.botLocation === undefined;
+         return obj.options.botLocation === undefined;
       }
    };
 }
@@ -105,7 +192,7 @@ function target(obj) {
       message: `Where would you like to deploy?`,
       choices: util.getTargets,
       when: answers => {
-         return obj.target === undefined;
+         return obj.options.target === undefined;
       }
    };
 }
@@ -119,7 +206,7 @@ function azureSubInput(obj) {
       message: `What is your Azure subscription name?`,
       validate: util.validateAzureSub,
       when: answers => {
-         return util.isPaaS(answers, obj) && obj.azureSub === undefined && !util.isVSTS(answers.tfs);
+         return util.isPaaS(answers, obj) && obj.options.azureSub === undefined && !util.isVSTS(answers.tfs);
       }
    };
 }
@@ -133,7 +220,7 @@ function azureSubList(obj) {
       choices: util.getAzureSubs,
       validate: util.validateAzureSub,
       when: answers => {
-         var result = util.isPaaS(answers, obj) && obj.azureSub === undefined && util.isVSTS(answers.tfs);
+         var result = util.isPaaS(answers, obj) && obj.options.azureSub === undefined && util.isVSTS(answers.tfs);
 
          if (result) {
             obj.log(`  Getting Azure subscriptions...`);
@@ -152,7 +239,7 @@ function azureSubId(obj) {
       message: `What is your Azure subscription ID?`,
       validate: util.validateAzureSubID,
       when: answers => {
-         return util.isPaaS(answers, obj) && obj.azureSubId === undefined && !util.isVSTS(answers.tfs);
+         return util.isPaaS(answers, obj) && obj.options.azureSubId === undefined && !util.isVSTS(answers.tfs);
       }
    };
 }
@@ -165,7 +252,7 @@ function servicePrincipalId(obj) {
       message: `What is your Service Principal ID?`,
       validate: util.validateServicePrincipalID,
       when: answers => {
-         return util.isPaaS(answers, obj) && obj.servicePrincipalId === undefined && !util.isVSTS(answers.tfs);
+         return (util.isPaaS(answers, obj) && obj.options.servicePrincipalId === undefined && !util.isVSTS(answers.tfs)) || (util.isVSTS(answers.tfs) && answers.creationMode === `Manual`);
       }
    };
 }
@@ -178,7 +265,7 @@ function tenantId(obj) {
       message: `What is your Azure Tenant ID?`,
       validate: util.validateAzureTenantID,
       when: answers => {
-         return util.isPaaS(answers, obj) && obj.tenantId === undefined && !util.isVSTS(answers.tfs);
+         return util.isPaaS(answers, obj) && obj.options.tenantId === undefined && !util.isVSTS(answers.tfs);
       }
    };
 }
@@ -191,104 +278,112 @@ function servicePrincipalKey(obj) {
       message: `What is your Service Principal Key?`,
       validate: util.validateServicePrincipalKey,
       when: answers => {
-         return util.isPaaS(answers, obj) && obj.servicePrincipalKey === undefined && !util.isVSTS(answers.tfs);
+         return (util.isPaaS(answers, obj) && obj.options.servicePrincipalKey === undefined && !util.isVSTS(answers.tfs)) || (util.isVSTS(answers.tfs) && answers.creationMode === `Manual`);
       }
    };
 }
 
-// // Docker
-// function dockerHost(obj) {
-//    return {
-//       name: `dockerHost`,
-//       type: `input`,
-//       store: true,
-//       message: `What is your Docker host url and port (tcp://host:2376)?`,
-//       validate: util.validateDockerHost,
-//       when: answers => {
-//          return util.needsDockerHost(answers, obj) && obj.dockerHost === undefined;
-//       }
-//    };
-// }
+// Docker
+function dockerHost(obj) {
+   return {
+      name: `dockerHost`,
+      type: `input`,
+      store: true,
+      message: `What is your Docker host url and port (tcp://host:2376)?`,
+      validate: util.validateDockerHost,
+      when: answers => {
+         return util.needsDockerHost(answers, obj.options) && obj.options.dockerHost === undefined;
+      }
+   };
+}
 
-// function dockerCertPath(obj) {
-//    return {
-//       name: `dockerCertPath`,
-//       type: `input`,
-//       store: true,
-//       message: `What is your Docker Certificate Path?`,
-//       validate: util.validateDockerCertificatePath,
-//       when: answers => {
-//          return util.needsDockerHost(answers, obj) && obj.dockerCertPath === undefined;
-//       }
-//    };
-// }
+function dockerCertPath(obj) {
+   return {
+      name: `dockerCertPath`,
+      type: `input`,
+      store: true,
+      message: `What is your Docker Certificate path?`,
+      validate: util.validateDockerCertificatePath,
+      when: answers => {
+         return util.needsDockerHost(answers, obj.options) && obj.options.dockerCertPath === undefined;
+      }
+   };
+}
 
-// function dockerRegistry(obj) {
-//    return {
-//       name: `dockerRegistry`,
-//       type: `input`,
-//       default: `https://index.docker.io/v1/`,
-//       store: true,
-//       message: `What is your Docker Registry URL?`,
-//       validate: util.validateDockerRegistry,
-//       when: answers => {
-//          return util.needsRegistry(answers, obj) && obj.dockerRegistry === undefined;
-//       }
-//    };
-// }
+function dockerRegistry(obj) {
+   return {
+      name: `dockerRegistry`,
+      type: `input`,
+      default: `https://index.docker.io/v1/`,
+      store: true,
+      message: `What is your Docker Registry URL?`,
+      validate: util.validateDockerRegistry,
+      when: answers => {
+         return util.needsRegistry(answers, obj.options) && obj.options.dockerRegistry === undefined;
+      }
+   };
+}
 
-// function dockerRegistryUsername(obj) {
-//    return {
-//       name: `dockerRegistryId`,
-//       type: `input`,
-//       store: true,
-//       message: `What is your Docker Registry username (case sensitive)?`,
-//       validate: util.validateDockerHubID,
-//       when: answers => {
-//          return util.needsRegistry(answers, obj) && obj.dockerRegistryId === undefined;
-//       }
-//    };
-// }
+function dockerRegistryUsername(obj) {
+   return {
+      name: `dockerRegistryId`,
+      type: `input`,
+      store: true,
+      message: `What is your Docker Registry username (case sensitive)?`,
+      validate: util.validateDockerHubID,
+      when: answers => {
+         return util.needsRegistry(answers, obj.options) && obj.options.dockerRegistryId === undefined;
+      }
+   };
+}
 
-// function dockerRegistryPassword(obj) {
-//    return {
-//       name: `dockerRegistryPassword`,
-//       type: `password`,
-//       store: false,
-//       message: `What is your Docker Registry password?`,
-//       validate: util.validateDockerHubPassword,
-//       when: answers => {
-//          return util.needsRegistry(answers, obj) && obj.dockerRegistryPassword === undefined;
-//       }
-//    };
-// }
+function dockerRegistryPassword(obj) {
+   return {
+      name: `dockerRegistryPassword`,
+      type: `password`,
+      store: false,
+      message: `What is your Docker Registry password?`,
+      validate: util.validateDockerHubPassword,
+      when: answers => {
+         return util.needsRegistry(answers, obj.options) && obj.options.dockerRegistryPassword === undefined;
+      }
+   };
+}
 
-// function dockerPorts(obj) {
-//    return {
-//       name: `dockerPorts`,
-//       type: `input`,
-//       default: util.getDefaultPortMapping,
-//       message: `What port should be exposed?`,
-//       validate: util.validatePortMapping,
-//       when: answers => {
-//          return util.needsRegistry(answers, obj) && obj.dockerPorts === undefined;
-//       }
-//    };
-// }
+function dockerPorts(obj) {
+   return {
+      name: `dockerPorts`,
+      type: `input`,
+      default: util.getDefaultPortMapping,
+      message: `What port should be exposed?`,
+      validate: util.validatePortMapping,
+      when: answers => {
+         return util.needsRegistry(answers, obj.options) && obj.options.dockerPorts === undefined;
+      }
+   };
+}
 
-// // Java
-// function groupId(obj) {
-//    return {
-//       name: `groupId`,
-//       type: `input`,
-//       store: true,
-//       message: "What is your Group ID?",
-//       validate: util.validateGroupID,
-//       when: answers => {
-//          return answers.type === `java` && obj.groupId === undefined;
-//       }
-//    };
-// }
+function creationMode(obj) {
+   return {
+      name: `creationMode`,
+      type: `list`,
+      store: true,
+      message: "Select a Service Principal Creation Mode",
+      default: `Automatic`,
+      choices: [{
+            name: `Automatic`,
+            value: `Automatic`
+         },
+         {
+            name: `Manual`,
+            value: `Manual`
+         }
+      ],
+      when: answers => {
+         return util.isPaaS(answers, obj) && obj.options.azureSub === undefined && util.isVSTS(answers.tfs);
+      }
+   };
+}
 
 function installDep(obj) {
    return {
@@ -307,7 +402,7 @@ function installDep(obj) {
          }
       ],
       when: answers => {
-         return answers.type !== `csharp` && obj.installDep === undefined;
+         return answers.type !== `csharp` && obj.options.installDep === undefined;
       }
    };
 }
@@ -326,7 +421,7 @@ function gitAction(obj) {
          value: `commit`
       }],
       when: function () {
-         return obj.action === undefined;
+         return obj.options.action === undefined;
       }
    };
 }
@@ -336,22 +431,25 @@ module.exports = {
    pat: pat,
    queue: queue,
    target: target,
-   // groupId: groupId,
    tenantId: tenantId,
    gitAction: gitAction,
    installDep: installDep,
    azureSubId: azureSubId,
-   // dockerHost: dockerHost,
-   // dockerPorts: dockerPorts,
+   profileCmd: profileCmd,
+   dockerHost: dockerHost,
+   profileName: profileName,
+   dockerPorts: dockerPorts,
    azureSubList: azureSubList,
+   // customFolder: customFolder,
+   creationMode: creationMode,
    azureSubInput: azureSubInput,
-   // dockerRegistry: dockerRegistry,
-   // dockerCertPath: dockerCertPath,
+   dockerRegistry: dockerRegistry,
+   dockerCertPath: dockerCertPath,
    botType: botType,
    botName: botName,
    botLocation: botLocation,
    servicePrincipalId: servicePrincipalId,
    servicePrincipalKey: servicePrincipalKey,
-   // dockerRegistryPassword: dockerRegistryPassword,
-   // dockerRegistryUsername: dockerRegistryUsername
+   dockerRegistryPassword: dockerRegistryPassword,
+   dockerRegistryUsername: dockerRegistryUsername
 };
