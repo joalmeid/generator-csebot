@@ -5,30 +5,30 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "test": "istanbul cover --report cobertura --report lcov node_modules/mocha/bin/_mocha -- -R mocha-junit-reporter",
+    "test": "istanbul cover --report cobertura --report lcov node_modules/mocha/bin/_mocha -- -R mocha-junit-reporter --exit",
     "build": "tsc -p ."
-   },
+  },
   "dependencies": {
-    "applicationinsights": "^0.19.0",
-    "botbuilder": "^3.9.1",
-    "botbuilder-azure": "^3.0.4",
-    "dotenv-extended": "^2.0.1",
-    "restify": "^5.2.0"
+    "applicationinsights": "^1.0.3",
+    "botbuilder": "^3.15.0",
+    "botbuilder-azure": "^3.1.0",
+    "botbuilder-instrumentation": "^1.1.18",
+    "dotenv-extended": "^2.0.2",
+    "restify": "^7.2.1"
   },
   "devDependencies": {
-    "@types/restify": "^4.3.4",
-    "@types/node": "^7.0.31",
-    "@types/applicationinsights": "^0.15.34",
-    "typescript": "^2.3.4",
+    "typescript": "^3.0.1",
     "assert": "^1.4.1",
-    "@types/assert": "^0.0.31",
     "istanbul": "^0.4.5",
-    "@types/istanbul": "^0.4.29",
-    "mocha": "^3.5.0",
-    "@types/mocha": "^2.2.44",
-    "mocha-junit-reporter": "^1.13.0",
-    "nock": "^9.0.14",
-    "@types/nock": "^8.2.1"
+    "mocha": "^5.2.0",
+    "mocha-junit-reporter": "^1.17.0",
+    "nock": "^9.4.2",
+    "@types/node": "^10.9.2",
+    "@types/power-assert": "^1.5.0",
+    "@types/mocha": "^5.2.5",
+    "@types/restify": "^7.2.4",
+    "@types/istanbul": "^0.4.30",
+    "@types/nock": "^9.3.0"
   },
   "keywords": [
     "botbuilder",

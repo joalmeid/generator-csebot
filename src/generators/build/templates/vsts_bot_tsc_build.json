@@ -35,7 +35,7 @@
             
          },
          "enabled": true,
-         "continueOnError": true,
+         "continueOnError": false,
          "alwaysRun": false,
          "displayName": "npm Build",
          "timeoutInMinutes": 0,
@@ -61,8 +61,8 @@
       },
       {
          "enabled": true,
-         "continueOnError": false,
-         "alwaysRun": false,
+         "continueOnError": true,
+         "alwaysRun": true,
          "displayName": "npm test",
          "timeoutInMinutes": 0,
          "task": {
@@ -91,7 +91,7 @@
          "timeoutInMinutes": 0,
          "task": {
             "id": "d8b84976-e99a-4b86-b885-4849694435b0",
-            "versionSpec": "1.*",
+            "versionSpec": "2.*",
             "definitionType": "task"
          },
          "inputs": {

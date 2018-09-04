@@ -1,16 +1,19 @@
-import * as telemetryModule from '../util/telemetry-module';
+import * as instrumentation from '../util/instrumentation';
 import { IDialogResult, Session, IDialogWaterfallStep } from 'botbuilder';
+import * as botConsts from '../models/Consts';
+
+// Setting up advanced instrumentation
+let logger = instrumentation.getInstance();
 
 const waterfall: IDialogWaterfallStep[] = [
 
     function (session: Session) {
-        const telemetry = telemetryModule.createTelemetry(session, { setDefault: false });
 
         //Welcome Message
         const welcomeMessage = `Hi! I'm a Typescript Bot Framework created with cse-bot Yeoman Generator.`;
         session.send(welcomeMessage);
 
-        telemetryModule.getClient().trackEvent('start');
+        logger.trackCustomEvent(botConsts.CseBotLogging.RootDialog , { description: "Started root dialog", setDefault: false }, session);
 
     },
     function (session: Session, result: IDialogResult<any>) {

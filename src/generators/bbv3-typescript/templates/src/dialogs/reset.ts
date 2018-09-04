@@ -1,13 +1,16 @@
-import * as telemetryModule from '../util/telemetry-module';
-import { IDialogResult, Session, IDialogWaterfallStep } from 'botbuilder';
+import * as instrumentation from '../util/instrumentation';
+import { Session, IDialogWaterfallStep } from 'botbuilder';
+import * as botConsts from '../models/Consts';
+
+// Setting up advanced instrumentation
+let logger = instrumentation.getInstance();
 
 const waterfall: IDialogWaterfallStep[] = [
 
     function (session: Session, args: any, next: Function) {
 
-        const telemetry = telemetryModule.createTelemetry(session, null);
-        telemetryModule.getClient().trackEvent('Reset', telemetry);
-
+        logger.trackCustomEvent(botConsts.CseBotLogging.Reset, { description: 'Reset on current dialog' }, session);
+    
         // reset data
         session.conversationData = {};
         session.dialogData = {};

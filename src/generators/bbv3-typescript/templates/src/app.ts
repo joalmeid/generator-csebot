@@ -1,6 +1,6 @@
 // This loads the environment variables from the .env file
-import * as myConfig from 'dotenv-extended';
-myConfig.load();
+import * as envConfig from 'dotenv-extended';
+let botConfig: envConfig.IEnvironmentMap = envConfig.load();
 import * as restify from 'restify';
 import * as builder from 'botbuilder';
 import * as bot from './bot';

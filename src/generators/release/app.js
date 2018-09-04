@@ -145,7 +145,8 @@ function getRelease(args, callback) {
          if (args.removeloadTest) {
             release = `vsts_bot_release_noloadtest.json`;
          } else {
-            release = `vsts_bot_release.json`;
+            isCsharp = args.type == 'csharp' ? args.type + '_' : "";
+            release = `vsts_bot_${isCsharp}release.json`;
          }
       }
 

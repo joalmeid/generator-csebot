@@ -162,7 +162,7 @@
             // "--help"
          "args": [
             "csebot",
-            "csharp", // type
+            "tsc", // type
             "bottstest", // botName
             "joalmeid", // tfs
             "JDADX Internal", // azureSub

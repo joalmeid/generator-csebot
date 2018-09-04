@@ -59,17 +59,17 @@
       "type": "Microsoft.Web/serverfarms",
       "location": "[resourceGroup().location]",
       "tags": {
-        "displayName": "HostingPlan",
-        "Solution": "variables('botTagNamePrefix')",
-        "Tier": "[concat(variables('botTagNamePrefix'), '-FE')]",
-        "Resource": "[concat(variables('botTagNamePrefix'), '-hostingplan')]"
-  },
+         "displayName": "HostingPlan",
+         "Solution": "variables('botTagNamePrefix')",
+         "Tier": "[concat(variables('botTagNamePrefix'), '-FE')]",
+         "Resource": "[concat(variables('botTagNamePrefix'), '-hostingplan')]"
+      },
       "sku": {
-        "name": "[parameters('skuName')]",
-        "capacity": "[parameters('skuCapacity')]"
+         "name": "[parameters('skuName')]",
+         "capacity": "[parameters('skuCapacity')]"
       },
       "properties": {
-        "name": "[variables('hostingPlanName')]"
+         "name": "[variables('hostingPlanName')]"
       }
     },
     {
