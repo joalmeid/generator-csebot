@@ -42,7 +42,7 @@ namespace <%= name %>.Dialogs
                 WebApiApplication.Telemetry.TrackEvent(botEvent);
 
                 // return our reply to the user
-                await context.PostAsync($"You sent {activity.Text} which was {length} characters");
+                await context.PostAsync($"Hi! I'm a C# Bot Framework created with cse-bot Yeoman Generator.");
             }
             catch (TooManyAttemptsException ex)
             {

@@ -61,7 +61,6 @@ module.exports = class extends Generator {
          location: this.botLocation,
          location_lowercase: this.botLocation.toLowerCase().replace(/\s+/g, ''),
          projectUrl: `${util.getFullURL(this.tfs)}/${this.botName}`,
-         BotId: this.botName,
          MicrosoftAppId: "",
          MicrosoftAppPassword: ""
       };
@@ -111,10 +110,15 @@ module.exports = class extends Generator {
       src = `${this.sourceRoot()}/botcsharp.IaC`;
       root = `${this.botName}/${this.botName}.IaC`;
 
-      this.fs.copyTpl(`${src}/Deploy-AzureResourceGroup.ps1`, `${root}/Deploy-AzureResourceGroup.ps1`, tokens);
-      this.fs.copy(`${src}/botcsharp.IaC.deployproj`, `${root}/${this.botName}.IaC.deployproj`);
       this.fs.copy(`${src}/botcsharp.json`, `${root}/botapp.json`);
       this.fs.copy(`${src}/botcsharp.parameters.json`, `${root}/botapp.parameters.json`);
+      this.fs.copy(`${src}/bot-registration.json`, `${root}/bot-registration.json`);
+      this.fs.copy(`${src}/bot-registration.parameters.json`, `${root}/bot-registration.parameters.json`);
+      this.fs.copy(`${src}/appInsigthsApiAccess.ps1`, `${root}/appInsigthsApiAccess.ps1`);
+
+      this.fs.copyTpl(`${src}/Deploy-AzureResourceGroup.ps1`, `${root}/Deploy-AzureResourceGroup.ps1`, tokens);
+      
+      this.fs.copy(`${src}/botcsharp.IaC.deployproj`, `${root}/${this.botName}.IaC.deployproj`);
       this.fs.copy(`${src}/Deployment.targets`, `${root}/Deployment.targets`);
 
       // Test project

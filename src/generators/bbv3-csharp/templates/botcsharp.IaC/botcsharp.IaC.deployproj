@@ -28,9 +28,12 @@
     <None Include="Deployment.targets">
       <Visible>False</Visible>
     </None>
+    <Content Include="appInsigthsApiAccess.ps1" />
     <Content Include="Deploy-AzureResourceGroup.ps1" />
     <Content Include="botapp.json" />
     <Content Include="botapp.parameters.json" />
+    <Content Include="bot-registration.json" />
+    <Content Include="bot-registration.parameters.json" />
   </ItemGroup>
   <Target Name="GetReferenceAssemblyPaths" />
 </Project>
