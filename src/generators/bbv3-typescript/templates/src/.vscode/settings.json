@@ -1,9 +1,12 @@
 {
-    "files.exclude": {
-        "**/.git": true,
-        "**/.DS_Store": true,
-        "**/node_modules": true,
-        "**/*.js": true,
-        "**/*.js.map": true
-    }
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/node_modules": true,
+    "**/*.js": true,
+    "**/*.js.map": true
+  },
+  "typescript.tsc.autoDetect": "on",
+  "npm.autoDetect": "on",
+  "tslint.enable": true
 }

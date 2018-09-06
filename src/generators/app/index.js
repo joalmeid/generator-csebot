@@ -47,7 +47,7 @@ module.exports = class extends Generator {
       // sub generators. I also use this to determine which data I still need to
       // prompt for.
 
-      this.log(yosay(`Welcome to CSE bot generator powered by Donovan's team generator ${pkg.version}`));
+      this.log(yosay(`Welcome to CSE bot generator powered by Donovan's team generator. v${pkg.version}`));
 
    }
 

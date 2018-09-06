@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "test": "istanbul cover --report cobertura --report lcov node_modules/mocha/bin/_mocha -- -R mocha-junit-reporter --exit",
-    "build": "tsc -p ."
+    "build": "tsc -p . --watch false"
   },
   "dependencies": {
     "applicationinsights": "^1.0.3",
