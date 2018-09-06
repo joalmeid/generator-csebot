@@ -77,6 +77,9 @@ module.exports = class extends Generator {
 
       this.fs.copy(`${src}/botts.json`, `${root}/botapp.json`);
       this.fs.copy(`${src}/botts.parameters.json`, `${root}/botapp.parameters.json`);
+      this.fs.copy(`${src}/bot-registration.json`, `${root}/bot-registration.json`);
+      this.fs.copy(`${src}/bot-registration.parameters.json`, `${root}/bot-registration.parameters.json`);
+      this.fs.copy(`${src}/appInsigthsApiAccess.ps1`, `${root}/appInsigthsApiAccess.ps1`);
 
       // this.fs.copy(`${src}/acilinux_arm.json`, `${root}/acilinux.json`);
       // this.fs.copyTpl(`${src}/acilinux_arm.parameters.json`, `${root}/acilinux.parameters.json`, tokens);

@@ -10,12 +10,14 @@ let logger = instrumentation.getInstance();
 
 export function create(connector : builder.IConnector): builder.UniversalBot {
 
-    const azureTableClient = new botAzure.AzureTableClient(botConsts.tableName, process.env.CUSTOMCONNSTR_STATE_STORAGE_CONNECTION_STRING);
-    const tableStorage = new botAzure.AzureBotStorage({ gzipData: false }, azureTableClient);
+    let azureTableClient;
+    let tableStorage;
 
-    // Disable storage state for test execution (ConsoleConnector)
+    // Disable storage state for test execution (ConsoleConnector) || local environment
     const bot = new builder.UniversalBot(connector);
-    if ( ! (connector instanceof builder.ConsoleConnector)) {
+    if ( !(connector instanceof builder.ConsoleConnector) && process.env.CUSTOMCONNSTR_STATE_STORAGE_CONNECTION_STRING && process.env.CUSTOMCONNSTR_STATE_STORAGE_CONNECTION_STRING !== "") {
+        azureTableClient = new botAzure.AzureTableClient(botConsts.tableName, process.env.CUSTOMCONNSTR_STATE_STORAGE_CONNECTION_STRING);
+        tableStorage = new botAzure.AzureBotStorage({ gzipData: false }, azureTableClient);
         bot.set(botConsts.storage, tableStorage);
     }
 
