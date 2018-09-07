@@ -9,8 +9,33 @@
          "name": "Yo csebot",
          "program": "${workspaceRoot}/node_modules/yo/lib/cli.js",
          "args": [
-            "csebot"
+            "csebot",
+            "typescript", // type
+            "v4", // botBuilderVersion
+            "bottsdevv4", // botName
+            "joalmeid", // tfs
+            "JDADX Internal", // azureSub
+            "North Europe", // botLocation
+            "255588a0-fd77-4e6f-8455-b24faa4e275c", // azureSubId
+            "72f988bf-86f1-41af-91ab-2d7cd011db47", // tenantId
+            " ", //"98719e4b-6d5a-4e7d-b180-ef506768e944", // servicePrincipalId
+            "Hosted Linux Preview", // queue
+            "paas", // target
+            "No", // installDep
+            "TODO:dockerhost", // dockerhost
+            "TODO:dockercertpath", // dockercertpath 
+            "TODO:dockerRegistry", // dockerRegistry
+            "TODO:dockerRegistryId", // dockerRegistryId
+            "TODO:dockerPorts", // dockerPorts
+            "TODO:dockerRegistryPassword", // dockerRegistryPassword
+            " ", // servicePrincipalKey
+            "zp7ymvrorounmt35bizp6d4ejilwlhzgwqfydmlp2k4aj2awokqa"  // pat
          ],
+         "env": {
+            "NODE_ENV": "development",
+            "NODE_PATH":"C:\\Users\\joalmeid\\AppData\\Local\\nvs\\node\\8.11.1\\x64\\node_modules",
+            "DEBUG": "yeoman:* yo"
+         },
          "console": "integratedTerminal",
          "internalConsoleOptions": "neverOpen"
       },
@@ -153,7 +178,7 @@
          ]
       },
       {
-         "name": "Dev TS Debug",
+         "name": "Dev v4 TS Debug",
          "type": "node",
          "request": "launch",
          "program": "${workspaceRoot}/node_modules/yo/lib/cli.js",
@@ -162,7 +187,57 @@
             // "--help"
          "args": [
             "csebot",
-            "tsc", // type
+            "typescript", // type
+            "v4", // botBuilderVersion
+            "bottstestv4", // botName
+            "joalmeid", // tfs
+            "JDADX Internal", // azureSub
+            "West Europe", // botLocation
+            "255588a0-fd77-4e6f-8455-b24faa4e275c", // azureSubId
+            "72f988bf-86f1-41af-91ab-2d7cd011db47", // tenantId
+            " ", //"98719e4b-6d5a-4e7d-b180-ef506768e944", // servicePrincipalId
+            "Hosted Linux Preview", // queue
+            "paas", // target
+            "No", // installDep
+            "TODO:dockerhost", // dockerhost
+            "TODO:dockercertpath", // dockercertpath 
+            "TODO:dockerRegistry", // dockerRegistry
+            "TODO:dockerRegistryId", // dockerRegistryId
+            "TODO:dockerPorts", // dockerPorts
+            "TODO:dockerRegistryPassword", // dockerRegistryPassword
+            " ", // servicePrincipalKey
+            "zp7ymvrorounmt35bizp6d4ejilwlhzgwqfydmlp2k4aj2awokqa"  // pat
+
+          ],
+         "preLaunchTask": "CleanCsharpDebug",
+         "runtimeExecutable": null,
+         "runtimeArgs": [
+            "--nolazy"
+         ],
+         "env": {
+            "NODE_ENV": "development",
+            "NODE_PATH":"C:\\Users\\joalmeid\\AppData\\Local\\nvs\\node\\8.11.1\\x64\\node_modules"
+            // "DEBUG": "yeoman:* yo"
+         },
+         "console": "integratedTerminal",
+         "internalConsoleOptions": "openOnSessionStart",
+         "sourceMaps": false,
+         "outFiles": [
+            "${workspaceRoot}/temp"
+         ]
+      },
+{
+         "name": "Dev TS v3 Debug",
+         "type": "node",
+         "request": "launch",
+         "program": "${workspaceRoot}/node_modules/yo/lib/cli.js",
+         "stopOnEntry": false,
+         // "args": [
+            // "--help"
+         "args": [
+            "csebot",
+            "typescript", // type
+            "v3", // botBuilderVersion
             "bottstest", // botName
             "joalmeid", // tfs
             "JDADX Internal", // azureSub
@@ -200,7 +275,6 @@
             "${workspaceRoot}/temp"
          ]
       },
-
       {
          "type": "node",
          "request": "attach",

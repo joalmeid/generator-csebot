@@ -102,10 +102,11 @@ function addDockerHost(obj) {
 
 function addLanguage(obj) {
    // let generator = `csebot:${obj.type}`;
+   let generator = `csebot:bb${obj.bbVersion}-${obj.type}`;
 
    switch (obj.type) {
       case `csharp`:
-         obj.composeWith(`csebot:bbv3-csharp`, {
+         obj.composeWith(generator, {
             arguments: [obj.botName,
                obj.botLocation,
                obj.tfs
@@ -113,8 +114,8 @@ function addLanguage(obj) {
          });
          break;
 
-      case `tsc`:
-         obj.composeWith(`csebot:bbv3-typescript`, {
+      case `typescript`:
+         obj.composeWith(generator, {
             arguments: [obj.botName,
                obj.installDep,
                obj.dockerPorts,
@@ -125,7 +126,7 @@ function addLanguage(obj) {
 
       //node
       default:
-         obj.composeWith(`csebot:bbv3-node`, {
+         obj.composeWith(generator, {
             arguments: [obj.botName,
                obj.installDep,
                obj.dockerPorts,
@@ -133,18 +134,6 @@ function addLanguage(obj) {
             ]
          });
          break;
-
-      // case `node`:
-      //    obj.composeWith(generator, {
-      //       arguments: [obj.botName, obj.installDep, obj.dockerPorts]
-      //    });
-      //    break;
-
-      // default:
-      //    obj.composeWith(generator, {
-      //       arguments: [obj.botName, obj.dockerPorts]
-      //    });
-      //    break;
    }
 }
 

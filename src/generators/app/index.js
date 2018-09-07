@@ -20,6 +20,7 @@ module.exports = class extends Generator {
       // via the command line they will be queried during the prompting priority
       // command line args
       argUtils.botType(this);
+      argUtils.bbVersion(this);
       argUtils.botName(this);
       argUtils.tfs(this);
       argUtils.azureSub(this);
@@ -63,6 +64,7 @@ module.exports = class extends Generator {
          prompts.pat(this),
          prompts.queue(this),
          prompts.botType(this),
+         prompts.bbVersion(this),
          prompts.botName(this),
          // prompts.customFolder(this),
          prompts.target(this),
@@ -99,6 +101,7 @@ module.exports = class extends Generator {
          this.pat = util.reconcileValue(cmdLnInput.options.pat, answers.pat);
          this.tfs = util.reconcileValue(cmdLnInput.options.tfs, answers.tfs);
          this.type = util.reconcileValue(cmdLnInput.options.type, answers.type);
+         this.bbVersion = util.reconcileValue(cmdLnInput.options.bbVersion, answers.bbVersion);
          this.queue = util.reconcileValue(cmdLnInput.options.queue, answers.queue);
          this.target = util.reconcileValue(cmdLnInput.options.target, answers.target);
          this.azureSub = util.reconcileValue(cmdLnInput.options.azureSub, answers.azureSub, ``);

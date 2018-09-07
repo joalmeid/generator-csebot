@@ -87,7 +87,7 @@ function getTargets(answers) {
    return new Promise(function (resolve, reject) {
       let targets = [];
 
-      if (answers.type === `csharp`) {
+      if (answers.type.includes(`csharp`)) {
          targets = [{
             name: `Azure App Service`,
             value: `paas`
@@ -122,7 +122,7 @@ function getBotTypes(answers) {
       value: `node`
    }, {
       name: `Typescript`,
-      value: `tsc`
+      value: `typescript`
    }];
 
    // If this is not a Linux or Mac based agent also show
@@ -136,6 +136,20 @@ function getBotTypes(answers) {
    }
 
    return types;
+}
+
+function getBotBuilderVersions(answers) {
+   let bbname = 'Bot Framework SDK';
+   // Default to languages that work on all agents
+   let bbVersions = [{
+      name: `${bbname} v3`,
+      value: `v3`
+   }, {
+      name: `${bbname} v4`,
+      value: `v4`
+   }];
+
+   return bbVersions;
 }
 
 function getPATPrompt(answers) {
@@ -1150,6 +1164,7 @@ module.exports = {
    logMessage: logMessage,
    getTargets: getTargets,
    getBotTypes: getBotTypes,
+   getBotBuilderVersions: getBotBuilderVersions,
    checkStatus: checkStatus,
    findProject: findProject,
    findRelease: findRelease,

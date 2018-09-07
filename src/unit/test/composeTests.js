@@ -33,17 +33,17 @@ describe(`compose`, function () {
          assert.equal(called, true);
       }));
 
-      it(`tsc`, sinonTest(function () {
+      it(`typescript`, sinonTest(function () {
          let called = false;
          let target = {
-            type: `tsc`,
-            botName: `tscTest`,
+            type: `typescript`,
+            botName: `typescriptTest`,
             installDep: `true`,
             dockerPorts: `80:80`,
             composeWith: function () {
                called = true;
                assert.equal(arguments.length, 2, `call to composeWith has wrong number of arguments`);
-               assert.equal(arguments[0], `csebot:tsc`, `wrong generator`);
+               assert.equal(arguments[0], `csebot:typescript`, `wrong generator`);
                assert.equal(arguments[1].arguments.length, 3, `object has wrong number of properties`);
                assert.equal(arguments[1].arguments[0], `tscTest`, `object has wrong botName`);
                assert.equal(arguments[1].arguments[1], `true`, `object has wrong installDep`);

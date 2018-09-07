@@ -95,9 +95,9 @@
             "definitionType": "task"
          },
          "inputs": {
-            "rootFolder": "$(System.DefaultWorkingDirectory)/src",
+            "rootFolderOrFile": "$(System.DefaultWorkingDirectory)/src",
             "includeRootFolder": "false",
-            "archiveType": "default",
+            "archiveType": "zip",
             "tarCompression": "gz",
             "archiveFile": "$(Build.ArtifactStagingDirectory)/{{Project}}_$(Build.BuildId).zip",
             "replaceExistingArchive": "true"
@@ -157,7 +157,7 @@
          },
          "inputs": {
             "SourceFolder": "",
-            "Contents": "**/{{Project}}_$(Build.BuildId).zip\n**/templates/botapp.json\n**/templates/botapp.parameters.json",
+            "Contents": "**/{{Project}}_$(Build.BuildId).zip\n**/templates/botapp.json\n**/templates/botapp.parameters.json\n**/templates/bot-registration.json\n**/templates/bot-registration.parameters.json\n**/templates/appInsigthsApiAccess.ps1",            
             "TargetFolder": "$(build.artifactstagingdirectory)",
             "CleanTargetFolder": "false",
             "OverWrite": "false",

@@ -145,6 +145,30 @@ function botType(obj) {
    };
 }
 
+//Bot Builder Version
+function bbVersion(obj) {
+   return {
+      name: `bbVersion`,
+      type: `list`,
+      store: true,
+      message: `What Bot Framework (botbuilder) version do you want to use?`,
+      default: obj.options.bbVersion,
+      choices: util.getBotBuilderVersions,
+      when: answers => {
+         // If the value was passed on the command line it will
+         // not be set in answers which other prompts expect.
+         // So, place it in answers now.
+         // If you are reading from prompts don't overwrite
+         // what the user entered.
+         if (obj.options.bbVersion !== undefined) {
+            answers.bbVersion = obj.options.bbVersion;
+         }
+
+         return answers.bbVersion === undefined;
+      }
+   };
+}
+
 // function customFolder(obj) {
 //    return {
 //       name: `customFolder`,
@@ -402,7 +426,7 @@ function installDep(obj) {
          }
       ],
       when: answers => {
-         return answers.type !== `csharp` && obj.options.installDep === undefined;
+         return answers.type && answers.type.includes(`csharp`) && obj.options.installDep === undefined;
       }
    };
 }
@@ -445,6 +469,7 @@ module.exports = {
    azureSubInput: azureSubInput,
    dockerRegistry: dockerRegistry,
    dockerCertPath: dockerCertPath,
+   bbVersion: bbVersion,
    botType: botType,
    botName: botName,
    botLocation: botLocation,

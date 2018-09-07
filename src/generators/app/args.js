@@ -26,6 +26,13 @@ function botType(obj) {
    });
 }
 
+function bbVersion(obj) {
+   obj.argument(`bbVersion`, {
+      required: false,
+      desc: `Bot Framework SDK version - (v3, v4)`
+   });
+}
+
 function botName(obj) {
    obj.argument(`botName`, {
       required: false,
@@ -184,6 +191,7 @@ module.exports = {
    dockerCertPath: dockerCertPath,
    dockerRegistry: dockerRegistry,
    botType: botType,
+   bbVersion: bbVersion,
    botName: botName,
    botLocation: botLocation,
    dockerRegistryId: dockerRegistryId,
