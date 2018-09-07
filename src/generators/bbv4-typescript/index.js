@@ -54,22 +54,23 @@ module.exports = class extends Generator {
       this.fs.copyTpl(`${src}/README.md`, `${root}/README.md`, tokens);
       this.fs.copy(`${src}/gitignore`, `${root}/.gitignore`);
 
-
-      src = `${this.sourceRoot()}/src/src`;
+      src = `${this.sourceRoot()}/src`;
       root = `${this.botName}/src`;
 
       // Bot source code files
+      this.fs.copy(`${src}/app.ts`, `${root}/app.ts`);
+      this.fs.copy(`${src}/bot.ts`, `${root}/bot.ts`);
+      this.fs.copyTpl(`${src}/package.json`, `${root}/package.json`, tokens);
+      this.fs.copy(`${src}/tslint.json`, `${root}/tslint.json`);
+      this.fs.copy(`${src}/tsconfig.json`, `${root}/tsconfig.json`);
+      this.fs.copy(`${src}/.env`, `${root}/.env`);
+      this.fs.copyTpl(`${src}/botconfig.bot`, `${root}/${this.botName}.bot`, tokens);
+
       this.fs.copy(`${src}/dialogs/**`, `${root}/dialogs`);
       this.fs.copy(`${src}/models/**`, `${root}/models`);
       this.fs.copy(`${src}/util/**`, `${root}/util`);
       this.fs.copy(`${src}/test/**`, `${root}/test`);
-      this.fs.copy(`${src}/app.ts`, `${root}/app.ts`);
-      this.fs.copy(`${src}/bot.ts`, `${root}/bot.ts`);
-
-      root = `${this.botName}`;
-
-      // Dist folder
-      require('mkdirp').sync(`${root}/dist`);
+      this.fs.copy(`${src}/.vscode/**`, `${root}/.vscode`);
 
       src = `${this.sourceRoot()}/templates`;
       root = `${this.botName}/templates`;
@@ -77,17 +78,9 @@ module.exports = class extends Generator {
       // ARM Templates
       this.fs.copy(`${src}/botts.json`, `${root}/botapp.json`);
       this.fs.copy(`${src}/botts.parameters.json`, `${root}/botapp.parameters.json`);
-
-      src = `${this.sourceRoot()}/src`;
-      root = `${this.botName}`;
-
-      // Bot config files
-      this.fs.copy(`${src}/.env`, `${root}/.env`);
-      this.fs.copyTpl(`${src}/botconfig.bot`, `${root}/${this.botName}.bot`, tokens);
-      this.fs.copyTpl(`${src}/package.json`, `${root}/package.json`, tokens);
-      this.fs.copy(`${src}/tslint.json`, `${root}/tslint.json`);
-      this.fs.copy(`${src}/tsconfig.json`, `${root}/tsconfig.json`);
-      this.fs.copy(`${src}/.vscode/**`, `${root}/.vscode`);
+      this.fs.copy(`${src}/bot-registration.json`, `${root}/bot-registration.json`);
+      this.fs.copy(`${src}/bot-registration.parameters.json`, `${root}/bot-registration.parameters.json`);
+      this.fs.copy(`${src}/appInsigthsApiAccess.ps1`, `${root}/appInsigthsApiAccess.ps1`);
 
       // this.fs.copy(`${src}/acilinux_arm.json`, `${root}/acilinux.json`);
       // this.fs.copyTpl(`${src}/acilinux_arm.parameters.json`, `${root}/acilinux.parameters.json`, tokens);

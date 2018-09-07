@@ -54,10 +54,10 @@ module.exports = class extends Generator {
       this.fs.copyTpl(`${src}/README.md`, `${root}/README.md`, tokens);
       this.fs.copy(`${src}/gitignore`, `${root}/.gitignore`);
 
-      // Bot Web App project
       src = `${this.sourceRoot()}/src`;
       root = `${this.botName}/src`;
 
+      // Bot source code files
       this.fs.copy(`${src}/app.ts`, `${root}/app.ts`);
       this.fs.copy(`${src}/bot.ts`, `${root}/bot.ts`);
       this.fs.copyTpl(`${src}/package.json`, `${root}/package.json`, tokens);
@@ -71,10 +71,10 @@ module.exports = class extends Generator {
       this.fs.copy(`${src}/test/**`, `${root}/test`);
       this.fs.copy(`${src}/.vscode/**`, `${root}/.vscode`);
 
-      // ARM Templates
       src = `${this.sourceRoot()}/templates`;
       root = `${this.botName}/templates`;
 
+      // ARM Templates
       this.fs.copy(`${src}/botts.json`, `${root}/botapp.json`);
       this.fs.copy(`${src}/botts.parameters.json`, `${root}/botapp.parameters.json`);
       this.fs.copy(`${src}/bot-registration.json`, `${root}/bot-registration.json`);

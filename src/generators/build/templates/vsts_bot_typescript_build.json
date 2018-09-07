@@ -87,26 +87,6 @@
          "enabled": true,
          "continueOnError": false,
          "alwaysRun": false,
-         "displayName": "Archive files ",
-         "timeoutInMinutes": 0,
-         "task": {
-            "id": "d8b84976-e99a-4b86-b885-4849694435b0",
-            "versionSpec": "2.*",
-            "definitionType": "task"
-         },
-         "inputs": {
-            "rootFolderOrFile": "$(System.DefaultWorkingDirectory)/src",
-            "includeRootFolder": "false",
-            "archiveType": "zip",
-            "tarCompression": "gz",
-            "archiveFile": "$(Build.ArtifactStagingDirectory)/{{Project}}_$(Build.BuildId).zip",
-            "replaceExistingArchive": "true"
-         }
-      },
-      {
-         "enabled": true,
-         "continueOnError": false,
-         "alwaysRun": false,
          "displayName": "Publish Test Results",
          "timeoutInMinutes": 0,
          "task": {
@@ -148,6 +128,26 @@
          "enabled": true,
          "continueOnError": false,
          "alwaysRun": false,
+         "displayName": "Archive files ",
+         "timeoutInMinutes": 0,
+         "task": {
+            "id": "d8b84976-e99a-4b86-b885-4849694435b0",
+            "versionSpec": "2.*",
+            "definitionType": "task"
+         },
+         "inputs": {
+            "rootFolderOrFile": "$(System.DefaultWorkingDirectory)/src",
+            "includeRootFolder": "false",
+            "archiveType": "zip",
+            "tarCompression": "gz",
+            "archiveFile": "$(Build.ArtifactStagingDirectory)/{{Project}}_$(Build.BuildId).zip",
+            "replaceExistingArchive": "true"
+         }
+      },
+      {
+         "enabled": true,
+         "continueOnError": false,
+         "alwaysRun": false,
          "displayName": "Copy Files",
          "timeoutInMinutes": 0,
          "task": {
@@ -157,7 +157,7 @@
          },
          "inputs": {
             "SourceFolder": "",
-            "Contents": "**/{{Project}}_$(Build.BuildId).zip\n**/templates/botapp.json\n**/templates/botapp.parameters.json\n**/templates/bot-registration.json\n**/templates/bot-registration.parameters.json\n**/templates/appInsigthsApiAccess.ps1",            
+            "Contents": "**/{{Project}}_$(Build.BuildId).zip\n**/templates/botapp.json\n**/templates/botapp.parameters.json\n**/templates/bot-registration.json\n**/templates/bot-registration.parameters.json\n**/templates/appInsigthsApiAccess.ps1",
             "TargetFolder": "$(build.artifactstagingdirectory)",
             "CleanTargetFolder": "false",
             "OverWrite": "false",

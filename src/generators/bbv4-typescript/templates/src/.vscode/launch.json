@@ -10,9 +10,9 @@
            "request": "launch",
            "name": "Debug TS",
            "protocol": "inspector",
-           "program": "${workspaceRoot}/dist/app.js",
+           "program": "${workspaceRoot}/app.js",
            "outFiles": [
-               "${workspaceRoot}/dist/*.js"
+               "${workspaceRoot}/*.js"
            ]
        },
        {
@@ -23,7 +23,7 @@
            "runtimeExecutable": null,
            "console": "internalConsole",
            "args": [
-               "src/test/index.js",
+               "test/index.js",
                "--debug-brk  ",
                "-u",
                "tdd",
