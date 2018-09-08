@@ -22,6 +22,8 @@ module.exports = class extends Generator {
       argUtils.botType(this);
       argUtils.bbVersion(this);
       argUtils.botName(this);
+      argUtils.botAppId(this);
+      argUtils.botAppPasswd(this);
       argUtils.tfs(this);
       argUtils.azureSub(this);
       argUtils.botLocation(this);
@@ -66,6 +68,8 @@ module.exports = class extends Generator {
          prompts.botType(this),
          prompts.bbVersion(this),
          prompts.botName(this),
+         prompts.botAppId(this),
+         prompts.botAppPasswd(this),
          // prompts.customFolder(this),
          prompts.target(this),
          prompts.azureSubInput(this),
@@ -115,6 +119,8 @@ module.exports = class extends Generator {
          this.dockerRegistry = util.reconcileValue(cmdLnInput.options.dockerRegistry, answers.dockerRegistry, ``);
          this.dockerCertPath = util.reconcileValue(cmdLnInput.options.dockerCertPath, answers.dockerCertPath, ``);
          this.botName = util.reconcileValue(cmdLnInput.options.botName, answers.botName, ``);
+         this.botAppId = util.reconcileValue(cmdLnInput.options.botAppId, answers.botAppId, ``);
+         this.botAppPasswd = util.reconcileValue(cmdLnInput.options.botAppPasswd, answers.botAppPasswd, ``);
          this.dockerRegistryId = util.reconcileValue(cmdLnInput.options.dockerRegistryId, answers.dockerRegistryId, ``);
          this.servicePrincipalId = util.reconcileValue(cmdLnInput.options.servicePrincipalId, answers.servicePrincipalId, ``);
          this.servicePrincipalKey = util.reconcileValue(cmdLnInput.options.servicePrincipalKey, answers.servicePrincipalKey, ``);

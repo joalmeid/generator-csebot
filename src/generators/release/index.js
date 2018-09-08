@@ -15,6 +15,8 @@ module.exports = class extends Generator {
       // Order is important 
       argUtils.botType(this);
       argUtils.botName(this);
+      argUtils.botAppId(this);
+      argUtils.botAppPasswd(this);
       argUtils.tfs(this);
       argUtils.queue(this);
       argUtils.target(this);
@@ -43,6 +45,8 @@ module.exports = class extends Generator {
          prompts.queue(this),
          prompts.botType(this),
          prompts.botName(this),
+         prompts.botAppId(this),
+         prompts.botAppPasswd(this),
          // prompts.customFolder(this),
          prompts.target(this),
          prompts.azureSubInput(this),
@@ -66,6 +70,8 @@ module.exports = class extends Generator {
          this.dockerPorts = util.reconcileValue(cmdLnInput.options.dockerPorts, answers.dockerPorts, ``);
          // this.customFolder = util.reconcileValue(cmdLnInput.options.customFolder, answers.customFolder, ``);
          this.dockerRegistry = util.reconcileValue(cmdLnInput.options.dockerRegistry, answers.dockerRegistry);
+         this.botAppId = util.reconcileValue(cmdLnInput.options.botAppId, answers.botAppId, ``);
+         this.botAppPasswd = util.reconcileValue(cmdLnInput.options.botAppPasswd, answers.botAppPasswd, ``);
          this.botName = util.reconcileValue(cmdLnInput.options.botName, answers.botName, ``);
          this.dockerRegistryId = util.reconcileValue(cmdLnInput.options.dockerRegistryId, answers.dockerRegistryId, ``);
          this.dockerRegistryPassword = util.reconcileValue(cmdLnInput.options.dockerRegistryPassword, answers.dockerRegistryPassword, ``);
@@ -99,6 +105,8 @@ module.exports = class extends Generator {
                azureSub: _this.azureSub,
                location: _this.botLocation,
                botName: _this.botName,
+               msAppId: _this.botAppId,
+               msAppPasswd: _this.botAppPasswd,
                project: _this.botName
             };
 

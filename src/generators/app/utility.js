@@ -212,6 +212,14 @@ function validateBotName(input) {
    return validateRequired(input, `You must provide a name for your application`);
 }
 
+function validateAppId(input) {
+   return validateRequired(input, `You must provide a Microsoft App ID (guid)`);
+}
+
+function validateAppPasswd(input) {
+   return validateRequired(input, `You must provide a Microsoft App Password`);
+}
+
 function validateBotLocation(input) {
    return validateRequired(input, `You must provide a location for your bot`);
 }
@@ -1202,6 +1210,8 @@ module.exports = {
    validateAzureTenantID: validateAzureTenantID,
    validateDockerRegistry: validateDockerRegistry,
    validateBotName: validateBotName,
+   validateAppId: validateAppId,
+   validateAppPasswd: validateAppPasswd,
    validateBotLocation: validateBotLocation,
    findAzureServiceEndpoint: findAzureServiceEndpoint,
    getDockerRegistryServer: getDockerRegistryServer,

@@ -16,6 +16,8 @@ function addRelease(obj) {
    obj.composeWith(`csebot:release`, {
       arguments: [obj.type, 
          obj.botName, 
+         obj.botAppId, 
+         obj.botAppPasswd, 
          obj.tfs,
          queue,
          obj.target,

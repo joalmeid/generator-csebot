@@ -1,5 +1,5 @@
 {
-   "name": "bottsdevv4",
+   "name": "<%= name_lowercase %>",
    "version": "0.0.0",
    "description": "CSE Typescript bot (botbuilder v4)",
    "main": "app.js",

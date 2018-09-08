@@ -47,6 +47,20 @@ function botLocation(obj) {
    });
 }
 
+function botAppId(obj) {
+   obj.argument(`botAppId`, {
+      required: false,
+      desc: `Microsoft App ID of the Bot`
+   });
+}
+
+function botAppPasswd(obj) {
+   obj.argument(`botAppPasswd`, {
+      required: false,
+      desc: `Microsoft App Password for the Bot`
+   });
+}
+
 // function customFolder(obj) {
 //    obj.argument(`customFolder`, {
 //       required: false,
@@ -193,6 +207,8 @@ module.exports = {
    botType: botType,
    bbVersion: bbVersion,
    botName: botName,
+   botAppId: botAppId,
+   botAppPasswd: botAppPasswd,
    botLocation: botLocation,
    dockerRegistryId: dockerRegistryId,
    servicePrincipalId: servicePrincipalId,

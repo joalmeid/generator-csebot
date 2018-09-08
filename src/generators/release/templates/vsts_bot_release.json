@@ -12,8 +12,8 @@
       "variables": {
         "ResourceGroupName": { "value": "{{WebAppName}}Dev"},
         "webSiteName": { "value": "{{WebAppName}}Dev{{uuid}}" },
-        "botMSAppID": { "value": "5ee17bde-1761-46b7-98b0-07f5a765903d" },
-        "botMSAppPasswd": { "value": "eldMXNI@$-zoepOOW85575[" }
+        "botMSAppID": { "value": "{{MsAppId}}" },
+        "botMSAppPasswd": { "value": "{{MsAppPasswd}}" }
       },
       "preDeployApprovals": {
         "approvals": [
@@ -224,8 +224,8 @@
       "variables": {
             "ResourceGroupName": { "value": "{{WebAppName}}QA"},
             "webSiteName": { "value": "{{WebAppName}}QA{{uuid}}" },
-            "botMSAppID": { "value": "xxQAxx" },
-            "botMSAppPasswd": { "value": "xxQAxx" }
+            "botMSAppID": { "value": "{{MsAppId}}" },
+            "botMSAppPasswd": { "value": "{{MsAppPasswd}}" }
       },
       "preDeployApprovals": {
         "approvals": [
@@ -445,8 +445,8 @@
       "variables": {
         "ResourceGroupName": { "value": "{{WebAppName}}Prod"},
         "webSiteName": { "value": "{{WebAppName}}Prod{{uuid}}" },
-        "botMSAppID": { "value": "xxProdxx" },
-        "botMSAppPasswd": { "value": "xxProdxx" }
+        "botMSAppID": { "value": "{{MsAppId}}" },
+        "botMSAppPasswd": { "value": "{{MsAppPasswd}}" }
       },
       "preDeployApprovals": {
         "approvals": [

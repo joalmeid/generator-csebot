@@ -208,6 +208,52 @@ function botLocation(obj) {
    };
 }
 
+// function azureSubList(obj) {  // ToLocation
+//    return {
+//       name: `azureSub`,
+//       type: `list`,
+//       store: true,
+//       message: `Which Azure subscription would you like to use?`,
+//       choices: util.getAzureSubs,
+//       validate: util.validateAzureSub,
+//       when: answers => {
+//          var result = util.isPaaS(answers, obj) && obj.options.azureSub === undefined && util.isVSTS(answers.tfs);
+
+//          if (result) {
+//             obj.log(`  Getting Azure subscriptions...`);
+//          }
+
+//          return result;
+//       }
+//    };
+// }
+
+function botAppId(obj) {
+   return {
+      name: `botAppId`,
+      type: `input`,
+      store: true,
+      message: `What is Microsoft App ID? (Head to https://apps.dev.microsoft.com to register your Microsoft App)`,
+      validate: util.validateAppId,
+      when: () => {
+         return obj.options.botAppId === undefined;
+      }
+   };
+}
+
+function botAppPasswd(obj) {
+   return {
+      name: `botAppPasswd`,
+      type: `password`,
+      store: false,
+      message: `What is Microsoft App Password? (Generate a New Password in the app's Application Secrets)`,
+      validate: util.validateAppPasswd,
+      when: () => {
+         return obj.options.botAppPasswd === undefined;
+      }
+   };
+}
+
 function target(obj) {
    return {
       name: `target`,
@@ -472,6 +518,8 @@ module.exports = {
    bbVersion: bbVersion,
    botType: botType,
    botName: botName,
+   botAppId: botAppId,
+   botAppPasswd: botAppPasswd,
    botLocation: botLocation,
    servicePrincipalId: servicePrincipalId,
    servicePrincipalKey: servicePrincipalKey,
