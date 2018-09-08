@@ -793,6 +793,48 @@ function getAzureSubs(answers) {
    });
 }
 
+// TODO:Tried to collect Azure Regions from VSTS service endpoint, however may not created at this stage.
+// Other option would be to use Azure REST API, but it would involve Auth, breaking experience
+// Opted by hardcoding Azure Regions
+function getAzureLocations(answers) {
+
+   return new Promise(function (resolve, reject) {
+      let locations = [
+         {name: `East Asia`, value: `East Asia`},
+         {name: `Southeast Asia`, value: `Southeast Asia`},
+         {name: `Central US`, value: `Central US`}, 
+         {name: `East US`, value: `East US`}, 
+         {name: `East US 2`, value: `East US 2`}, 
+         {name: `West US`, value: `West US`}, 
+         {name: `North Central US`, value: `North Central US`}, 
+         {name: `South Central US`, value: `South Central US`}, 
+         {name: `North Europe`, value: `North Europe`}, 
+         {name: `West Europe`, value: `West Europe`}, 
+         {name: `Japan West`, value: `Japan West`}, 
+         {name: `Japan East`, value: `Japan East`}, 
+         {name: `Brazil South`, value: `Brazil South`}, 
+         {name: `Australia East`, value: `Australia East`}, 
+         {name: `Australia Southeast`, value: `Australia Southeast`}, 
+         {name: `South India`, value: `South India`}, 
+         {name: `Central India`, value: `Central India`}, 
+         {name: `West India`, value: `West India`}, 
+         {name: `Canada Central`, value: `Canada Central`}, 
+         {name: `Canada East`, value: `Canada East`}, 
+         {name: `UK South`, value: `UK South`}, 
+         {name: `UK West`, value: `UK West`}, 
+         {name: `West Central US`, value: `West Central US`}, 
+         {name: `West US 2`, value: `West US 2`}, 
+         {name: `Korea Central`, value: `Korea Central`}, 
+         {name: `Korea South`, value: `Korea South`}, 
+         {name: `France Central`, value: `France Central`}, 
+         {name: `France South`, value: `France South`}, 
+         {name: `Australia Central`, value: `Australia Central`}, 
+         {name: `Australia Central 2`, value: `Australia Central 2`}];
+
+      resolve(locations);
+   });
+}
+
 function getProfileCommands(answers) {
    "use strict";
 
@@ -1213,6 +1255,7 @@ module.exports = {
    validateAppId: validateAppId,
    validateAppPasswd: validateAppPasswd,
    validateBotLocation: validateBotLocation,
+   getAzureLocations: getAzureLocations,
    findAzureServiceEndpoint: findAzureServiceEndpoint,
    getDockerRegistryServer: getDockerRegistryServer,
    findDockerServiceEndpoint: findDockerServiceEndpoint,

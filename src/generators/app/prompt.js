@@ -195,38 +195,32 @@ function botName(obj) {
    };
 }
 
+// function botLocation(obj) {
+//    return {
+//       name: `botLocation`,
+//       type: `input`,
+//       store: true,
+//       message: `What is the azure location of your Bot?`,
+//       validate: util.validateBotLocation,
+//       when: () => {
+//          return obj.options.botLocation === undefined;
+//       }
+//    };
+// }
+
 function botLocation(obj) {
    return {
       name: `botLocation`,
-      type: `input`,
+      type: `list`,
       store: true,
       message: `What is the azure location of your Bot?`,
+      choices: util.getAzureLocations,
       validate: util.validateBotLocation,
       when: () => {
          return obj.options.botLocation === undefined;
       }
    };
 }
-
-// function azureSubList(obj) {  // ToLocation
-//    return {
-//       name: `azureSub`,
-//       type: `list`,
-//       store: true,
-//       message: `Which Azure subscription would you like to use?`,
-//       choices: util.getAzureSubs,
-//       validate: util.validateAzureSub,
-//       when: answers => {
-//          var result = util.isPaaS(answers, obj) && obj.options.azureSub === undefined && util.isVSTS(answers.tfs);
-
-//          if (result) {
-//             obj.log(`  Getting Azure subscriptions...`);
-//          }
-
-//          return result;
-//       }
-//    };
-// }
 
 function botAppId(obj) {
    return {
