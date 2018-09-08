@@ -277,6 +277,9 @@ __pycache__/
 # Tests
 coverage
 
+#Node
+package-lock.json
+
 #Yeoman
 .yo-rc.json
 
