@@ -59,7 +59,6 @@ module.exports = class extends Generator {
          uuid3: uuidV4(),
          name_lowercase: this.botName.toLowerCase(),
          location: this.botLocation,
-         location_lowercase: this.botLocation.toLowerCase().replace(/\s+/g, ''),
          projectUrl: `${util.getFullURL(this.tfs)}/${this.botName}`,
          MicrosoftAppId: "",
          MicrosoftAppPassword: ""

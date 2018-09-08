@@ -5,10 +5,10 @@ const assert = require(`yeoman-assert`);
 const util = require(`../../generators/app/utility`);
 
 describe(`app:index`, function () {
-   it(`arguments using fake dependencies dockerpaas linux`, function () {
+   it(`arguments using fake dependencies paas linux`, function () {
       // Arrange
       let deps = [
-         [helpers.createDummyGenerator(), `csebot:asp`],
+         [helpers.createDummyGenerator(), `csebot:bbv3-node`],
          [helpers.createDummyGenerator(), `csebot:git`],
          [helpers.createDummyGenerator(), `csebot:azure`],
          [helpers.createDummyGenerator(), `csebot:build`],
@@ -17,15 +17,19 @@ describe(`app:index`, function () {
          [helpers.createDummyGenerator(), `csebot:registry`]
       ];
 
-      let type = `asp`;
-      let name = `aspDemo`;
+      let type = `node`;
+      let bbversion = `v3`;
+      let name = `testbbv3node`;
+      let msAppId = `MsAppId`;
+      let msAppPasswd = `MsAppPasswd`;
       let tfs = `vsts`;
       let azureSub = `AzureSub`;
+      let location = `location`;
       let azureSubId = `AzureSubId`;
       let tenantId = `TenantId`;
       let servicePrincipalId = `servicePrincipalId`;
       let queue = `Hosted Linux Preview`;
-      let target = `dockerpaas`;
+      let target = `paas`;//`dockerpaas`;
       let installDep = `false`;
       let dockerHost = ``;
       let dockerCertPath = ``;
@@ -39,8 +43,8 @@ describe(`app:index`, function () {
       // Act
       return helpers.run(path.join(__dirname, `../../generators/app`))
          .withGenerators(deps)
-         .withArguments([type, name, tfs,
-            azureSub, azureSubId, tenantId, servicePrincipalId,
+         .withArguments([type, bbversion, name, msAppId, msAppPasswd, tfs,
+            azureSub, location, azureSubId, tenantId, servicePrincipalId,
             queue, target, installDep,
             dockerHost, dockerCertPath,
             dockerRegistry, dockerRegistryId, dockerPorts, dockerRegistryPassword,
@@ -54,7 +58,7 @@ describe(`app:index`, function () {
    it(`arguments using fake dependencies paas`, function () {
       // Arrange
       let deps = [
-         [helpers.createDummyGenerator(), `csebot:asp`],
+         [helpers.createDummyGenerator(), `csebot:bbv3-node`],
          [helpers.createDummyGenerator(), `csebot:git`],
          [helpers.createDummyGenerator(), `csebot:azure`],
          [helpers.createDummyGenerator(), `csebot:build`],
@@ -62,10 +66,14 @@ describe(`app:index`, function () {
          [helpers.createDummyGenerator(), `csebot:release`]
       ];
 
-      let type = `asp`;
-      let name = `aspDemo`;
+      let type = `node`;
+      let bbversion = `v3`;
+      let name = `testbbv3node`;
+      let msAppId = `MsAppId`;
+      let msAppPasswd = `MsAppPasswd`;
       let tfs = `vsts`;
       let azureSub = `AzureSub`;
+      let location = `location`;
       let azureSubId = `AzureSubId`;
       let tenantId = `TenantId`;
       let servicePrincipalId = `servicePrincipalId`;
@@ -84,8 +92,8 @@ describe(`app:index`, function () {
       // Act
       return helpers.run(path.join(__dirname, `../../generators/app`))
          .withGenerators(deps)
-         .withArguments([type, name, tfs,
-            azureSub, azureSubId, tenantId, servicePrincipalId,
+         .withArguments([type, bbversion, name, msAppId, msAppPasswd, tfs,
+            azureSub, location, azureSubId, tenantId, servicePrincipalId,
             queue, target, installDep,
             dockerHost, dockerCertPath,
             dockerRegistry, dockerRegistryId, dockerPorts, dockerRegistryPassword,
@@ -96,10 +104,11 @@ describe(`app:index`, function () {
          });
    });
 
+   
    it(`arguments using fake dependencies csharp paas`, function () {
       // Arrange
       let deps = [
-         [helpers.createDummyGenerator(), `csebot:csharp`],
+         [helpers.createDummyGenerator(), `csebot:bbv3-csharp`],
          [helpers.createDummyGenerator(), `csebot:git`],
          [helpers.createDummyGenerator(), `csebot:azure`],
          [helpers.createDummyGenerator(), `csebot:build`],
@@ -108,9 +117,13 @@ describe(`app:index`, function () {
       ];
 
       let type = `csharp`;
-      let name = `aspDemo`;
+      let bbversion = `v3`;
+      let name = `testbbv3charp`;
+      let msAppId = `MsAppId`;
+      let msAppPasswd = `MsAppPasswd`;
       let tfs = `vsts`;
       let azureSub = `AzureSub`;
+      let location = `location`;
       let azureSubId = `AzureSubId`;
       let tenantId = `TenantId`;
       let servicePrincipalId = `servicePrincipalId`;
@@ -129,8 +142,8 @@ describe(`app:index`, function () {
       // Act
       return helpers.run(path.join(__dirname, `../../generators/app`))
          .withGenerators(deps)
-         .withArguments([type, name, tfs,
-            azureSub, azureSubId, tenantId, servicePrincipalId,
+         .withArguments([type, bbversion, name, msAppId, msAppPasswd, tfs,
+            azureSub, location, azureSubId, tenantId, servicePrincipalId,
             queue, target, installDep,
             dockerHost, dockerCertPath,
             dockerRegistry, dockerRegistryId, dockerPorts, dockerRegistryPassword,
@@ -143,7 +156,7 @@ describe(`app:index`, function () {
 
    it(`prompts using fake dependencies paas`, function () {
       let deps = [
-         [helpers.createDummyGenerator(), `csebot:asp`],
+         [helpers.createDummyGenerator(), `csebot:bbv3-node`],
          [helpers.createDummyGenerator(), `csebot:git`],
          [helpers.createDummyGenerator(), `csebot:azure`],
          [helpers.createDummyGenerator(), `csebot:build`],
@@ -162,8 +175,12 @@ describe(`app:index`, function () {
             tfs: `vsts`,
             pat: `token`,
             queue: `Default`,
-            type: `asp`,
-            botName: `aspDemo`,
+            type: `node`,
+            bbVersion: 'v3',
+            msAppId: `MsAppId`, 
+            msAppPasswd: `MsAppPasswd`,
+            location: `location`, 
+            botName: `testbbv3node`,
             target: `paas`,
             azureSub: `azureSub`,
             installDep: `false`
@@ -186,7 +203,7 @@ describe(`app:index`, function () {
       // Arrange
       let deps = [
          [helpers.createDummyGenerator(), `csebot:git`],
-         [helpers.createDummyGenerator(), `csebot:node`],
+         [helpers.createDummyGenerator(), `csebot:bbv3-node`],
          [helpers.createDummyGenerator(), `csebot:build`],
          [helpers.createDummyGenerator(), `csebot:docker`],
          [helpers.createDummyGenerator(), `csebot:project`],
@@ -195,9 +212,13 @@ describe(`app:index`, function () {
       ];
 
       let type = `node`;
-      let name = `demo`;
+      let bbversion = `v3`;
+      let name = `testbbv3node`;
+      let msAppId = `MsAppId`;
+      let msAppPasswd = `MsAppPasswd`;
       let tfs = `vsts`;
       let azureSub = ``;
+      let location = ``;
       let azureSubId = ``;
       let tenantId = ``;
       let servicePrincipalId = ``;
@@ -215,8 +236,8 @@ describe(`app:index`, function () {
 
       return helpers.run(path.join(__dirname, `../../generators/app`))
          .withGenerators(deps)
-         .withArguments([type, name, tfs,
-            azureSub, azureSubId, tenantId, servicePrincipalId,
+         .withArguments([type, bbversion, name, msAppId, msAppPasswd, tfs,
+            azureSub, location, azureSubId, tenantId, servicePrincipalId,
             queue, target, installDep,
             dockerHost, dockerCertPath,
             dockerRegistry, dockerRegistryId, dockerPorts, dockerRegistryPassword,
@@ -229,9 +250,8 @@ describe(`app:index`, function () {
 
    it(`prompts using fake dependencies docker`, function () {
       let deps = [
-         [helpers.createDummyGenerator(), `csebot:asp`],
+         [helpers.createDummyGenerator(), `csebot:bbv3-typescript`],
          [helpers.createDummyGenerator(), `csebot:git`],
-         [helpers.createDummyGenerator(), `csebot:java`],
          [helpers.createDummyGenerator(), `csebot:build`],
          [helpers.createDummyGenerator(), `csebot:docker`],
          [helpers.createDummyGenerator(), `csebot:project`],
@@ -248,14 +268,18 @@ describe(`app:index`, function () {
          .withGenerators(deps)
          .withPrompts({
             tfs: `vsts`,
-            type: `java`,
+            type: `typescript`,
             pat: `token`,
             queue: `Default`,
             target: `docker`,
             installDep: `false`,
             dockerHost: `dockerHost`,
             dockerPorts: `dockerPorts`,
-            botName: `javaDemo`,
+            msAppId: `MsAppId`, 
+            msAppPasswd: `MsAppPasswd`,
+            location: `location`, 
+            bbVersion: 'v3',
+            botName: `testbbv3ts`,
             dockerCertPath: `dockerCertPath`,
             dockerRegistry: `dockerRegistry`,
             dockerRegistryId: `dockerRegistryId`,
