@@ -19,12 +19,6 @@ describe(`csebot:bbv3-typescript paas`, function () {
          });
    });
 
-   it(`bower install should not be called`, function () {
-      assert.equal(0, spawnStub.withArgs(`bower`, [`install`], {
-         stdio: ['pipe', 'pipe', process.stderr]
-      }).callCount, `bower install was called`);
-   });
-
    it(`npm install should be called`, function () {
       // Make sure the calls to install were made
       assert(spawnStub.withArgs(`npm`, [`install`], {
@@ -63,7 +57,6 @@ describe(`csebot:bbv3-typescript paas`, function () {
          `./templates/botapp.parameters.json`
       ]);
 
-      //TODO:Review
       assert.fileContent(`./src/package.json`, `"name": "bbv3typescriptunittest"`);
       assert.fileContent(`./templates/botapp.json`, `"WEBSITE_NODE_DEFAULT_VERSION": "8.5.0"`);
       assert.fileContent(`./templates/botapp.json`, `"STATE_STORAGE_CONNECTION_STRING":`);
