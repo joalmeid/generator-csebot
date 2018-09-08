@@ -278,7 +278,7 @@ __pycache__/
 coverage
 
 #Yeoman
-.yo-rc-json
+.yo-rc.json
 
 # personal notes
 notesjda
